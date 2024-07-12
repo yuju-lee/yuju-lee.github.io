@@ -1,0 +1,92 @@
+/**
+ * 8. Site Footer
+ * ----------------------------------------------------------------------------
+ */
+ .site-footer {
+    color: $black;
+    padding-bottom: 2.5em;
+    padding-top: 2.5em;
+}
+
+.footer-bottom {
+    border-top: 2px solid $gray-dark;
+    padding-top: 2.5em;
+}
+
+.social-links {
+    float: right;
+    text-align: right;
+
+    a {
+        border: 0;
+        color: inherit;
+        display: inline-block;
+        font-size: 18px;
+        margin-bottom: 0.25em;
+        margin-left: 15px;
+        padding: 0 5px;
+
+        &:hover {
+            color: $gray;
+        }
+
+    }
+}
+
+.site-info {
+    float: left;
+    font: 11px/1.5 $font-secondary;
+    letter-spacing: 0.1em;
+    margin-top: 0.5em;
+    text-transform: uppercase;
+
+    a {
+        border-color: transparent;
+        color: $gray;
+
+        &:hover {
+            border-color: $color-accent;
+            color: $black;
+        }
+
+    }
+}
+
+.top-link {
+    border: 0;
+    bottom: 15px;
+    color: $gray;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    line-height: 2.4;
+    padding-left: 25px;
+    padding-right: 5px;
+    position: fixed;
+    right: -30px;
+    text-transform: uppercase;
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+    -webkit-transform-origin: right bottom;
+    transform-origin: right bottom;
+    -webkit-transition: right 0.5s ease-out;
+    -moz-transition: right 0.5s ease-out;
+    transition: right 0.5s ease-out;
+    z-index: 997;
+}
+
+.top-link .fa-arrow-left-custom {
+    font-size: 14px;
+    left: 5px;
+    top: 5px;
+    position: absolute;
+}
+
+.top-link:hover,
+.top-link:focus {
+    outline: none;
+}
+
+.is--scrolled .top-link {
+    right: 32px;
+}

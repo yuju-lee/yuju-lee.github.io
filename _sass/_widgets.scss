@@ -1,0 +1,74 @@
+/**
+ * 8. Widgets
+ * ----------------------------------------------------------------------------
+ */
+ .site-navigation,
+ .widget {
+     color: $gray;
+     font-size: 14px;
+     margin-bottom: 2.85714em;
+ }
+
+ .menu-title,
+ .widget-title {
+     border-bottom: 2px solid $gray-dark;
+     color: #fff;
+     font-size: 18px;
+     margin: 0 0 1.66667em;
+     padding-bottom: 1em;
+ }
+
+ .widget a {
+     border-color: $gray;
+     color: #fff;
+ }
+
+ .menu-item a,
+ .widget-recent-posts a {
+     border-color: transparent;
+     color: #fff;
+ }
+
+ .current-menu-item a,
+ .menu-item a:hover,
+ .widget a:hover {
+     border-color: $color-accent;
+ }
+
+ .menu,
+ .widget-recent-posts ul {
+     list-style: none;
+     padding-left: 0;
+ }
+
+ .menu-item,
+ .widget-recent-posts li {
+     margin-bottom: 1em;
+ }
+
+ .widget-recent-posts .recent-date {
+     display: block;
+     font: 12px/1.5 $font-secondary;
+     margin-top: 0.25em;
+ }
+
+ .tagcloud a {
+     background-color: transparent;
+     border: 1px solid $color-accent;
+     color: $color-accent;
+     display: inline-block;
+     font-size: 10px;
+     font-weight: bold;
+     margin: 0 6px 6px 0;
+     padding: 2px 5px;
+     letter-spacing: 0.1em;
+     text-transform: uppercase;
+     -webkit-transition: .3s ease-out;
+     -moz-transition: .3s ease-out;
+     transition: .3s ease-out;
+
+     &:hover {
+         background-color: $color-accent;
+         color: $black;
+     }
+ }

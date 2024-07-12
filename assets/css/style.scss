@@ -1,0 +1,41 @@
+---
+# Only the essential Sass file needs front matter, the dashes are enough
+---
+
+/**
+* Forma Jekyll Theme 1.2.2
+* By Just Good Themes - https://justgoodthemes.com/
+*/
+
+/**
+* Table of Contents
+* ----------------------------------------------------------------------------
+* 0. Icons
+* 1. Reset
+* 2. General
+* 3. Structure
+* 4. Site Header
+* 5. Sidebar
+* 6. Prism
+* 7. Content
+*   7.1 Posts and Pages
+*   7.2 Grid Layout
+*   7.3 Comments
+*   7.4 Post/Paging Navigation
+* 8. Site Footer
+* 9. Widgets
+* 10. Media Queries
+*/
+
+@import "icons";
+@import "variables";
+@import "reset";
+@import "general";
+@import "structure";
+@import "header";
+@import "sidebar";
+@import "prism";
+@import "posts-pages";
+@import "footer";
+@import "widgets";
+@import "media-queries";

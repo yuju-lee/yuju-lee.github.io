@@ -1,8 +1,8 @@
 # Site setings
-name: 'Judy'
-description: 'Bold Theme For Brave People'
+name: "'Judy's Devlog"
+description: 'Cool developers never dies'
 # Sidebar about text
-site_description: 'Welcome to my blog. It features topics such as fashion, architecture, travel & design. This blog is about finding balance in life, living with purpose, having fun, and doing what you love.'
+site_description: ''
 logo:
 favicon: 'assets/images/favicon.ico'
 baseurl: ""
@@ -20,22 +20,18 @@ thankyou_page_description: "Your message has been successfully sent. We will con
 # Social links
 twitter: 'username'
 facebook: 'username'
-github: 'username'
+github: 'yuju-lee'
 codepen: 'username'
 dribbble: 'username'
 medium: '@username'
 instagram: 'username'
 pinterest: 'username'
-linkedin: 'username'
+linkedin: 'yuju-lee'
 
 # Navigation
 navigation:
   - text: About
     url: /about/
-  - text: Style Guide
-    url: /style-guide/
-  - text: Contact Me
-    url: /contact/
 
 # Required Plugins
 plugins_dir:

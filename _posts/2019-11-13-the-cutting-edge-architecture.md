@@ -1,10 +1,10 @@
 ---
 layout: post
 title: "The Cutting Edge Architecture"
-tags: [Architecture, Design]
+tags: [java]
 featured_image_thumbnail:
 featured_image: assets/images/posts/14.jpg
-author: nancy
+author: judy
 ---
 
 This beautiful rough concrete house located in the small town of **Besalu in the Ayora**, Valencia region, Spain, has been designed by Fran Silvestre, a talented architectural firm from Spain. Set in a sloping plain, the House allows its concrete exterior to show through without overwhelming the minimal interior. The house is hexagonal, allowing for a room layout that lends itself to eye-catching reveals. Warm wood floors and cabinets pair with white walls and exposed grey concrete to give the interior a cozy yet distinctly modern feel, while abundant windows let in plenty of natural light while providing views to the outdoors.

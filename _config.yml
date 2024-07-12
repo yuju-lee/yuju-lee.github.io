@@ -1,8 +1,8 @@
 # Site setings
-name: "judy's devlog"
-description: 'Cool Developers never dies'
+name: 'Judy's devlog'
+description: 'Bold Theme For Brave People'
 # Sidebar about text
-site_description: ''
+site_description: 'Welcome to my blog. It features topics such as fashion, architecture, travel & design. This blog is about finding balance in life, living with purpose, having fun, and doing what you love.'
 logo:
 favicon: 'assets/images/favicon.ico'
 baseurl: 
@@ -14,8 +14,8 @@ ga_analytics:
 
 # Contact form setings
 email: youremail@email.com
-contact_page_description: ""
-thankyou_page_description: ""
+contact_page_description: "Forma theme comes with a contact form built-in. You can use this form with Formspree service and get up to 50 submissions for free. Also, you can easily switch to another service if you want."
+thankyou_page_description: "Your message has been successfully sent. We will contact you very soon!"
 
 # Social links
 twitter: 'username'
@@ -32,10 +32,10 @@ linkedin: 'username'
 navigation:
   - text: About
     url: /about/
-  - text: Java
-    url: /java/
-  - text: Algorithm
-    url: /algorithm/
+  - text: Style Guide
+    url: /style-guide/
+  - text: Contact Me
+    url: /contact/
 
 # Required Plugins
 plugins_dir:

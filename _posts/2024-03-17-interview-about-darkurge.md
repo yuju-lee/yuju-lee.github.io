@@ -7,3 +7,6 @@ author: Judy
 ---
 
 > quote
+```
+print("hello world")
+```

@@ -2,6 +2,7 @@
 layout: page
 title: About
 featured_image: /assets/images/pages/about.jpg
+permalink: /about/
 ---
 
 Daniel Bennett is a senior developer from Vilnius, Lithuania. After graduating from The College with a degree in **Computer Science**, he worked for three small web shops where he honed his development skills and love for JavaScript.

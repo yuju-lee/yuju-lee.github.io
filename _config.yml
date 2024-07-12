@@ -1,34 +1,37 @@
 # Site setings
-name: 'Devlog'
-description: 'Cool develper never dies'
+name: 'Judy's Dev logs'
+description: 'Cool develpers never die'
 # Sidebar about text
-site_description: 'Welcome to my blog. It features topics such as engineering, algorithm, my dev logs.'
+site_description: ''
 logo:
 favicon: 'assets/images/favicon.ico'
 baseurl: 
 production_url: https://forma.netlify.com/
-disqus: 'justgoodthemes'
+disqus: 'beyourgod'
 mailchimp_url: '//justgoodthemes.us3.list-manage.com/subscribe/post?u=78f1bab16028354caeb23aecd&amp;id=4a7330d117'
 # Add your GA Tracking Id
 ga_analytics: 
 
 # Contact form setings
 email: periq23@gmail.com
-contact_page_description: ""
-thankyou_page_description: ""
+contact_page_description: "Forma theme comes with a contact form built-in. You can use this form with Formspree service and get up to 50 submissions for free. Also, you can easily switch to another service if you want."
+thankyou_page_description: "Your message has been successfully sent. We will contact you very soon!"
 
 # Social links
+twitter: 'username'
+facebook: 'username'
 github: 'yuju-lee'
-linkedin: 'yuju-lee'
+codepen: 'username'
+dribbble: 'username'
+medium: '@username'
+instagram: 'username'
+pinterest: 'username'
+linkedin: 'username'
 
 # Navigation
 navigation:
   - text: About
     url: /about/
-  - text: Style Guide
-    url: /style-guide/
-  - text: Contact Me
-    url: /contact/
 
 # Required Plugins
 plugins_dir:
@@ -38,9 +41,12 @@ plugins_dir:
   - jekyll-sitemap
   - jekyll-author-page
 
+plugins: [jekyll-paginate]
+
 # Pagination
 paginate: 6
 paginate_path: /page:num/
+
 
 # Permalinks
 permalink: /:title

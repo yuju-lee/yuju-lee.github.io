@@ -19,12 +19,12 @@ endcapture %} {% assign sortedTags = site_tags | split:',' | sort %}
 </section>
 
 {% if site.mailchimp_url %}
-<section class="widget widget-newsletter">
+<!-- <section class="widget widget-newsletter">
     <div class="inner">
         <h2 class="widget-title">Subscribe to {{ site.name }}</h2>
-        <p>Get the latest and greatest from {{ site.name }} delivered straight to your inbox every week.</p>
+        <p>Get the latest and greatest from {{ site.name }} delivered straight to your inbox every week.</p> -->
         <!-- Begin MailChimp Signup Form -->
-        <div id="mc_embed_signup">
+        <!-- <div id="mc_embed_signup">
             <form action="{{ site.mailchimp_url }}" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form"
                 class="validate gh-subscribe-form" target="_blank" novalidate>
                 <label for="mce-EMAIL" class="screen-reader-text">Email Address</label>
@@ -34,5 +34,5 @@ endcapture %} {% assign sortedTags = site_tags | split:',' | sort %}
             </form>
         </div>
     </div>
-</section>
+</section> -->
 {% endif %}

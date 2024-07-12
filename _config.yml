@@ -1,13 +1,13 @@
 # Site setings
-name: "Judy's devlog"
-description: 'Bold Theme For Brave People'
+name: '5 PER TINT'
+description: 'Maybe I can be your god'
 # Sidebar about text
-site_description: 'Welcome to my blog. It features topics such as fashion, architecture, travel & design. This blog is about finding balance in life, living with purpose, having fun, and doing what you love.'
+site_description: ''
 logo:
 favicon: 'assets/images/favicon.ico'
 baseurl: 
 production_url: https://forma.netlify.com/
-disqus: 'justgoodthemes'
+disqus: 'beyourgod'
 mailchimp_url: '//justgoodthemes.us3.list-manage.com/subscribe/post?u=78f1bab16028354caeb23aecd&amp;id=4a7330d117'
 # Add your GA Tracking Id
 ga_analytics: 
@@ -18,7 +18,7 @@ contact_page_description: "Forma theme comes with a contact form built-in. You c
 thankyou_page_description: "Your message has been successfully sent. We will contact you very soon!"
 
 # Social links
-twitter: 'username'
+twitter: '5pxrtint'
 facebook: 'username'
 github: 'username'
 codepen: 'username'
@@ -32,10 +32,6 @@ linkedin: 'username'
 navigation:
   - text: About
     url: /about/
-  - text: Style Guide
-    url: /style-guide/
-  - text: Contact Me
-    url: /contact/
 
 # Required Plugins
 plugins_dir:
@@ -45,9 +41,12 @@ plugins_dir:
   - jekyll-sitemap
   - jekyll-author-page
 
+plugins: [jekyll-paginate]
+
 # Pagination
 paginate: 6
 paginate_path: /page:num/
+
 
 # Permalinks
 permalink: /:title

@@ -6,26 +6,14 @@ module Jekyll
         if site.layouts.key? 'tag'
           dir = 'tag'
           site.tags.each do |tag, posts|
-            paginate(site, dir, tag, posts)
+            site.pages << TagPage.new(site, site.source, File.join(dir, tag), tag)
           end
         end
-      end
-  
-      def paginate(site, dir, tag, posts)
-        per_page = site.config['paginate'] || 10
-        num_pages = (posts.size / per_page.to_f).ceil
-  
-        (1..num_pages).each do |page|
-          pager = Jekyll::Pager.new(site, page, posts, num_pages)
-          page_path = page == 1 ? File.join(dir, tag) : File.join(dir, tag, "page#{page}")
-  
-          site.pages << TagPage.new(site, site.source, page_path, tag, pager)
-        endㄴ
       end
     end
   
     class TagPage < Page
-      def initialize(site, base, dir, tag, pager)
+      def initialize(site, base, dir, tag)
         @site = site
         @base = base
         @dir = dir
@@ -35,7 +23,6 @@ module Jekyll
         self.read_yaml(File.join(base, '_layouts'), 'tag.html')
         self.data['tag'] = tag
         self.data['title'] = "Posts tagged \"#{tag}\""
-        self.data['paginator'] = pager
       end
     end
   end

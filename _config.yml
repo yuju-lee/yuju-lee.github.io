@@ -1,18 +1,16 @@
-# Site setings
+# Site settings
 name: "Judy's Devlog"
 description: 'Cool developers never dies'
-# Sidebar about text
 site_description: ''
 logo:
 favicon: 'assets/images/favicon.ico'
-baseurl: ""
-production_url: https://forma.netlify.com/
+baseurl: "" 
+url: "https://forma.netlify.com/"
 disqus: 'justgoodthemes'
 mailchimp_url: '//justgoodthemes.us3.list-manage.com/subscribe/post?u=78f1bab16028354caeb23aecd&amp;id=4a7330d117'
-# Add your GA Tracking Id
-ga_analytics: 
+ga_analytics: ""
 
-# Contact form setings
+# Contact form settings
 email: youremail@email.com
 contact_page_description: "Forma theme comes with a contact form built-in. You can use this form with Formspree service and get up to 50 submissions for free. Also, you can easily switch to another service if you want."
 thankyou_page_description: "Your message has been successfully sent. We will contact you very soon!"
@@ -26,30 +24,31 @@ navigation:
   - text: About
     url: /about/
 
-# Required Plugins
-plugins_dir:
+# Plugins
+plugins:
   - jekyll-paginate
-  - jekyll-tagsgenerator
   - jekyll-seo-tag
   - jekyll-sitemap
-  - jekyll-author-page
-  - jekyll-archives
   - jekyll-feed
+  - jekyll-archives
+  - jekyll-tagsgenerator # Ensure this plugin is correctly configured and installed
 
 # Pagination
 paginate: 6
 paginate_path: /page:num/
 
 # Permalinks
-permalink: /:title
+permalink: /:title/
 
+# Archives settings
 jekyll-archives:
   enabled:
     - tags
-  layout: tag
+  layouts:
+    tag: tag
   permalinks:
     tag: /tag/:name/
-    
+
 # Other
 markdown: kramdown
 

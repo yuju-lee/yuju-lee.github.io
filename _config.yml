@@ -1,5 +1,5 @@
 # Site setings
-name: "'Judy's Devlog"
+name: "Judy's Devlog"
 description: 'Cool developers never dies'
 # Sidebar about text
 site_description: ''
@@ -18,14 +18,7 @@ contact_page_description: "Forma theme comes with a contact form built-in. You c
 thankyou_page_description: "Your message has been successfully sent. We will contact you very soon!"
 
 # Social links
-twitter: 'username'
-facebook: 'username'
 github: 'yuju-lee'
-codepen: 'username'
-dribbble: 'username'
-medium: '@username'
-instagram: 'username'
-pinterest: 'username'
 linkedin: 'yuju-lee'
 
 # Navigation
@@ -40,6 +33,8 @@ plugins_dir:
   - jekyll-seo-tag
   - jekyll-sitemap
   - jekyll-author-page
+  - jekyll-archives
+  - jekyll-feed
 
 # Pagination
 paginate: 6

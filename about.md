@@ -1,16 +1,12 @@
 ---
 layout: page
-title: About
-featured_image: /assets/images/pages/about.jpg
+title: About Me
+featured_image: /assets/images/pages/image.jpeg
 permalink: /about/
 ---
 
-Daniel Bennett is a senior developer from Vilnius, Lithuania. After graduating from The College with a degree in **Computer Science**, he worked for three small web shops where he honed his development skills and love for JavaScript.
+컴퓨터공학과 / 미디어공학과를 전공한 주디입니다. 취미는 운동과 게임, 미드보기, 취향은 외국 힙합! 집에서 맥북 하나 붙잡고 밤새 이것저것 만들어 보는 걸 좋아해요. 첫 회사에서 주디라는 영어 닉네임을 사용했는데, 마음에 들어서 닉네임으로 사용하고 있어요.
 
-His work has been recognized by Communication Arts, IBM, How, ID, IdN, AIGA, Effie, Archive, Graphis, AdFed and Rockport. **Net** magazine named him a person to watch in 2018.
+저는 주로 백엔드 기술을 공부합니다. 프론트 엔드에도 관심이 있어 백엔드 공부하고 남은 시간에 깨작깨작 친해지고 있어요. 파이썬, 자바의 스프링부트를 주로 사용하며 최근에는 ML도 관심이 생기고 있어요.
 
->The world always seems brighter when you’ve just made something that wasn’t there before. <cite>Neil Gaiman</cite>
-
-As a hobby, Daniel authors the most influential JavaScript blog in Lithuania with over 100,000 page views a month. He lives in Vilnius with his beautiful wife, two boys and one girl.
-
-*Thank You for reading!*
+걸어다니는 ISTP라는 말을 자주 듣는 전 극강의 효율성을 추구합니다. 귀찮고 레거시한 일은 딱 질색이라 그런 일들을 어떻게 자동화 시킬까, 어떻게 해야 귀찮은 일을 덜 할까라는 생각을 항상 가지고 있어요. 이는 개발자인 저에게 있어 내세울 수 있는 최고의 장점이라고 자부합니다. 이 블로그가 나에게 귀찮은 일이 되지 않고 나만의 개발 알렉산드리아 도서관이 되길 바라고 있어요.

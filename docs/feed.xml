@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Judy&apos;s Devlog</title>
+    <description>Cool developers never dies</description>
+    <link>https://yuju-lee.github.io/</link>
+    <atom:link href="https://yuju-lee.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 13 Jul 2024 21:23:18 +0900</pubDate>
+    <lastBuildDate>Sat, 13 Jul 2024 21:23:18 +0900</lastBuildDate>
+    <generator>Jekyll v4.3.3</generator>
+    
+      <item>
+        <title>Example Post</title>
+        <description>&lt;p&gt;test&lt;/p&gt;
+</description>
+        <pubDate>Thu, 11 Jul 2024 00:00:00 +0900</pubDate>
+        <link>https://yuju-lee.github.io/algorithm/springboot/logs/example/</link>
+        <guid isPermaLink="true">https://yuju-lee.github.io/algorithm/springboot/logs/example/</guid>
+        
+        
+        <category>algorithm</category>
+        
+        <category>springboot</category>
+        
+        <category>logs</category>
+        
+      </item>
+    
+      <item>
+        <title>Example Post</title>
+        <description>&lt;p&gt;이것은 알고리즘 카테고리에 속하는 예시 게시물입니다.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 11 Jul 2024 00:00:00 +0900</pubDate>
+        <link>https://yuju-lee.github.io/algorithm/algorithm/</link>
+        <guid isPermaLink="true">https://yuju-lee.github.io/algorithm/algorithm/</guid>
+        
+        
+        <category>algorithm</category>
+        
+      </item>
+    
+      <item>
+        <title>The History of Visual Communication</title>
+        <description>&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 주어진 밀리초 단위의 타임스탬프
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1720841280075&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 밀리초를 초로 변환
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1000.0&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Unix 타임스탬프를 datetime 객체로 변환
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fromtimestamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 밀리초 부분 계산
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 원하는 형식으로 변환 (밀리초 포함)
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;%Y-%m-%d %H:%M:%S&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;03&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;
+
+&lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Tue, 12 Apr 2022 00:00:00 +0900</pubDate>
+        <link>https://yuju-lee.github.io/logs/history-of-visual-communication/</link>
+        <guid isPermaLink="true">https://yuju-lee.github.io/logs/history-of-visual-communication/</guid>
+        
+        <category>tips</category>
+        
+        <category>Development</category>
+        
+        
+        <category>logs</category>
+        
+      </item>
+    
+      <item>
+        <title>How To Start Learning Blockchain Development</title>
+        <description>&lt;p&gt;A blockchain, originally block chain, is a continuously growing list of records, called blocks, which are linked and secured using cryptography. Each block typically contains a hash pointer as a link to a previous block, a timestamp and transaction data. By design, a blockchain is inherently resistant to modification of the data. It is &lt;em&gt;“an open, distributed ledger that can record transactions between two parties efficiently and in a verifiable and permanent way”&lt;/em&gt;.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;For use as a distributed ledger, a blockchain is typically managed by a peer-to-peer network collectively adhering to a protocol for validating new blocks. Once recorded, the data in any given block cannot be altered retroactively without the alteration of all subsequent blocks, which requires collusion of the network majority.&lt;/p&gt;
+
+&lt;p&gt;Blockchains are secure by design and are an example of a distributed computing system with high Byzantine fault tolerance. Decentralized consensus has therefore been achieved with a blockchain. This makes blockchains potentially suitable for the recording of events, medical records, and other records management activities, such as identity management, transaction processing, documenting provenance, food traceability or voting.&lt;/p&gt;
+
+&lt;h2 id=&quot;code-blocks-highlighted-with-prismjs&quot;&gt;Code blocks, highlighted with &lt;a href=&quot;http://prismjs.com/index.html&quot;&gt;Prism.js&lt;/a&gt;&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-markup&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+&amp;lt;head&amp;gt;
+	&amp;lt;meta charset=&quot;utf-8&quot; /&amp;gt;
+	&amp;lt;title&amp;gt;Prism&amp;lt;/title&amp;gt;
+	&amp;lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+	&amp;lt;header&amp;gt;
+		&amp;lt;div class=&quot;intro&quot; data-src=&quot;templates/header-main.html&quot; data-type=&quot;text/html&quot;&amp;gt;&amp;lt;/div&amp;gt;
+		&amp;lt;ul id=&quot;features&quot;&amp;gt;
+			&amp;lt;li&amp;gt;Dead simple&amp;lt;/li&amp;gt;
+			&amp;lt;li&amp;gt;Light as a feather&amp;lt;/li&amp;gt;
+			&amp;lt;li&amp;gt;Extensible&amp;lt;/li&amp;gt;
+		&amp;lt;/ul&amp;gt;
+	&amp;lt;/header&amp;gt;
+	&amp;lt;section id=&quot;features-full&quot; class=&quot;language-markup&quot;&amp;gt;
+		&amp;lt;h1&amp;gt;Full list of features&amp;lt;/h1&amp;gt;
+		&amp;lt;ul&amp;gt;
+			&amp;lt;li&amp;gt;&amp;lt;strong&amp;gt;Only 2KB&amp;lt;/strong&amp;gt; minified &amp;amp; gzipped (core). Each language definition adds roughly 300-500 bytes.&amp;lt;/li&amp;gt;
+			&amp;lt;li&amp;gt;Very easy to extend without modifying the code, due to Prism’s &amp;lt;a href=&quot;#plugins&quot;&amp;gt;plugin architecture&amp;lt;/a&amp;gt;. Multiple hooks are scattered throughout the source.&amp;lt;/li&amp;gt;
+			&amp;lt;li&amp;gt;Very easy to &amp;lt;a href=&quot;extending.html#language-definitions&quot;&amp;gt;define new languages&amp;lt;/a&amp;gt;. Only thing you need is a good understanding of regular expressions&amp;lt;/li&amp;gt;
+		&amp;lt;/ul&amp;gt;
+	&amp;lt;/section&amp;gt;
+	&amp;lt;footer data-src=&quot;templates/footer.html&quot; data-type=&quot;text/html&quot;&amp;gt;&amp;lt;/footer&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;var Token = _.Token = function(type, content, alias, matchedStr, greedy) {
+	this.type = type;
+	this.content = content;
+	this.alias = alias;
+	// Copy of the full string this token was created from
+	this.length = (matchedStr || &quot;&quot;).length|0;
+	this.greedy = !!greedy;
+};&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-css&quot;&gt;@import url(http://fonts.googleapis.com/css?family=Arvo);
+
+/* Styles */
+
+body {
+	font: 100%/1.5 Questrial, sans-serif;
+	tab-size: 4;
+	hyphens: auto;
+}
+
+a {
+	color: inherit;
+}
+
+section h1 {
+	font-size: 250%;
+}
+
+section h1,
+#features li strong,
+header h2,
+footer p {
+	font: 100% Rockwell, Arvo, serif;
+}&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The first blockchain was conceptualized in 2008 by an anonymous person or group known as Satoshi Nakamoto and implemented in 2009 as a core component of bitcoin where it serves as the public ledger for all transactions. The invention of the blockchain for bitcoin made it the first digital currency to solve the double spending problem without the need of a trusted authority or central server. The bitcoin design has been the inspiration for other applications.&lt;/p&gt;
+
+&lt;h2 id=&quot;history&quot;&gt;History&lt;/h2&gt;
+
+&lt;p&gt;The first work on a cryptographically secured chain of blocks was described in 1991 by Stuart Haber and W. Scott Stornetta. In 1992, Bayer, Haber and Stornetta incorporated Merkle trees to the design, which improved its efficiency by allowing several documents to be collected into one block.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-0.3.5&amp;amp;q=80&amp;amp;fm=jpg&amp;amp;crop=entropy&amp;amp;cs=tinysrgb&amp;amp;w=1080&amp;amp;fit=max&amp;amp;ixid=eyJhcHBfaWQiOjExNzczfQ&amp;amp;s=163e3ea37d2c0fda3f586d5552752f59#wide&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;”Bitcoin is the beginning of something great: a currency without a government, something necessary and imperative.” &lt;cite&gt;– Peter Thiel, Co-Founder of PayPal –&lt;/cite&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The first blockchain was conceptualised by an anonymous person or group known as Satoshi Nakamoto in 2008. It was implemented the following year as a core component of the digital currency bitcoin, where it serves as the public ledger for all transactions on the network. By using a blockchain, bitcoin became the first digital currency to solve the double spending problem without requiring a trusted administrator and has been the inspiration for many additional applications.&lt;/p&gt;
+
+&lt;h2 id=&quot;structure&quot;&gt;Structure&lt;/h2&gt;
+
+&lt;p&gt;A blockchain is a decentralized and distributed digital ledger that is used to record transactions across many computers so that the record cannot be altered retroactively without the alteration of all subsequent blocks and the collusion of the network. This allows the participants to verify and audit transactions inexpensively. A blockchain database is managed autonomously using a peer-to-peer network and a distributed timestamping server. They are authenticated by mass collaboration powered by collective self-interests. The result is a robust workflow where participants’ uncertainty regarding data security is marginal. The use of a blockchain removes the characteristic of infinite reproducibility from a digital asset. It confirms that each unit of value was transferred only once, solving the long-standing problem of double spending.&lt;/p&gt;
+
+&lt;p&gt;Blockchains have been described as a value-exchange protocol. This blockchain-based exchange of value can be completed more quickly, more safely and more cheaply than with traditional systems. A blockchain can assign title rights because it provides a record that compels offer and acceptance. &lt;a href=&quot;https://en.wikipedia.org/wiki/Blockchain&quot;&gt;(Source)&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Thu, 10 Mar 2022 00:00:00 +0900</pubDate>
+        <link>https://yuju-lee.github.io/how-to-start-learning-blockchain-development/</link>
+        <guid isPermaLink="true">https://yuju-lee.github.io/how-to-start-learning-blockchain-development/</guid>
+        
+        <category>Tips</category>
+        
+        <category>Development</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>The Cutting Edge Architecture</title>
+        <description>&lt;p&gt;This beautiful rough concrete house located in the small town of &lt;strong&gt;Besalu in the Ayora&lt;/strong&gt;, Valencia region, Spain, has been designed by Fran Silvestre, a talented architectural firm from Spain. Set in a sloping plain, the House allows its concrete exterior to show through without overwhelming the minimal interior. The house is hexagonal, allowing for a room layout that lends itself to eye-catching reveals. Warm wood floors and cabinets pair with white walls and exposed grey concrete to give the interior a cozy yet distinctly modern feel, while abundant windows let in plenty of natural light while providing views to the outdoors.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;p&gt;In this way the house is conceived as a piece deposited on the ground, engaging the unevenness. A piece constructed in the same white lime, with the same primacy of the massif over the span, that takes advantage of the edge of the lot to arrange its holes and to integrate in the fragmentation of the surroundings.&lt;/p&gt;
+
+&lt;p&gt;The interior space of the dwelling is articulated through the void in which is located the nucleus of communication arranged parallel to the cut of the mountain, without touching it. On the ground floor are the garage and the cellar, on this is arranged a volume of two floors with four rooms.&lt;/p&gt;
+
+&lt;p&gt;Not only is this visually striking architectural design, but it’s beautifully considered and practical for those who will experience this school on a daily basis.&lt;/p&gt;
+
+&lt;blockquote&gt;“To expect the unexpected shows a thoroughly modern intellect.” &lt;/blockquote&gt;
+
+&lt;p&gt;London is a leading global city, with strengths in the arts, commerce, education, entertainment, fashion, finance, healthcare, media, professional services, research and development, tourism, and transport all contributing to its prominence. It is one of the world’s leading financial centres and has the fifth-or sixth-largest metropolitan area GDP in the world depending on measurement. London is a world cultural capital. It is the world’s most-visited city as measured by international arrivals and has the world’s largest city airport system measured by passenger traffic. London is the world’s leading investment destination, hosting more international retailers and ultra high-net-worth individuals than any other city. London’s 43 universities form the largest concentration of higher education institutes in Europe, and a 2014 report placed it first in the world university rankings. According to the report London also ranks first in the world in software, multimedia development and design, and shares first position in technology readiness. In 2012, London became the first city to host the modern &lt;a href=&quot;https://en.wikipedia.org/wiki/Summer_Olympic_Games&quot;&gt;Summer Olympic Games three times&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1509440400926-95da53da5dc0?ixlib=rb-0.3.5&amp;amp;q=80&amp;amp;fm=jpg&amp;amp;crop=entropy&amp;amp;cs=tinysrgb&amp;amp;w=1080&amp;amp;fit=max&amp;amp;s=7918f34cc00f122a16cb75b2378eefab#wide&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote class=&quot;alignleft&quot;&gt;“Architecture should speak of its time and place, but yearn for timelessness.” &lt;cite&gt;― Frank Gehry&lt;/cite&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;London has a diverse range of peoples and cultures, and more than 300 languages are spoken within Greater London. The Greater London Authority estimated its population to be 8.63 million in 2015, the largest of any municipality in the European Union, and accounting for 12.5 percent of the UK population. London’s urban area is the second most populous in the EU, after Paris, with 9,787,426 inhabitants according to the 2011 census. The city’s metropolitan area is one of the most populous in Europe with 13,879,757 inhabitants, while the Greater London Authority states the population of the city-region (covering a large part of south east England) as 22.7 million. London was the world’s most populous city from around 1831 to 1925.&lt;/p&gt;
+
+&lt;p&gt;London contains four World Heritage Sites: the Tower of London; Kew Gardens; the site comprising the Palace of Westminster, Westminster Abbey, and St Margaret’s Church; and the historic settlement of Greenwich (in which the Royal Observatory, Greenwich marks the Prime Meridian, 0° longitude, and GMT). Other famous landmarks include Buckingham Palace, the London Eye, Piccadilly Circus, St Paul’s Cathedral, Tower Bridge, Trafalgar Square, and The Shard. London is home to numerous museums, galleries, libraries, sporting events and other cultural institutions, including the British Museum, National Gallery, Tate Modern, British Library and 40 West End theatres. The London Underground is the oldest underground railway network in the world.&lt;/p&gt;
+
+&lt;h2 id=&quot;museum-of-london&quot;&gt;Museum of London&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1484626753559-5fa3ea273ae8?ixlib=rb-0.3.5&amp;amp;q=80&amp;amp;fm=jpg&amp;amp;crop=entropy&amp;amp;cs=tinysrgb&amp;amp;w=1080&amp;amp;fit=max&amp;amp;s=c21ca0246d75ba185a49d687683dc08c#wide&quot; alt=&quot;&quot; /&gt;
+&lt;small&gt;Photo by &lt;a href=&quot;https://unsplash.com/@dnevozhai?utm_source=ghost&amp;amp;utm_medium=referral&amp;amp;utm_campaign=api-credit&quot;&gt;Denys Nevozhai&lt;/a&gt; / &lt;a href=&quot;https://unsplash.com/?utm_source=ghost&amp;amp;utm_medium=referral&amp;amp;utm_campaign=api-credit&quot;&gt;Unsplash&lt;/a&gt;&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;The Museum of London documents the history of London from prehistoric to modern times. The museum is located on London Wall, close to the Barbican Centre as part of the striking Barbican complex of buildings created in the 1960s and 1970s as an innovative approach to re-development within a bomb-damaged area of the City of London.&lt;/p&gt;
+
+&lt;p&gt;It is a few minutes’ walk north of &lt;a href=&quot;https://en.wikipedia.org/wiki/St_Paul%27s_Cathedral&quot;&gt;St Paul’s Cathedral&lt;/a&gt;, overlooking the remains of the Roman city wall and on the edge of the oldest part of London, now its main financial district. It is primarily concerned with the social history of London and its inhabitants throughout time. The museum is jointly controlled and funded by the City of London Corporation and the Greater London Authority.&lt;/p&gt;
+
+&lt;p&gt;In March 2015, the museum announced plans to move from its Barbican site to nearby Smithfield Market. The move, contingent upon raising an estimated £70 million, is planned to be complete by 2021.&lt;/p&gt;
+
+&lt;h2 id=&quot;description&quot;&gt;Description&lt;/h2&gt;
+
+&lt;p&gt;The amalgamation of the collections previously held by the City Corporation at the Guildhall Museum and of the London Museum, which was located in Kensington Palace was agreed in 1964. The Museum of London Act, allowing for the merger, was passed in the following year.&lt;/p&gt;
+
+&lt;p&gt;The museum was opened in December 1976 as part of the Barbican Estate, The architects were Philip Powell and Hidalgo Moya, who adopted an innovative approach to museum design, whereby the galleries were laid out so that there was only one route through the museum – from the prehistoric period to the modern galleries.&lt;/p&gt;
+
+&lt;p&gt;The museum comprises a series of chronological galleries containing original artefacts, models, pictures and diagrams, with a strong emphasis on archaeological discoveries, the built city, urban development and London’s social and cultural life, with interactive displays and activities for all ages. Fragments of the Roman London Wall can be seen just outside the museum. The prehistoric gallery, “London Before London” and the “Medieval London” gallery have already been updated, and in 2010 a refurbished gallery on &lt;em&gt;“War, Plague and Fire”&lt;/em&gt; opened, covering the period of the English Civil War and the Great Fire of London.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 13 Nov 2019 00:00:00 +0900</pubDate>
+        <link>https://yuju-lee.github.io/the-cutting-edge-architecture/</link>
+        <guid isPermaLink="true">https://yuju-lee.github.io/the-cutting-edge-architecture/</guid>
+        
+        <category>java</category>
+        
+        
+      </item>
+    
+  </channel>
+</rss>

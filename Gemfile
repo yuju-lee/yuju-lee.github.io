@@ -12,3 +12,8 @@ group :jekyll_plugins do
   gem 'jekyll-feed'
   gem 'jekyll-archives'
 end
+
+# 추가할 라이브러리
+gem "csv"
+gem "base64"
+gem "bigdecimal"

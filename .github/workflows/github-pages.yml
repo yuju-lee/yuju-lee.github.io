@@ -16,7 +16,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0  
+          ruby-version: 3.2.0  # Ruby 버전을 3.2.0으로 변경
 
       - name: Install dependencies
         run: |
@@ -24,7 +24,7 @@ jobs:
           bundle install
 
       - name: Build the site
-        run: bundle exec jekyll build
+        run: bundle exec jekyll build --trace
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

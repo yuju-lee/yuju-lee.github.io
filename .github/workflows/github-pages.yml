@@ -16,7 +16,7 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2.0  # Ruby 버전을 3.2.0으로 변경
+          ruby-version: 3.2.0  
 
       - name: Install dependencies
         run: |
@@ -27,7 +27,11 @@ jobs:
         run: bundle exec jekyll build --trace
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: ./_site
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Deploy Jekyll site"
+          git push origin main

@@ -4,7 +4,7 @@ description: 'Cool developers never dies'
 site_description: ''
 logo:
 favicon: 'assets/images/favicon.ico'
-baseurl: "https://yuju-lee.github.io"
+baseurl: ""
 url: "https://yuju-lee.github.io"
 disqus: 'devlog-qiqv3mtjda'
 mailchimp_url: '//justgoodthemes.us3.list-manage.com/subscribe/post?u=78f1bab16028354caeb23aecd&amp;id=4a7330d117'
@@ -23,11 +23,11 @@ linkedin: 'yuju-lee'
 navigation:
   - text: About
     url: /about/
-  - text: algorithm
+  - text: Algorithm
     url: /categories/algorithm/
-  - text: springboot
+  - text: Springboot
     url: /categories/springboot/
-  - text: logs
+  - text: Logs
     url: /categories/logs/
 
 # Plugins

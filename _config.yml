@@ -4,8 +4,8 @@ description: 'Cool developers never dies'
 site_description: ''
 logo:
 favicon: 'assets/images/favicon.ico'
-baseurl: "" # 루트 경로에서 호스팅되는 경우 빈 문자열
-url: "https://yuju-lee.github.io" # 실제 사이트 URL
+baseurl: ""
+url: "https://yuju-lee.github.io"
 disqus: 'devlog-qiqv3mtjda'
 mailchimp_url: '//justgoodthemes.us3.list-manage.com/subscribe/post?u=78f1bab16028354caeb23aecd&amp;id=4a7330d117'
 ga_analytics: ""

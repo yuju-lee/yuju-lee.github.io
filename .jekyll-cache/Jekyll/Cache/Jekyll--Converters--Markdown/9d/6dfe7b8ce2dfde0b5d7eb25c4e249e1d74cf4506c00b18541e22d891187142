@@ -1,4 +1,4 @@
-I"v<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">datetime</span>
+I"�<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="c1"># 주어진 밀리초 단위의 타임스탬프
 </span><span class="n">timestamp_ms</span> <span class="o">=</span> <span class="mi">1720841280075</span>
@@ -7,14 +7,14 @@
 </span><span class="n">timestamp_s</span> <span class="o">=</span> <span class="n">timestamp_ms</span> <span class="o">/</span> <span class="mf">1000.0</span>
 
 <span class="c1"># Unix 타임스탬프를 datetime 객체로 변환
-</span><span class="n">date_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="n">datetime</span><span class="p">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">timestamp_s</span><span class="p">)</span>
+</span><span class="n">date_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="n">datetime</span><span class="p">.</span><span class="nf">fromtimestamp</span><span class="p">(</span><span class="n">timestamp_s</span><span class="p">)</span>
 
 <span class="c1"># 밀리초 부분 계산
-</span><span class="n">milliseconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">timestamp_ms</span> <span class="o">%</span> <span class="mi">1000</span><span class="p">)</span>
+</span><span class="n">milliseconds</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="n">timestamp_ms</span> <span class="o">%</span> <span class="mi">1000</span><span class="p">)</span>
 
 <span class="c1"># 원하는 형식으로 변환 (밀리초 포함)
-</span><span class="n">formatted_date_time</span> <span class="o">=</span> <span class="n">date_time</span><span class="p">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">'%Y-%m-%d %H:%M:%S'</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s">'.</span><span class="si">{</span><span class="n">milliseconds</span><span class="si">:</span><span class="mi">03</span><span class="n">d</span><span class="si">}</span><span class="s">'</span>
+</span><span class="n">formatted_date_time</span> <span class="o">=</span> <span class="n">date_time</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="sh">'</span><span class="s">%Y-%m-%d %H:%M:%S</span><span class="sh">'</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="sh">'</span><span class="s">.</span><span class="si">{</span><span class="n">milliseconds</span><span class="si">:</span><span class="mi">03</span><span class="n">d</span><span class="si">}</span><span class="sh">'</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">formatted_date_time</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">formatted_date_time</span><span class="p">)</span>
 </code></pre></div></div>
 :ET

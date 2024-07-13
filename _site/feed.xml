@@ -3,19 +3,19 @@
   <channel>
     <title>Judy&apos;s Devlog</title>
     <description>Cool developers never dies</description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 13 Jul 2024 17:16:45 +0900</pubDate>
-    <lastBuildDate>Sat, 13 Jul 2024 17:16:45 +0900</lastBuildDate>
-    <generator>Jekyll v4.2.2</generator>
+    <link>https://yuju-lee.github.io/</link>
+    <atom:link href="https://yuju-lee.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 13 Jul 2024 08:40:37 +0000</pubDate>
+    <lastBuildDate>Sat, 13 Jul 2024 08:40:37 +0000</lastBuildDate>
+    <generator>Jekyll v4.3.3</generator>
     
       <item>
         <title>Example Post</title>
         <description>&lt;p&gt;test&lt;/p&gt;
 </description>
-        <pubDate>Thu, 11 Jul 2024 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/algorithm/springboot/logs/example/</link>
-        <guid isPermaLink="true">http://localhost:4000/algorithm/springboot/logs/example/</guid>
+        <pubDate>Thu, 11 Jul 2024 00:00:00 +0000</pubDate>
+        <link>https://yuju-lee.github.io/algorithm/springboot/logs/example/</link>
+        <guid isPermaLink="true">https://yuju-lee.github.io/algorithm/springboot/logs/example/</guid>
         
         
         <category>algorithm</category>
@@ -30,9 +30,9 @@
         <title>Example Post</title>
         <description>&lt;p&gt;이것은 알고리즘 카테고리에 속하는 예시 게시물입니다.&lt;/p&gt;
 </description>
-        <pubDate>Thu, 11 Jul 2024 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/algorithm/algorithm/</link>
-        <guid isPermaLink="true">http://localhost:4000/algorithm/algorithm/</guid>
+        <pubDate>Thu, 11 Jul 2024 00:00:00 +0000</pubDate>
+        <link>https://yuju-lee.github.io/algorithm/algorithm/</link>
+        <guid isPermaLink="true">https://yuju-lee.github.io/algorithm/algorithm/</guid>
         
         
         <category>algorithm</category>
@@ -41,7 +41,7 @@
     
       <item>
         <title>The History of Visual Communication</title>
-        <description>&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;datetime&lt;/span&gt;
+        <description>&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;# 주어진 밀리초 단위의 타임스탬프
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1720841280075&lt;/span&gt;
@@ -50,20 +50,20 @@
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1000.0&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;# Unix 타임스탬프를 datetime 객체로 변환
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fromtimestamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fromtimestamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;# 밀리초 부분 계산
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;# 원하는 형식으로 변환 (밀리초 포함)
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;%Y-%m-%d %H:%M:%S&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;.&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;03&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;%Y-%m-%d %H:%M:%S&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;03&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;
 
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
-        <pubDate>Tue, 12 Apr 2022 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/logs/history-of-visual-communication/</link>
-        <guid isPermaLink="true">http://localhost:4000/logs/history-of-visual-communication/</guid>
+        <pubDate>Tue, 12 Apr 2022 00:00:00 +0000</pubDate>
+        <link>https://yuju-lee.github.io/logs/history-of-visual-communication/</link>
+        <guid isPermaLink="true">https://yuju-lee.github.io/logs/history-of-visual-communication/</guid>
         
         <category>tips</category>
         
@@ -169,9 +169,9 @@ footer p {
 
 &lt;p&gt;Blockchains have been described as a value-exchange protocol. This blockchain-based exchange of value can be completed more quickly, more safely and more cheaply than with traditional systems. A blockchain can assign title rights because it provides a record that compels offer and acceptance. &lt;a href=&quot;https://en.wikipedia.org/wiki/Blockchain&quot;&gt;(Source)&lt;/a&gt;&lt;/p&gt;
 </description>
-        <pubDate>Thu, 10 Mar 2022 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/how-to-start-learning-blockchain-development/</link>
-        <guid isPermaLink="true">http://localhost:4000/how-to-start-learning-blockchain-development/</guid>
+        <pubDate>Thu, 10 Mar 2022 00:00:00 +0000</pubDate>
+        <link>https://yuju-lee.github.io/how-to-start-learning-blockchain-development/</link>
+        <guid isPermaLink="true">https://yuju-lee.github.io/how-to-start-learning-blockchain-development/</guid>
         
         <category>Tips</category>
         
@@ -223,9 +223,9 @@ footer p {
 
 &lt;p&gt;The museum comprises a series of chronological galleries containing original artefacts, models, pictures and diagrams, with a strong emphasis on archaeological discoveries, the built city, urban development and London’s social and cultural life, with interactive displays and activities for all ages. Fragments of the Roman London Wall can be seen just outside the museum. The prehistoric gallery, “London Before London” and the “Medieval London” gallery have already been updated, and in 2010 a refurbished gallery on &lt;em&gt;“War, Plague and Fire”&lt;/em&gt; opened, covering the period of the English Civil War and the Great Fire of London.&lt;/p&gt;
 </description>
-        <pubDate>Wed, 13 Nov 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/the-cutting-edge-architecture/</link>
-        <guid isPermaLink="true">http://localhost:4000/the-cutting-edge-architecture/</guid>
+        <pubDate>Wed, 13 Nov 2019 00:00:00 +0000</pubDate>
+        <link>https://yuju-lee.github.io/the-cutting-edge-architecture/</link>
+        <guid isPermaLink="true">https://yuju-lee.github.io/the-cutting-edge-architecture/</guid>
         
         <category>java</category>
         

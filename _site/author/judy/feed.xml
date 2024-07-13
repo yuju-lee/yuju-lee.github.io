@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
-  <generator uri="https://jekyllrb.com/" version="4.2.2">Jekyll</generator>
-  <link href="http://localhost:4000/author/judy/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2024-07-13T17:16:45+09:00</updated>
-  <id>http://localhost:4000/author/judy/feed.xml</id>
+  <generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator>
+  <link href="https://yuju-lee.github.io/author/judy/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://yuju-lee.github.io/" rel="alternate" type="text/html" />
+  <updated>2024-07-13T08:40:37+00:00</updated>
+  <id>https://yuju-lee.github.io/author/judy/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">Example Post</title>
-      <link href="http://localhost:4000/algorithm/springboot/logs/example/" rel="alternate" type="text/html" title="Example Post" />
-      <published>2024-07-11T00:00:00+09:00</published>
-      <updated>2024-07-11T00:00:00+09:00</updated>
-      <id>http://localhost:4000/algorithm/springboot/logs/example</id>
-      <content type="html" xml:base="http://localhost:4000/algorithm/springboot/logs/example/">&lt;p&gt;test&lt;/p&gt;</content>
+      <link href="https://yuju-lee.github.io/algorithm/springboot/logs/example/" rel="alternate" type="text/html" title="Example Post" />
+      <published>2024-07-11T00:00:00+00:00</published>
+      <updated>2024-07-11T00:00:00+00:00</updated>
+      <id>https://yuju-lee.github.io/algorithm/springboot/logs/example</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/algorithm/springboot/logs/example/">&lt;p&gt;test&lt;/p&gt;</content>
 
       
       
@@ -65,11 +65,11 @@
   
     <entry>
       <title type="html">The History of Visual Communication</title>
-      <link href="http://localhost:4000/logs/history-of-visual-communication/" rel="alternate" type="text/html" title="The History of Visual Communication" />
-      <published>2022-04-12T00:00:00+09:00</published>
-      <updated>2022-04-12T00:00:00+09:00</updated>
-      <id>http://localhost:4000/logs/history-of-visual-communication</id>
-      <content type="html" xml:base="http://localhost:4000/logs/history-of-visual-communication/">&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;datetime&lt;/span&gt;
+      <link href="https://yuju-lee.github.io/logs/history-of-visual-communication/" rel="alternate" type="text/html" title="The History of Visual Communication" />
+      <published>2022-04-12T00:00:00+00:00</published>
+      <updated>2022-04-12T00:00:00+00:00</updated>
+      <id>https://yuju-lee.github.io/logs/history-of-visual-communication</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/history-of-visual-communication/">&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;# 주어진 밀리초 단위의 타임스탬프
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1720841280075&lt;/span&gt;
@@ -78,15 +78,15 @@
 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1000.0&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;# Unix 타임스탬프를 datetime 객체로 변환
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fromtimestamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fromtimestamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;# 밀리초 부분 계산
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;# 원하는 형식으로 변환 (밀리초 포함)
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;%Y-%m-%d %H:%M:%S&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;.&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;03&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;%Y-%m-%d %H:%M:%S&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;03&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;
 
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content>
 
       
@@ -119,11 +119,11 @@
   
     <entry>
       <title type="html">How To Start Learning Blockchain Development</title>
-      <link href="http://localhost:4000/how-to-start-learning-blockchain-development/" rel="alternate" type="text/html" title="How To Start Learning Blockchain Development" />
-      <published>2022-03-10T00:00:00+09:00</published>
-      <updated>2022-03-10T00:00:00+09:00</updated>
-      <id>http://localhost:4000/how-to-start-learning-blockchain-development</id>
-      <content type="html" xml:base="http://localhost:4000/how-to-start-learning-blockchain-development/">&lt;p&gt;A blockchain, originally block chain, is a continuously growing list of records, called blocks, which are linked and secured using cryptography. Each block typically contains a hash pointer as a link to a previous block, a timestamp and transaction data. By design, a blockchain is inherently resistant to modification of the data. It is &lt;em&gt;“an open, distributed ledger that can record transactions between two parties efficiently and in a verifiable and permanent way”&lt;/em&gt;.&lt;/p&gt;
+      <link href="https://yuju-lee.github.io/how-to-start-learning-blockchain-development/" rel="alternate" type="text/html" title="How To Start Learning Blockchain Development" />
+      <published>2022-03-10T00:00:00+00:00</published>
+      <updated>2022-03-10T00:00:00+00:00</updated>
+      <id>https://yuju-lee.github.io/how-to-start-learning-blockchain-development</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/how-to-start-learning-blockchain-development/">&lt;p&gt;A blockchain, originally block chain, is a continuously growing list of records, called blocks, which are linked and secured using cryptography. Each block typically contains a hash pointer as a link to a previous block, a timestamp and transaction data. By design, a blockchain is inherently resistant to modification of the data. It is &lt;em&gt;“an open, distributed ledger that can record transactions between two parties efficiently and in a verifiable and permanent way”&lt;/em&gt;.&lt;/p&gt;
 
 &lt;!--more--&gt;
 
@@ -246,11 +246,11 @@ footer p {
   
     <entry>
       <title type="html">The Cutting Edge Architecture</title>
-      <link href="http://localhost:4000/the-cutting-edge-architecture/" rel="alternate" type="text/html" title="The Cutting Edge Architecture" />
-      <published>2019-11-13T00:00:00+09:00</published>
-      <updated>2019-11-13T00:00:00+09:00</updated>
-      <id>http://localhost:4000/the-cutting-edge-architecture</id>
-      <content type="html" xml:base="http://localhost:4000/the-cutting-edge-architecture/">&lt;p&gt;This beautiful rough concrete house located in the small town of &lt;strong&gt;Besalu in the Ayora&lt;/strong&gt;, Valencia region, Spain, has been designed by Fran Silvestre, a talented architectural firm from Spain. Set in a sloping plain, the House allows its concrete exterior to show through without overwhelming the minimal interior. The house is hexagonal, allowing for a room layout that lends itself to eye-catching reveals. Warm wood floors and cabinets pair with white walls and exposed grey concrete to give the interior a cozy yet distinctly modern feel, while abundant windows let in plenty of natural light while providing views to the outdoors.&lt;/p&gt;
+      <link href="https://yuju-lee.github.io/the-cutting-edge-architecture/" rel="alternate" type="text/html" title="The Cutting Edge Architecture" />
+      <published>2019-11-13T00:00:00+00:00</published>
+      <updated>2019-11-13T00:00:00+00:00</updated>
+      <id>https://yuju-lee.github.io/the-cutting-edge-architecture</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/the-cutting-edge-architecture/">&lt;p&gt;This beautiful rough concrete house located in the small town of &lt;strong&gt;Besalu in the Ayora&lt;/strong&gt;, Valencia region, Spain, has been designed by Fran Silvestre, a talented architectural firm from Spain. Set in a sloping plain, the House allows its concrete exterior to show through without overwhelming the minimal interior. The house is hexagonal, allowing for a room layout that lends itself to eye-catching reveals. Warm wood floors and cabinets pair with white walls and exposed grey concrete to give the interior a cozy yet distinctly modern feel, while abundant windows let in plenty of natural light while providing views to the outdoors.&lt;/p&gt;
 
 &lt;!--more--&gt;
 

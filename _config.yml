@@ -4,9 +4,9 @@ description: 'Cool developers never dies'
 site_description: ''
 logo:
 favicon: 'assets/images/favicon.ico'
-baseurl: "" 
-url: "https://forma.netlify.com/"
-disqus: 'justgoodthemes'
+baseurl: "" # 루트 경로에서 호스팅되는 경우 빈 문자열
+url: "https://forma.netlify.com/" # 실제 사이트 URL
+disqus: 'devlog-qiqv3mtjda'
 mailchimp_url: '//justgoodthemes.us3.list-manage.com/subscribe/post?u=78f1bab16028354caeb23aecd&amp;id=4a7330d117'
 ga_analytics: ""
 
@@ -23,6 +23,12 @@ linkedin: 'yuju-lee'
 navigation:
   - text: About
     url: /about/
+  - text: algorithm
+    url: /categories/algorithm/
+  - text: springboot
+    url: /categories/springboot/
+  - text: logs
+    url: /categories/logs/
 
 # Plugins
 plugins:
@@ -31,26 +37,26 @@ plugins:
   - jekyll-sitemap
   - jekyll-feed
   - jekyll-archives
-  - jekyll-tagsgenerator # Ensure this plugin is correctly configured and installed
 
 # Pagination
 paginate: 6
 paginate_path: /page:num/
 
 # Permalinks
-permalink: /:title/
+permalink: /:categories/:title/
 
 # Archives settings
 jekyll-archives:
   enabled:
-    - tags
+    - categories
   layouts:
-    tag: tag
+    category: category
   permalinks:
-    tag: /tag/:name/
-
+    category: /categories/:name/
+    
 # Other
 markdown: kramdown
+highlighter: rouge
 
 # Sass
 sass:

@@ -94,8 +94,6 @@ ins {
 }
 
 pre {
-    background-color: $gray-light;
-    color: $black;
     font-size: 14px;
     line-height: 1.5;
     margin: 0 0 1.5em;
@@ -103,6 +101,19 @@ pre {
     white-space: pre;
     white-space: pre-wrap;
     word-wrap: break-word;
+    overflow-x: auto;
+    background: #282c34; /* Atom One Dark 배경색 */
+    color: #f8f8f2; /* 기본 글자색 */
+    border-radius: 10px; /* 둥근 테두리 */
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+}
+
+
+
+code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    background: inherit;
+    color: inherit;
 }
 
 blockquote {

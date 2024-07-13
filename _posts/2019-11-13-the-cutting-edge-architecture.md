@@ -2,8 +2,7 @@
 layout: post
 title: "The Cutting Edge Architecture"
 tags: [java]
-featured_image_thumbnail:
-featured_image: assets/images/posts/14.jpg
+featured_image: "/assets/images/posts/14.jpg"
 author: judy
 ---
 

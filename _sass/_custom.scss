@@ -1,0 +1,43 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+.site {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content-wrapper {
+    flex: 1;
+    padding: 20px 20px !important; /* 상하좌우 여백 조정 */
+    margin: 0 auto; /* 중앙 정렬 */
+    max-width: 1200px; /* 최대 너비 설정 */
+    width: 100%;
+    box-sizing: border-box; /* 패딩과 테두리를 포함한 박스 모델 사용 */
+}
+
+.post-title {
+    margin-bottom: 0px;
+}
+
+.post-meta {
+    font-size: 0.8rem;
+    margin-top: 0px;
+    color: #bbb;
+    font-weight: 500;
+}
+
+.site-footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 10px;
+    margin-top: auto; /* 푸터가 페이지 하단에 위치하도록 설정 */
+}

@@ -1,0 +1,21 @@
+---
+layout: default
+---
+
+<div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <header class="page-header">
+            <h1 class="page-title">
+                {{ site.categories[page.title].size }} {% if site.categories[page.title].size == 1 %}post{% else %}posts{% endif %} in category <span class="highlight">{{ page.title }}</span>
+            </h1>
+        </header>
+        <div id="content-wrapper" class="content-wrapper">
+            {% for post in site.categories[page.title] %}
+            <article class="post-item">
+                <h2 class="post-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+                <p class="post-meta">{{ post.date | date: "%Y/%m/%d" }}</p>
+            </article>
+            {% endfor %}
+        </div><!-- .content-wrapper -->
+    </main><!-- .site-main -->
+</div><!-- .site-content -->

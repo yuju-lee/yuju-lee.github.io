@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>MSA-12. 분산락 전환기</title>
+    <meta name="description"
+        content="기획했던 대로 우선 구현해 보았다.">
+    <link rel="canonical" href="https://yuju-lee.github.io/logs/MSA-12-distributedLock/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+            <header class="entry-header">
+                <h1 class="entry-title">MSA-12. 분산락 전환기</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/logs">logs</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-07-03">July 3, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <p>기획했던 대로 우선 구현해 보았다.</p>
+
+<h3 id="결제-진입-로직">결제 진입 로직</h3>
+
+<p>클라이언트는 결제 요청을 하면 대기열에 진입한다. (Client → PaymentController → PaymentQueueService → PaymentService)</p>
+
+<ul>
+  <li><strong>PaymentController</strong>: 결제 요청을 수신</li>
+  <li><strong>PaymentQueueService:</strong> 결제 요청을 대기열에 추가하고 대기열에서 요청을 가져옴</li>
+  <li><strong>PaymentService:</strong> 주기적으로 대기열을 확인하여 결제 요청 처리 (1초로 일단 잡음)</li>
+</ul>
+
+<p>클라이언트는 결제 요청을 할 때 {제품명, 구매수량} 형식으로 PaymentService에 요청한다.</p>
+
+<p>클라이언트의 결제 요청을 PaymentQueueService가 받으면, <strong>실시간 재고확인을 우선적으로 진행</strong></p>
+
+<ol>
+  <li>재고가 남아있는 경우 가상 대기열에 추가</li>
+  <li>재고가 없는 경우 대기열 추가 거부 → 품절 메시지 응답</li>
+</ol>
+
+<p>PaymentService는 대기열의 요청을 결제 요청 로직을 결제 서비스로 보낸다. (결제 시도 실패 20% / 결제 중 실패 20%)
+결제는 실제 결제가 이루어지지 않기 때문에 결제가 성공하면 결제 메시지와 함께 해당 정보를 order 서비스로 보내고, 결제가 실패하면 레디스에서 재고를 바로 복구한다.</p>
+
+<p>여기까지는 구현하였으나, 분산락으로도 구현이 가능하다고 한다. 따라서 분산락 완성 → 테스트툴 구축 → 분산락 테스트하고 이전 가상 대기열로 롤백해서 같은 테스트툴로 테스트를 해 볼 예정이다.</p>
+
+<h3 id="분산락이란-">분산락이란? 🔐</h3>
+
+<p>분산 락은 여러 클라이언트가 동시에 특정 자원에 접근하지 못하도록 하는 락 메커니즘이다. 이는 주로 Redis와 같은 인메모리 데이터 저장소를 통해 구현되며, 고속의 락/언락 연산이 가능하여 분산 환경에서 효율적인 자원 관리를 할 수 있는 것이 장점이다.</p>
+
+<h3 id="redis를-사용한-분산-락의-작동-방식">Redis를 사용한 분산 락의 작동 방식</h3>
+
+<ol>
+  <li><strong>락 획득 (Lock Acquisition)</strong>
+    <ul>
+      <li>클라이언트는 특정 키에 대해 SETNX (Set if Not Exists) 명령을 사용하여 락을 시도</li>
+      <li>락 키에 대한 값을 “locked”로 설정하고, 유효 시간(TTL)을 설정하여 자동으로 락 해제</li>
+    </ul>
+  </li>
+  <li><strong>락 해제 (Lock Release)</strong>
+    <ul>
+      <li>클라이언트는 작업이 완료된 후 락 해제 → DEL 명령을 사용하여 락 키 삭제
+        <ul>
+          <li>락 해제 시 키가 다른 클라이언트에 의해 변경되지 않았음을 보장하기 위해 원자적 체크와 삭제 사용</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>락 유효 시간 (Lock Expiry)</strong>
+    <ul>
+      <li>락을 설정할 때 유효 시간을 설정하여 특정 시간이 지나면 자동으로 락이 해제
+        <ul>
+          <li>이는 클라이언트가 비정상적으로 종료되어 락을 해제하지 못할 경우에도 다른 클라이언트가 락을 획득할 수 있도록 보장할 수 있음</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<pre><code class="language-Java">public String processPayment(String email, int productId, int amount) throws JsonProcessingException {
+    // 제품 재고를 위한 Redis 키
+    String redisKey = redisStockKeyPrefix + productId;
+
+    // 분산 락을 10초 동안 획득 시도
+    Boolean acquired = redisTemplate.opsForValue().setIfAbsent(redisKey + ":lock", "locked", 10, TimeUnit.SECONDS);
+    if (acquired != null &amp;&amp; acquired) {
+        try {
+            // Redis에서 현재 재고 값을 가져옴
+            String stockValueStr = redisTemplate.opsForValue().get(redisKey);
+
+            if (stockValueStr != null) {
+                Integer stock = Integer.valueOf(stockValueStr);
+
+                // 재고 확인
+                if (stock &gt;= amount) {
+                    // 결제 실패 확률 20%
+                    boolean paymentSuccess = random.nextDouble() &gt;= 0.2;
+
+                    if (paymentSuccess) {
+                        // 결제 성공 시 재고 차감
+                        redisTemplate.opsForValue().decrement(redisKey, amount);
+
+                        // Kafka 이벤트 발행
+                        Map&lt;String, Object&gt; orderData = new HashMap&lt;&gt;();
+                        orderData.put("email", email);
+                        orderData.put("productId", productId);
+                        orderData.put("amount", amount);
+                        orderData.put("status", "COMPLETED");
+                        kafkaTemplate.send("order-topic", objectMapper.writeValueAsString(orderData));
+                        System.out.println("order sent");
+
+                        // Kafka 재고 차감 이벤트 발행
+                        Map&lt;String, Object&gt; stockUpdateData = new HashMap&lt;&gt;();
+                        stockUpdateData.put("productId", productId);
+                        stockUpdateData.put("stock", redisTemplate.opsForValue().get(redisKey));
+                        kafkaTemplate.send(stockUpdateTopic, objectMapper.writeValueAsString(stockUpdateData));
+
+                        System.out.println("Payment succeeded for " + email + " for product " + productId);
+                            return "Payment succeeded for " + email + " for product " + productId;
+                        } else {
+                            System.out.println("Payment failed for " + email + " for product " + productId);
+                            return "Payment failed for " + email + " for product " + productId;
+                        }
+                    } else {
+                    System.out.println("재고가 부족합니다. 현재 재고: " + stock);
+                    return "재고가 부족합니다. 현재 재고: " + stock;
+                }
+            } else {
+                System.out.println("재고 정보가 존재하지 않습니다. Redis 키: " + redisKey);
+                return "재고 정보가 존재하지 않습니다. Redis 키: " + redisKey;
+            }
+        } finally {
+            // 락 해제
+            redisTemplate.delete(redisKey + ":lock");
+        }
+    } else {
+        System.out.println("잠시 후 다시 시도해 주세요.");
+        return "잠시 후 다시 시도해 주세요.";
+    }
+}
+</code></pre>
+
+<p>위와 같은 방식으로 구현하였고, 테스트 시 결제가 완료되었다.</p>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/kafka">Kafka</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/redis">Redis</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/transaction">Transaction</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/distributed-lock">Distributed-Lock</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/java-springboot">JAVA-Springboot</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/logs/MSA-11-payment/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획</span>
+                    <span class="nav-meta">July 3, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/logs/MSA-13-integrityGuaranteed/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">MSA-13. 재고 데이터의 무결성 보장</span>
+                    <span class="nav-meta">July 3, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/springboot/">Springboot</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/java/'>java</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

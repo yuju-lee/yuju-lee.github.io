@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획</title>
+    <meta name="description"
+        content="대용량 트래픽 처리에 대한 경험이 없어 기획부터 어려웠다. 그래도 어떻게 처리할 것인지 예상되는 로직을 기획하고 구현해 보려고 한다.">
+    <link rel="canonical" href="https://yuju-lee.github.io/logs/MSA-11-payment/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+            <header class="entry-header">
+                <h1 class="entry-title">MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/logs">logs</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-07-03">July 3, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <p>대용량 트래픽 처리에 대한 경험이 없어 기획부터 어려웠다. 그래도 어떻게 처리할 것인지 예상되는 로직을 기획하고 구현해 보려고 한다.</p>
+
+<h3 id="idea"><em>IDEA</em></h3>
+
+<p>가상 대기열을 사용하여 구매 오픈하자마자 접속한 초기 접속자를 관리하고, 결제 시에는 Redis를 사용하여 재고를 빠르게 확인하며, 예약 상태를 통해 결제 프로세스 관리</p>
+
+<p><strong>구매 버튼을 누르면</strong></p>
+
+<ol>
+  <li><strong>가상 대기열에 추가</strong>: 사용자가 결제 요청을 보낼 때 가상 대기열에 추가되어 재고 서비스에 재고 확인 요청 보낸 뒤 재고 서비스에서 재고를 확인하고, 재고가 충분하면 <strong>재고 예약</strong>
+    <ol>
+      <li>재고가 없을 시 대기열 추가 X → 구매 예약으로 이동</li>
+    </ol>
+  </li>
+  <li><strong>대기열에서 처리</strong>: 대기열에서 차례가 되면 결제 요청 서비스로 보내 결제 처리 시작</li>
+  <li><strong>결제 처리</strong>: 결제 서비스에서 결제를 처리하고, 결제가 성공하면 최종적으로 주문 확정
+    <ol>
+      <li>결제가 실패하면 재고 예약을 취소하고, 주문 취소</li>
+    </ol>
+  </li>
+  <li><strong>상태 업데이트</strong>: 각 서비스는 상태를 성공으로 업데이트하고, 이벤트를 발행해 OrderService로 발송</li>
+</ol>
+
+<ul>
+  <li>모든 재고가 소진(품절)되면 구매 예약을 걸어 놓을 수 있으며, 취소 재고 발생 시 예약자에게 이메일로 알림 &gt; 이후 위의 로직을 다시 적용</li>
+</ul>
+
+<hr />
+
+<h2 id="가상-대기열">가상 대기열</h2>
+
+<p><img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F3cec5d45-1253-40d4-b2d8-46a077552762%2FUntitled.png?table=block&amp;id=68f4fb32-ded7-4723-9c61-4fa0b912ef84&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=770&amp;userId=&amp;cache=v2" alt="Untitled" /></p>
+
+<h3 id="개념">개념</h3>
+
+<ul>
+  <li><strong>사용자 요청 수집</strong>: 모든 사용자가 한 번에 서버에 접속하지 않도록 요청을 대기열에 수집함
+    <ul>
+      <li>특정 n 개 이상의 요청이 들어올 경우, 가상 대기열을 생성하는 로직으로 이동해야 할 듯</li>
+      <li>그럼 “어떤 기준” 시간에 “n개의 요청”이 들어오는지 감시하는 로직도 필요할 것 같음</li>
+    </ul>
+  </li>
+  <li><strong>순차 처리</strong>: 대기열에서 순차적으로 요청을 꺼내어 처리</li>
+  <li><strong>상태 관리</strong>: 대기열의 상태를 사용자에게 실시간 업데이트</li>
+</ul>
+
+<h3 id="설계">설계</h3>
+
+<ul>
+  <li>DB 구조
+    <ul>
+      <li><strong>Queue Table</strong>
+        <ul>
+          <li>id: 고유 식별자 (PK)</li>
+          <li>memberEmail: 사용자 식별자</li>
+          <li>requestTime: 요청 시간</li>
+          <li>status: 요청 상태</li>
+          <li>position: 대기열에서의 위치</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>로직
+    <ol>
+      <li><strong>요청 수집</strong>
+        <ul>
+          <li>사용자가 서버에 요청을 보내면 요청을 대기열 테이블에 저장</li>
+        </ul>
+      </li>
+      <li><strong>대기열 상태 확인</strong>
+        <ul>
+          <li>사용자가 요청할 때마다 새로운 대기열 위치 및 예상 대기 시간 반환</li>
+        </ul>
+      </li>
+      <li><strong>요청 처리</strong>
+        <ul>
+          <li>백그라운드 작업을 통해 대기열에서 순차적으로 요청을 가져와 처리</li>
+          <li>처리 후 상태 업데이트 → 사용자에게 결과 통지</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="분산-트랜잭션">분산 트랜잭션</h2>
+
+<h3 id="saga-패턴">Saga 패턴</h3>
+
+<p>Saga 패턴은 긴 실행 시간 트랜잭션을 여러 개의 작은 트랜잭션으로 나누어 처리하는 방법이다. 각 단계는 독립적인 로컬 트랜잭션으로 처리되며, 실패 시 보상 트랜잭션을 실행하여 시스템의 일관성을 유지할 수 있다.</p>
+
+<hr />
+
+<h2 id="레디스-활용">레디스 활용</h2>
+
+<ol>
+  <li><strong>결제 생성 요청 처리</strong>
+    <ul>
+      <li><strong>Order Service</strong>는 클라이언트로부터 주문 요청을 받으면 요청된 각 상품에 대해 Redis에서 재고 확인</li>
+    </ul>
+  </li>
+  <li><strong>원자적 재고 감소</strong></li>
+  <li><strong>결제 처리</strong>
+    <ul>
+      <li><strong>Payment Service</strong>는 결제 요청을 처리</li>
+      <li>결제 성공 시 재고 업데이트를 확정</li>
+      <li>결제 실패 시 Redis에서 원자적으로 재고 복원</li>
+    </ul>
+  </li>
+</ol>
+
+<p>→ Lua 스크립트 사용하기</p>
+
+<hr />
+
+<p><img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fae6bf094-d7d2-464e-be75-6f85042f8f64%2FIMG_0265.png?table=block&amp;id=b62775cf-72e8-4c23-acca-4b1670dda2d9&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=1440&amp;userId=&amp;cache=v2" alt="" />
+(너무 대충 그렸다…)</p>
+
+<ol>
+  <li><strong>ProductService</strong>:
+    <ul>
+      <li>Redis와 MySQL을 동기화하여 재고를 관리하고, Kafka를 통해 재고 증감 구독</li>
+    </ul>
+  </li>
+  <li><strong>PaymentQueueService</strong>
+    <ul>
+      <li>결제 요청을 받아 Redis에서 재고를 확인하고, 재고가 충분할 경우 요청을 대기열에 추가</li>
+    </ul>
+  </li>
+  <li><strong>PaymentService</strong>:
+    <ul>
+      <li>대기열을 주기적으로 확인하여 결제 요청을 처리하고, 20% 확률로 결제를 실패</li>
+      <li>결제가 성공하면 order-request-topic으로 정보를 전송, 실패 시 재고 복구 후 실패 응답 반환</li>
+    </ul>
+  </li>
+  <li><strong>OrderService</strong>:
+    <ul>
+      <li>order-request-topic에서 결제 성공 정보를 받아 주문을 생성</li>
+    </ul>
+  </li>
+</ol>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/kafka">Kafka</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/redis">Redis</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/transaction">Transaction</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/java-springboot">JAVA-Springboot</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/logs/MSA-10-logoutAll/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">MSA-10. 동시 로그아웃</span>
+                    <span class="nav-meta">July 2, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/logs/MSA-12-distributedLock/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">MSA-12. 분산락 전환기</span>
+                    <span class="nav-meta">July 3, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/springboot/">Springboot</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/java/'>java</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

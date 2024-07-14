@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>MSA-6. 주문 기능 기획</title>
+    <meta name="description"
+        content="해당 프로젝트는 MSA를 접목한 예약구매 서비스이고, 이 프로젝트의 도메인은 e-commerce이다. 따라서 사용자는 특정 상품을 구매하기로 결정한다면, 결제 시작 → 결제 중 → 결제 완료 → 주문서 작성 → 주문 완료 → 배송 시작 → 배송 중 → 배송 완료(구매 확정) 이라는...">
+    <link rel="canonical" href="https://yuju-lee.github.io/logs/MSA-6-order/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+            <header class="entry-header">
+                <h1 class="entry-title">MSA-6. 주문 기능 기획</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/logs">logs</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-06-24">June 24, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <p>해당 프로젝트는 MSA를 접목한 <strong>예약구매</strong> 서비스이고, 이 프로젝트의 도메인은 <strong>e-commerce</strong>이다. 따라서 사용자는 특정 상품을 구매하기로 결정한다면, 결제 시작 → 결제 중 → 결제 완료 → 주문서 작성 → 주문 완료 → 배송 시작 → 배송 중 → 배송 완료(구매 확정) 이라는 단계를 거치게 된다. 이 중 주문서 작성 ~ 배송 완료 단계를 기획하였다.</p>
+
+<ul>
+  <li>사용자는 노출된 상품에 한하여 주문 및 WishList에 등록
+    <ul>
+      <li>현재는 재고 부족으로 인한 주문 불가는 없다고 가정 → 추후 구현 예정</li>
+    </ul>
+  </li>
+  <li>마이페이지
+    <ul>
+      <li>WishList에 등록한 상품 리스트</li>
+      <li>주문한 상품의 상태 조회</li>
+    </ul>
+  </li>
+  <li>주문 상품
+    <ul>
+      <li>주문 상품에 대한 상태 조회
+        <ul>
+          <li>주문 후 D+1에 배송중, D+2일에 배송완료 → <strong>주문 일자</strong> +1 엔 <strong>dilivery status</strong>를 배송중으로, +2엔 배송완료로 변경</li>
+        </ul>
+      </li>
+      <li>주문 상품에 대한 취소
+        <ul>
+          <li>주문 상태가 배송중 전까지만 취소 가능</li>
+          <li>취소 후에는 상품의 재고를 복구</li>
+          <li>주문 취소 후 상태는 <strong>취소 완료</strong>로 변경 → <strong>dilivery status</strong>가 <strong>배송중</strong>일 시 취소 불가하다는 응답 발신</li>
+          <li>취소가 가능하면 취소하고 기존 stock+(주문수량), <strong>delivery status</strong>를 <strong>canceled</strong>로 변경</li>
+        </ul>
+      </li>
+      <li>반품
+        <ul>
+          <li>배송 완료 후 D+1일까지만 반품이 가능 그 이후엔 불가</li>
+          <li>배송 완료가 된 상품에 대해서만 반품이 가능</li>
+          <li>반품한 상품은 반품 신청 후 D+1에 재고에 반영</li>
+          <li>재고에 반영된 후 상태는 반품완료로 변경</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F61817f6a-b8c2-4bcd-a869-fa990dc25eeb%2FBlank_diagram_(4).png?table=block&amp;id=de38dae8-b093-4235-9322-f1da9fecebd1&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=1440&amp;userId=&amp;cache=v2" alt="" /></p>
+
+<ul>
+  <li>orders
+    <ul>
+      <li><strong>주문 번호</strong></li>
+      <li>주문자</li>
+      <li>주문 일자</li>
+      <li>주문 상태</li>
+      <li>상태값
+        <ul>
+          <li>order_create: 주문 완료</li>
+          <li>on_delivery: 배송 중</li>
+          <li>delivery_comlete: 배송 완료</li>
+          <li>order_complete: 주문 확정</li>
+          <li>return_create: 반품 접수</li>
+          <li>return_complete: 반품 확정</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>order_detail
+    <ul>
+      <li><strong>주문 상세 번호</strong></li>
+      <li><em>주문 번호 (FK) ← 얘로 주문상세를 묶기</em></li>
+      <li><em>주문 제품 번호(FK / ProductID)</em></li>
+      <li>주문 금액</li>
+      <li>주문 수량</li>
+    </ul>
+  </li>
+</ul>
+
+<p>위와 같이 테이블 구조와 상태 변경에 따른 플로우를 기획하였다.</p>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/msa">MSA</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/logs/MSA-4-useJWT/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">MSA-4. JWT를 이용한 로그인, 로그아웃 구현</span>
+                    <span class="nav-meta">June 23, 2024</span>
+                    
+                        <span class="nav-thumb" style="background-image: url(https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F5da62e2c-8771-4b03-afeb-343f61763a84%2FUntitled.png?table=block&id=954fcd71-ee1b-413b-bb72-5d4bc99e07ab&spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&width=860&userId=&cache=v2)"></span>
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/logs/MSA-7-orderSchduler/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">MSA-7. 주문 상태 스케줄링</span>
+                    <span class="nav-meta">June 25, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/springboot/">Springboot</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/java/'>java</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

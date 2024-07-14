@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>[Algorithm] Dinamic Programming</title>
+    <meta name="description"
+        content="다이나믹 프로그래밍 (DP)">
+    <link rel="canonical" href="https://yuju-lee.github.io/algorithm/algorithm-DP/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="https://yuju-lee.github.io/assets/images/favicon.ico" type="image/png" />
+
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+                <div class="post-thumbnail"><img src="https://images.squarespace-cdn.com/content/v1/62f26850d5df0b3c0fd3956a/2e4d98fb-ef2f-43e9-8d43-61e8170bc9b1/dynamicprogramming.png" alt="[Algorithm] Dinamic Programming"></div>
+            
+            <header class="entry-header">
+                <h1 class="entry-title">[Algorithm] Dinamic Programming</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/algorithm">algorithm</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-05-31">May 31, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <h2 id="다이나믹-프로그래밍-dp">다이나믹 프로그래밍 (DP)</h2>
+
+<p>필요한 <strong>계산 값을 저장해두었다가 재사용</strong>하는 알고리즘 설계 기법으로, 큰 문제를 한번에 해결하기 어려울 때, 여러개의 작은 문제로 나누어 푸는 ‘분할 정복’ 알고리즘이 있다. 이때 <strong>동일한 작은 문제</strong>들이 <strong>반복적으로 계산</strong>되는 경우가 생길 수 있다. <strong>그 문제를 매번 재계산 하지 않고 값을 저장했다가 재사용하는 기법이 바로 다이나믹 프로그래밍</strong>이다. 메모리 공간을 약간 더 사용하여 시간을 획기적으로 줄일 수 있는 방법이다.</p>
+
+<ul>
+  <li>다음 조건 만족 시 사용할 수 있음:
+    <ul>
+      <li>최적 부분 구조</li>
+      <li>중복 하위 문제</li>
+    </ul>
+  </li>
+  <li><strong>Topdown (하향식)</strong>
+    <ul>
+      <li>메모이제이션(memoiztion)을 사용하여 다이나믹 프로그래밍을 구현하는 방식</li>
+      <li><strong>메모이제이션</strong>(memoiztion)
+        <ul>
+          <li>한번 구한 계산 결과를 메모리 공간에 메모해두고, 같은 식을 다시 호출하면 메모한 결과 그대로 가져오는 기법</li>
+        </ul>
+      </li>
+      <li>탑다운 방식은 큰 문제를 해결하기 위해 작은 문제를 호출한다고 하여 <strong>하향식</strong>이라고도 불린다.</li>
+      <li>탑다운방식은 <strong>재귀함수</strong>를 이용하여 구현할 수 있다.</li>
+    </ul>
+  </li>
+  <li><strong>Bottom-Up (상향식)</strong>
+    <ul>
+      <li>타블레이션(tabulation)을 사용하여 다이나믹 프로그래밍을 구현하는 방식</li>
+      <li><strong>타블레이션</strong>(tabulation)
+        <ul>
+          <li>하위 문제부터 천천히 해결하면서 더 큰 문제를 해결하는 기법</li>
+        </ul>
+      </li>
+      <li>하위 문제부터 시작해서 더 큰 문제를 해결해 나가기 때문에 <strong>상향식</strong>이라고도 한다.</li>
+      <li>바텀업방식은 <strong>반복문</strong>을 이용하여 구현할 수 있다.</li>
+    </ul>
+  </li>
+</ul>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/algorithm">Algorithm</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/dp">DP</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/algorithm/algorithm-timeComplexity/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">[Algorithm] Time Complexity</span>
+                    <span class="nav-meta">May 30, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/algorithm/algorithm-KMP/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">[Algorithm] KMP Algorithm</span>
+                    <span class="nav-meta">June 1, 2024</span>
+                    
+                        <span class="nav-thumb" style="background-image: url(https://media.geeksforgeeks.org/wp-content/uploads/20221125004358/image-660x398.png)"></span>
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About me</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/knowledge/">Knowledge</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/algorithm/'>Algorithm</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/bfs/'>BFS</a>
+        
+        <a href='/tag/binary-search/'>Binary-search</a>
+        
+        <a href='/tag/binary-tree/'>Binary-tree</a>
+        
+        <a href='/tag/brute-force/'>Brute-force</a>
+        
+        <a href='/tag/dfs/'>DFS</a>
+        
+        <a href='/tag/dp/'>DP</a>
+        
+        <a href='/tag/dijkstra/'>Dijkstra</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/greedy/'>Greedy</a>
+        
+        <a href='/tag/hash-table/'>Hash-table</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kmp/'>KMP</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/queue/'>Queue</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/sort/'>Sort</a>
+        
+        <a href='/tag/stack/'>Stack</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/time-complexity/'>Time-Complexity</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/union-find/'>Union-find</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

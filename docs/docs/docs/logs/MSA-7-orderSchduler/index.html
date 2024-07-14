@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>MSA-7. 주문 상태 스케줄링</title>
+    <meta name="description"
+        content="프로젝트의 명세에 따라 주문서의 상태에 따라 스케줄링이 필요했다. MySQL에서 스케줄링은 특정 간격을 주기로 감시하는 방법 특정 시각 + 특정 주기에 변경되도록 스케줄링하는 방법">
+    <link rel="canonical" href="https://yuju-lee.github.io/logs/MSA-7-orderSchduler/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+            <header class="entry-header">
+                <h1 class="entry-title">MSA-7. 주문 상태 스케줄링</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/logs">logs</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-06-25">June 25, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <p>프로젝트의 명세에 따라 주문서의 상태에 따라 스케줄링이 필요했다. MySQL에서 스케줄링은</p>
+<ol>
+  <li>특정 간격을 주기로 감시하는 방법</li>
+  <li>특정 시각 + 특정 주기에 변경되도록 스케줄링하는 방법</li>
+</ol>
+
+<p>이 두가지가 있는데, 1보다 2의 코스트가 더 낮다고 판단되어 2의 방법을 구현하기 위해 구글링했고 TaskScheduler 라는 기능을 사용하기로 했다.</p>
+
+<h3 id="변경-프로세스">변경 프로세스</h3>
+
+<ol>
+  <li>ORDER_CREATE → ORDER_CANCEL (0HR~24HR available / D+0)</li>
+  <li>OREDER_CREATE → ON_DELIVERY (24HR / D+1)</li>
+  <li>ON_DELIVERY → ORDER_COMPLETE (24HR / D+2)</li>
+  <li>ORDER_COMPLETE → RETURN CREATE (0HR~24HR available / D+3)</li>
+  <li>RETURN CREATE → RETURN_COMPLETE (24HR / D+4)</li>
+  <li>ORDER_COMPLETE ~</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Bean</span>
+<span class="kd">public</span> <span class="nc">TaskScheduler</span> <span class="nf">taskScheduler</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">ThreadPoolTaskScheduler</span> <span class="n">scheduler</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ThreadPoolTaskScheduler</span><span class="o">();</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="na">setPoolSize</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+    <span class="n">scheduler</span><span class="o">.</span><span class="na">setThreadNamePrefix</span><span class="o">(</span><span class="s">"task-scheduler-"</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">scheduler</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>우선 SchedulerConfig에 해당 빈을 정의해 사용할 수 있도록 설정했다.</p>
+
+<p>기획 당시 생각했던 주문 상태 변경 로직을 적용했다. 로그도 띄워 주면 보기 편하니 로그도 만들었다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">updateOrderStatus</span><span class="o">(</span><span class="nc">Integer</span> <span class="n">orderKey</span><span class="o">,</span> <span class="nc">String</span> <span class="n">status</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">OrderEntity</span> <span class="n">order</span> <span class="o">=</span> <span class="n">orderRepository</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="n">orderKey</span><span class="o">).</span><span class="na">orElseThrow</span><span class="o">(</span>
+                <span class="o">()</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="nc">IllegalArgumentException</span><span class="o">(</span><span class="s">"Order not found"</span><span class="o">)</span>
+        <span class="o">);</span>
+
+        <span class="k">switch</span> <span class="o">(</span><span class="n">status</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="s">"ON_DELIVERY"</span><span class="o">:</span>
+                <span class="k">if</span> <span class="o">(</span><span class="s">"ORDER_CREATE"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">order</span><span class="o">.</span><span class="na">getOrderStatus</span><span class="o">()))</span> <span class="o">{</span>
+                    <span class="n">order</span><span class="o">.</span><span class="na">setOrderStatus</span><span class="o">(</span><span class="s">"ON_DELIVERY"</span><span class="o">);</span>
+                    <span class="n">scheduleNextStatusUpdate</span><span class="o">(</span><span class="n">order</span><span class="o">,</span> <span class="s">"DELIVERY_COMPLETE"</span><span class="o">,</span> <span class="mi">24</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="s">"DELIVERY_COMPLETE"</span><span class="o">:</span>
+                <span class="k">if</span> <span class="o">(</span><span class="s">"ON_DELIVERY"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">order</span><span class="o">.</span><span class="na">getOrderStatus</span><span class="o">()))</span> <span class="o">{</span>
+                    <span class="n">order</span><span class="o">.</span><span class="na">setOrderStatus</span><span class="o">(</span><span class="s">"DELIVERY_COMPLETE"</span><span class="o">);</span>
+                    <span class="n">scheduleNextStatusUpdate</span><span class="o">(</span><span class="n">order</span><span class="o">,</span> <span class="s">"ORDER_COMPLETE"</span><span class="o">,</span> <span class="mi">24</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="s">"ORDER_COMPLETE"</span><span class="o">:</span>
+                <span class="k">if</span> <span class="o">(</span><span class="s">"DELIVERY_COMPLETE"</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">order</span><span class="o">.</span><span class="na">getOrderStatus</span><span class="o">()))</span> <span class="o">{</span>
+                    <span class="n">order</span><span class="o">.</span><span class="na">setOrderStatus</span><span class="o">(</span><span class="s">"ORDER_COMPLETE"</span><span class="o">);</span>
+                <span class="o">}</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">default</span><span class="o">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"Unknown status: {}"</span><span class="o">,</span> <span class="n">status</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">orderRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">order</span><span class="o">);</span>
+        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"Order {} status updated to {}"</span><span class="o">,</span> <span class="n">order</span><span class="o">.</span><span class="na">getOrderKey</span><span class="o">(),</span> <span class="n">status</span><span class="o">);</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/taskscheduler">TaskScheduler</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/java-springboot">JAVA-Springboot</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/logs/MSA-6-order/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">MSA-6. 주문 기능 기획</span>
+                    <span class="nav-meta">June 24, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/logs/MSA-8-emailAuthService/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">MSA-8. Google SMTP를 활용한 이메일 인증 단계 구현</span>
+                    <span class="nav-meta">June 26, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/springboot/">Springboot</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/java/'>java</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

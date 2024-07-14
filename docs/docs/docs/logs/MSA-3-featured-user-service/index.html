@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>MSA-3. 사용자 정보 암호화</title>
+    <meta name="description"
+        content="암호화 기법에 대해">
+    <link rel="canonical" href="https://yuju-lee.github.io/logs/MSA-3-featured-user-service/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+            <header class="entry-header">
+                <h1 class="entry-title">MSA-3. 사용자 정보 암호화</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/logs">logs</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-06-19">June 19, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <h3 id="암호화-기법에-대해">암호화 기법에 대해</h3>
+
+<ul>
+  <li>Hash: 단방향 암호화 기법</li>
+  <li>Encryption: 양방향 암호화 기법</li>
+  <li>비밀번호를 저장할 때는 평문 → 암호화는 가능하나 평문 → 복호화는 불가능한 <strong>단방향 암호화 방식을 사용</strong></li>
+  <li>해당 프로젝트에서는 이름, 비밀번호, 주소 → 클라이언트가 POST하는 모든 개인정보를 암호화하여 저장한다.
+  (이메일은 아이디로 사용하여 PK로 지정하였기 때문에 이메일은 제외)</li>
+</ul>
+
+<h3 id="how">How?</h3>
+
+<p>Spring에서 제공하는 <a href="https://spring.io/projects/spring-security">Spring Security</a>를 사용하여 암호화한다.</p>
+
+<blockquote>
+  <p>Spring Security is a powerful and highly customizable authentication and access-control framework. It is the de-facto standard for securing Spring-based applications.</p>
+
+</blockquote>
+
+<ol>
+  <li>
+    <p>dependency 추가</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">implementation</span> <span class="err">'</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">boot</span><span class="o">:</span><span class="n">spring</span><span class="o">-</span><span class="n">boot</span><span class="o">-</span><span class="n">starter</span><span class="o">-</span><span class="n">security</span><span class="err">'</span>
+ <span class="n">implementation</span> <span class="err">'</span><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">security</span><span class="o">:</span><span class="n">spring</span><span class="o">-</span><span class="n">security</span><span class="o">-</span><span class="n">crypto</span><span class="err">'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Config 디렉토리를 설정하고 SecurityConfig 클래스 내 PasswordEncoder interface의 BCryptPasswordEncoder를 Bean으로 삽입</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nd">@Configuration</span>
+ <span class="nd">@EnableWebSecurity</span>
+ <span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityConfig</span> <span class="kd">extends</span> <span class="nc">WebSecurityConfigurerAdapter</span> <span class="o">{</span>
+
+     <span class="nd">@Bean</span>
+     <span class="kd">public</span> <span class="nc">PasswordEncoder</span> <span class="nf">passwordEncoder</span><span class="o">()</span> <span class="o">{</span>
+         <span class="k">return</span> <span class="k">new</span> <span class="nf">BCryptPasswordEncoder</span><span class="o">();</span>
+     <span class="o">}</span>
+        
+     <span class="nd">@Override</span>
+     <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="nc">HttpSecurity</span> <span class="n">http</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+         <span class="n">http</span>
+                 <span class="o">.</span><span class="na">authorizeRequests</span><span class="o">()</span>
+                 <span class="o">.</span><span class="na">requestMatchers</span><span class="o">(</span><span class="s">"/"</span><span class="o">,</span> <span class="s">"/**"</span><span class="o">).</span><span class="na">permitAll</span><span class="o">();</span> <span class="c1">// 모든 접속 permit</span>
+     <span class="o">}</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>UserService 내 registerUser에서 setUserName(), setPassword() 를 삽입한 암호화 알고리즘으로 처리</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="kd">public</span> <span class="nc">User</span> <span class="nf">registerUser</span><span class="o">(</span><span class="nc">UserDTO</span> <span class="n">userDTO</span><span class="o">)</span> <span class="o">{</span>
+     <span class="k">if</span> <span class="o">(</span><span class="n">userRepository</span><span class="o">.</span><span class="na">findByEmail</span><span class="o">(</span><span class="n">userDTO</span><span class="o">.</span><span class="na">getEmail</span><span class="o">()).</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span>
+         <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalArgumentException</span><span class="o">(</span><span class="s">"Email already in use"</span><span class="o">);</span>
+     <span class="o">}</span>
+
+     <span class="nc">User</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">User</span><span class="o">();</span>
+     <span class="n">user</span><span class="o">.</span><span class="na">setEmail</span><span class="o">(</span><span class="n">userDTO</span><span class="o">.</span><span class="na">getEmail</span><span class="o">());</span>
+     <span class="n">user</span><span class="o">.</span><span class="na">setUserName</span><span class="o">(</span><span class="n">passwordEncoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">userDTO</span><span class="o">.</span><span class="na">getUserName</span><span class="o">()));</span> <span class="c1">// 수정부분</span>
+     <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">passwordEncoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">userDTO</span><span class="o">.</span><span class="na">getPassword</span><span class="o">()));</span> <span class="c1">// 수정부분</span>
+     <span class="k">return</span> <span class="n">userRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/encryption">Encryption</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/java-springboot">JAVA-Springboot</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/logs/MSA-2-docker/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">MSA-2. Docker와 Docker 적용기</span>
+                    <span class="nav-meta">June 19, 2024</span>
+                    
+                        <span class="nav-thumb" style="background-image: url(https://free-asphalt-782.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fc142fb00-f1da-4b07-8004-49368f5a1dab%2Fe55ef7e5-5a6d-4b71-a9d3-42471372d0e2%2FUntitled.png?table=block&id=03e0669a-2559-419f-86db-22dcc80dce09&spaceId=c142fb00-f1da-4b07-8004-49368f5a1dab&width=1420&userId=&cache=v2)"></span>
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/logs/MSA-5-useRefreshTokenInJWT-copy/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">MSA-5. RefreshToken 적용기</span>
+                    <span class="nav-meta">June 20, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/springboot/">Springboot</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/java/'>java</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

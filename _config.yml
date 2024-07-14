@@ -21,12 +21,12 @@ linkedin: 'yuju-lee'
 
 # Navigation
 navigation:
-  - text: About
+  - text: About me
     url: /about/
   - text: Algorithm
     url: /categories/algorithm/
-  - text: Springboot
-    url: /categories/springboot/
+  - text: Knowledge
+    url: /categories/knowledge/
   - text: Logs
     url: /categories/logs/
 

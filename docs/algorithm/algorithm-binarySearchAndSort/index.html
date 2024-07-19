@@ -9,7 +9,7 @@
     
     <title>[Algorithm] Binary Search &amp; Sort</title>
     <meta name="description"
-        content="이분 탐색 (Binary Search) 정렬된 배열에서, 탐색 범위를 절반 씩 줄여나가는 탐색 방법이다. 절반씩 줄여나가면서 탐색 범위가 1이 될 때까지 진행하므로 시간 복잡도는 $\text{O}(\log{n})$ 이며 이진 탐색 이라고도 불린다.">
+        content="이분 탐색 (Binary Search) 정렬된 배열에서, 탐색 범위를 절반 씩 줄여나가는 탐색 방법이다. 절반씩 줄여나가면서 탐색 범위가 1이 될 때까지 진행하므로 시간 복잡도는 O(log n) 이며 이진 탐색 이라고도 불린다.">
     <link rel="canonical" href="https://yuju-lee.github.io/algorithm/algorithm-binarySearchAndSort/">
     
 
@@ -45,7 +45,7 @@
     <main id="main" class="site-main inner">
         <article class="post">
             
-                <div class="post-thumbnail"><img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/binary-tree-to-DLL.png" alt="[Algorithm] Binary Search & Sort"></div>
+                <div class="post-thumbnail"><img src="https://media.geeksforgeeks.org/wp-content/uploads/20240506155201/binnary-search-.webp" alt="[Algorithm] Binary Search & Sort"></div>
             
             <header class="entry-header">
                 <h1 class="entry-title">[Algorithm] Binary Search & Sort</h1>
@@ -66,13 +66,13 @@
                 </div><!-- .entry-meta -->
             </header><!-- .entry-header -->
             <div class="entry-content">
-                <p><img src="https://yuju-lee.github.io/assets/images/posts/sort/binary-search.gif" alt="" /></p>
-<h2 id="이분-탐색-binary-search">이분 탐색 (Binary Search)</h2>
-<p><strong>정렬된 배열</strong>에서, 탐색 범위를 절반 씩 줄여나가는 탐색 방법이다. 절반씩 줄여나가면서 탐색 범위가 1이 될 때까지 진행하므로 시간 복잡도는 $\text{O}(\log{n})$ 이며 이진 탐색 이라고도 불린다.</p>
+                <h2 id="이분-탐색-binary-search">이분 탐색 (Binary Search)</h2>
+<center><img src="https://yuju-lee.github.io/assets/images/posts/sort/binary-search.gif" width="400px" /></center>
+<p><strong>정렬된 배열</strong>에서, 탐색 범위를 절반 씩 줄여나가는 탐색 방법이다. 절반씩 줄여나가면서 탐색 범위가 1이 될 때까지 진행하므로 시간 복잡도는 <code class="language-plaintext highlighter-rouge">O(log n)</code> 이며 이진 탐색 이라고도 불린다.</p>
 
 <p><strong>이분 탐색의 특성</strong></p>
 <ul>
-  <li>빠른 검색 속도: 시간 복잡도는 O(log n)으로, 매우 빠르게 값을 찾을 수 있다.</li>
+  <li>빠른 검색 속도: 시간 복잡도가 <code class="language-plaintext highlighter-rouge">O(log n)</code>이기 때문에 매우 빠르게 값을 찾을 수 있다.</li>
   <li>재귀적 접근: 재귀적으로 배열을 절반씩 나누면서 값을 찾는 방식이다.</li>
   <li>정렬된 배열에서 사용: 이분 탐색은 배열이 정렬되어 있어야 사용할 수 있다.</li>
 </ul>
@@ -103,48 +103,60 @@
 
 <ul>
   <li><strong>주요 정렬</strong>
-  <img src="https://yuju-lee.github.io/assets/images/posts/sort/bubble.gif" alt="" />
-    <ol>
+    <center><img src="https://yuju-lee.github.io/assets/images/posts/sort/bubble.gif" width="200px" /></center>
+    <ul>
       <li><strong>버블 정렬</strong> (Bubble Sort):
         <ul>
           <li>인접한 두 요소를 비교하여 필요에 따라 교환하는 방식으로, 배열의 끝까지 이를 반복한다.</li>
-          <li><strong>최선의 시간 복잡도:</strong> O(n)</li>
-          <li><strong>최악의 시간 복잡도:</strong> O(n²)
-  <img src="https://yuju-lee.github.io/assets/images/posts/sort/insertion.gif" alt="" /></li>
+          <li><strong>최선의 시간 복잡도:</strong> <code class="language-plaintext highlighter-rouge">O(n)</code></li>
+          <li><strong>최악의 시간 복잡도:</strong> <code class="language-plaintext highlighter-rouge">O(n²)</code></li>
         </ul>
       </li>
+    </ul>
+
+    <center><img src="https://yuju-lee.github.io/assets/images/posts/sort/insertion.gif" width="200px" /></center>
+    <ul>
       <li><strong>삽입 정렬</strong> (Insertion Sort):
         <ul>
           <li>배열의 요소를 차례로 비교하여, 해당 요소를 올바른 위치에 삽입한다.</li>
-          <li><strong>최선의 시간 복잡도:</strong> O(n)</li>
-          <li><strong>최악의 시간 복잡도:</strong> O(n²)
-  <img src="https://yuju-lee.github.io/assets/images/posts/sort/marge-sort.gif" alt="" /></li>
+          <li><strong>최선의 시간 복잡도:</strong> <code class="language-plaintext highlighter-rouge">O(n)</code></li>
+          <li><strong>최악의 시간 복잡도:</strong> <code class="language-plaintext highlighter-rouge">O(n²)</code></li>
         </ul>
       </li>
+    </ul>
+
+    <center><img src="https://yuju-lee.github.io/assets/images/posts/sort/merge-sort.gif" width="200px" /></center>
+    <ul>
       <li><strong>병합 정렬</strong> (Merge Sort):
         <ul>
           <li>배열을 반으로 나누고, 각각을 정렬한 후 병합하는 정렬 방법이다.</li>
-          <li><strong>시간 복잡도:</strong> O(n logN)</li>
-          <li><em>항상 분할 및 병합을 해야 하기 때문에 최선과 최악의 경우가 동일</em>
-  <img src="https://yuju-lee.github.io/assets/images/posts/sort/quick.gif" alt="" /></li>
+          <li><strong>시간 복잡도:</strong> <code class="language-plaintext highlighter-rouge">O(n logN)</code></li>
+          <li><em>항상 분할 및 병합을 해야 하기 때문에 최선과 최악의 경우가 동일</em></li>
         </ul>
       </li>
+    </ul>
+
+    <center><img src="https://yuju-lee.github.io/assets/images/posts/sort/quick.gif" width="200px" /></center>
+    <ul>
       <li><strong>퀵 정렬</strong> (Quick Sort):
         <ul>
           <li>기준 값을 중심으로 작은 값과 큰 값을 분리하여 정렬하는 방법이다. 재귀적으로 이 과정을 반복하여 정렬한다.</li>
-          <li><strong>최선의 시간 복잡도:</strong> O(n logN)</li>
-          <li><strong>최악의 시간 복잡도:</strong> O(n²)
-  <img src="https://yuju-lee.github.io/assets/images/posts/sort/heap-srt.gif" alt="" /></li>
+          <li><strong>최선의 시간 복잡도:</strong> <code class="language-plaintext highlighter-rouge">O(n logN)</code></li>
+          <li><strong>최악의 시간 복잡도:</strong> <code class="language-plaintext highlighter-rouge">O(n²)</code></li>
         </ul>
       </li>
+    </ul>
+
+    <center><img src="https://yuju-lee.github.io/assets/images/posts/sort/heap-srt.gif" width="200px" /></center>
+    <ul>
       <li><strong>힙 정렬</strong> (Heap Sort):
         <ul>
           <li>힙 정렬은 힙 자료구조를 이용하여 배열을 정렬하는 효율적인 방법이다. 최대 힙이나 최소 힙을 사용하여 배열의 최대값이나 최소값을 하나씩 제거하면서 정렬한다.</li>
-          <li><strong>시간 복잡도:</strong> O(n logN)</li>
+          <li><strong>시간 복잡도:</strong> <code class="language-plaintext highlighter-rouge">O(n logN)</code></li>
           <li><em>배열을 힙 구조로 만들고, 하나씩 정렬하는 과정에서 로그 시간이 걸리기 때문에 항상 위와 같은 시간이 소요됨</em></li>
         </ul>
       </li>
-    </ol>
+    </ul>
   </li>
 </ul>
 

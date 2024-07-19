@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>[Algorithm] Greedy &amp; Dijkstra</title>
+    <meta name="description"
+        content="그리디 알고리즘(Greedy Algorithm)">
+    <link rel="canonical" href="https://yuju-lee.github.io/algorithm/algorithm-greedyAndDijkstra/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="https://yuju-lee.github.io/assets/images/favicon.ico" type="image/png" />
+
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+            <header class="entry-header">
+                <h1 class="entry-title">[Algorithm] Greedy & Dijkstra</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/algorithm">algorithm</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-06-14">June 14, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <h2 id="그리디-알고리즘greedy-algorithm">그리디 알고리즘(Greedy Algorithm)</h2>
+
+<p>그리디 알고리즘(Greedy Algorithm)은 문제를 해결하는 과정에서 매 단계마다 가장 최선의 선택을 하는 방법이다. 이 알고리즘은 현재 상황에서 최선이라고 생각되는 결정을 반복적으로 수행하며, 이를 통해 전체 문제의 최적해를 구하는 것을 목표로 한다. 그리디 알고리즘은 많은 경우에 효율적이고 간단하게 문제를 해결할 수 있지만, 모든 문제에 대해 최적해를 보장하지는 않는다. 즉, <strong>각 단계에서 최선의 선택(부분 문제의 최적해)을 모두 합쳤을 때, 전체에서의 최선의 선택과 다르다면 풀이가 성립하지 않는다!</strong> 또한, 완전탐색이 아니니 주의해야한다.</p>
+
+<ul>
+  <li><strong>그리디 알고리즘의 특징</strong>
+    <ul>
+      <li><strong>즉각적인 최적의 선택</strong>: 그리디 알고리즘은 매 순간마다 그 순간에서의 최적의 선택을 한다.</li>
+      <li><strong>단계별로 최적 선택</strong>: 각 단계에서 이루어지는 선택이 전체 문제의 최적 해결책으로 이어진다는 보장이 있어야 한다.</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="다익스트라-dijkstra">다익스트라 (Dijkstra)</h2>
+<p>각 단계에서 최선의 선택을 통해 최단 거리를 찾는 방법으로, 정해진 시작 노드에서 다른 모든 노드까지의 최단 거리를 구할 수 있는 알고리즘이다.</p>
+
+<p>다익스트라 알고리즘은 아래의 단계로 이루어져 있다.</p>
+
+<ol>
+  <li><strong>초기화</strong>: 시작 노드의 최단 거리를 0으로 설정하고, 다른 모든 노드의 최단 거리를 무한대로 설정한다.</li>
+  <li><strong>방문하지 않은 노드 중 거리가 가장 짧은 노드 선택</strong>: 시작 노드부터 최단 거리를 갖는 노드를 선택한다.</li>
+  <li><strong>선택한 노드를 거쳐 다른 노드로 가는 거리 갱신</strong>: 선택한 노드를 거쳐 다른 노드로 가는 거리를 계산하여 기존에 저장된 최단 거리보다 짧을 경우 해당 거리로 갱신한다.</li>
+  <li><strong>위 과정을 반복</strong>: 모든 노드를 방문할 때까지 위 과정을 반복한다.</li>
+</ol>
+
+<ul>
+  <li><strong>다익스트라 알고리즘의 특징</strong>
+    <ul>
+      <li><strong>단계별 최적 선택</strong>: 알고리즘은 시작 정점에서부터 점진적으로 최단 거리를 확장해 나간다. 매 단계에서 가장 짧은 경로를 가진 정점을 선택하여, 그 정점의 인접 정점으로의 최단 거리를 업데이트한다.</li>
+      <li><strong>우선순위 큐 사용</strong>: 일반적으로 우선순위 큐(힙)를 사용하여 최단 거리를 가진 정점을 효율적으로 선택한다. 이를 통해 시간 복잡도를 개선할 수 있다.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><em>빠른 다익스트라 알고리즘 구현을 위해선 “최단 거리”, 즉 최솟값을 계속 뽑을 수 있는 자료구조가 필요하다. Python의 heapq 라이브러리를 이용할 수 있다.</em></p>
+
+<hr />
+
+<h3 id="boj-1931-회의실-배정">BOJ-1931: 회의실 배정</h3>
+
+<ul>
+  <li>난이도: 실버</li>
+  <li>분류: 그리디</li>
+  <li>링크: <a href="https://www.acmicpc.net/problem/1931">1931번: 회의실 배정</a></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#4188ms
+</span><span class="k">def</span> <span class="nf">findmaxmeeting</span><span class="p">(</span><span class="n">meetinglist</span><span class="p">):</span>
+    <span class="c1">#끝나는 시간 순서로 정렬하고 시작 시간을 정의
+</span>    <span class="n">meetinglist</span><span class="p">.</span><span class="nf">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="c1">#결과저장배열 초기화
+</span>    <span class="n">finish</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">meetinglist</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="n">finish</span><span class="p">:</span>
+            <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">finish</span> <span class="o">=</span> <span class="n">end</span>
+
+    <span class="k">return</span> <span class="n">cnt</span>
+
+<span class="n">meetingcnt</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="nf">input</span><span class="p">())</span>
+<span class="n">meetinglist</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">meetingcnt</span><span class="p">):</span>
+    <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="nf">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nf">input</span><span class="p">().</span><span class="nf">split</span><span class="p">())</span>
+    <span class="n">meetinglist</span><span class="p">.</span><span class="nf">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="nf">findmaxmeeting</span><span class="p">(</span><span class="n">meetinglist</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h3 id="boj-1916-최소비용-구하기">BOJ-1916: 최소비용 구하기</h3>
+
+<ul>
+  <li>난이도: 골드</li>
+  <li>분류: 다익스트라</li>
+  <li>링크: <a href="https://www.acmicpc.net/problem/1916">1916번: 최소비용 구하기</a></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#276ms
+</span><span class="kn">import</span> <span class="n">heapq</span>
+<span class="kn">import</span> <span class="n">sys</span>
+
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="p">.</span><span class="n">stdin</span><span class="p">.</span><span class="n">readline</span>
+<span class="n">INF</span> <span class="o">=</span> <span class="n">sys</span><span class="p">.</span><span class="n">maxsize</span>
+
+<span class="k">def</span> <span class="nf">dijkstra</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">graph</span><span class="p">):</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">[</span><span class="n">INF</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#시작 정점에서 각 정점까지의 최단 거리를 저장
+</span>    <span class="n">dist</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1">#시작 정점의 최단 거리: 0으로 초기화
+</span>    <span class="n">pq</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="n">start</span><span class="p">)]</span>  <span class="c1">#우선순위 큐에 (거리, 정점)을 넣음 (초기 거리는 0, 시작 정점)
+</span>
+    <span class="k">while</span> <span class="n">pq</span><span class="p">:</span>
+        <span class="n">currdist</span><span class="p">,</span> <span class="n">currnode</span> <span class="o">=</span> <span class="n">heapq</span><span class="p">.</span><span class="nf">heappop</span><span class="p">(</span><span class="n">pq</span><span class="p">)</span>
+        
+        <span class="c1">#우선순위 큐에서 꺼낸 거리가 현재까지 계산된 거리보다 크면 무시
+</span>        <span class="k">if</span> <span class="n">currdist</span> <span class="o">&gt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">currnode</span><span class="p">]:</span>
+            <span class="k">continue</span>
+        
+        <span class="c1">#현재 정점에서 인접한 정점 순회
+</span>        <span class="k">for</span> <span class="n">nextnode</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">currnode</span><span class="p">]:</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">currdist</span> <span class="o">+</span> <span class="n">weight</span>
+            
+            <span class="c1">#새로 계산한 거리가 기존 최단 거리보다 짧으면 업데이트하고 우선순위 큐에 넣음
+</span>            <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">nextnode</span><span class="p">]:</span>
+                <span class="n">dist</span><span class="p">[</span><span class="n">nextnode</span><span class="p">]</span> <span class="o">=</span> <span class="n">distance</span>
+                <span class="n">heapq</span><span class="p">.</span><span class="nf">heappush</span><span class="p">(</span><span class="n">pq</span><span class="p">,</span> <span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="n">nextnode</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">dist</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="nf">input</span><span class="p">().</span><span class="nf">strip</span><span class="p">())</span>  <span class="c1"># 도시의 개수
+</span><span class="n">m</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="nf">input</span><span class="p">().</span><span class="nf">strip</span><span class="p">())</span>  <span class="c1"># 버스의 개수
+</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>  <span class="c1"># 그래프 초기화
+</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="nf">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nf">input</span><span class="p">().</span><span class="nf">strip</span><span class="p">().</span><span class="nf">split</span><span class="p">())</span>
+    <span class="n">graph</span><span class="p">[</span><span class="n">u</span><span class="p">].</span><span class="nf">append</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+
+<span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="nf">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nf">input</span><span class="p">().</span><span class="nf">strip</span><span class="p">().</span><span class="nf">split</span><span class="p">())</span>
+
+<span class="n">dist</span> <span class="o">=</span> <span class="nf">dijkstra</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+
+<span class="c1"># 도착 도시까지의 최단 거리를 출력, 도달 불가능한 경우 -1 출력
+</span><span class="nf">print</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">end</span><span class="p">]</span> <span class="k">if</span> <span class="n">dist</span><span class="p">[</span><span class="n">end</span><span class="p">]</span> <span class="o">!=</span> <span class="n">INF</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/algorithm">Algorithm</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/greedy">Greedy</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/dijkstra">Dijkstra</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/algorithm/algorithm-bruteForce/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">[Algorithm] Brute Force</span>
+                    <span class="nav-meta">June 12, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/logs/MSA-1-ERD/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">MSA-1. ERD 설계 및 작성</span>
+                    <span class="nav-meta">June 19, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About me</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/knowledge/">Knowledge</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/algorithm/'>Algorithm</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/bfs/'>BFS</a>
+        
+        <a href='/tag/binary-search/'>Binary-search</a>
+        
+        <a href='/tag/binary-tree/'>Binary-tree</a>
+        
+        <a href='/tag/brute-force/'>Brute-force</a>
+        
+        <a href='/tag/dfs/'>DFS</a>
+        
+        <a href='/tag/dp/'>DP</a>
+        
+        <a href='/tag/dijkstra/'>Dijkstra</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/greedy/'>Greedy</a>
+        
+        <a href='/tag/hash-table/'>Hash-table</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kmp/'>KMP</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/queue/'>Queue</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/sort/'>Sort</a>
+        
+        <a href='/tag/stack/'>Stack</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/time-complexity/'>Time-Complexity</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/union-find/'>Union-find</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

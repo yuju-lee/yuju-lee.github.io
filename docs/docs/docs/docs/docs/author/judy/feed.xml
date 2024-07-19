@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator>
   <link href="https://yuju-lee.github.io/author/judy/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://yuju-lee.github.io/" rel="alternate" type="text/html" />
-  <updated>2024-07-13T21:23:18+09:00</updated>
+  <updated>2024-07-14T20:30:28+09:00</updated>
   <id>https://yuju-lee.github.io/author/judy/feed.xml</id>
 
   
@@ -32,12 +32,85 @@
 
   
     <entry>
-      <title type="html">Example Post</title>
-      <link href="https://yuju-lee.github.io/algorithm/springboot/logs/example/" rel="alternate" type="text/html" title="Example Post" />
-      <published>2024-07-11T00:00:00+09:00</published>
-      <updated>2024-07-11T00:00:00+09:00</updated>
-      <id>https://yuju-lee.github.io/algorithm/springboot/logs/example</id>
-      <content type="html" xml:base="https://yuju-lee.github.io/algorithm/springboot/logs/example/">&lt;p&gt;test&lt;/p&gt;</content>
+      <title type="html">MSA-16. 루아스크립트 로직 전환</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-16-changedProcess/" rel="alternate" type="text/html" title="MSA-16. 루아스크립트 로직 전환" />
+      <published>2024-07-09T00:00:00+09:00</published>
+      <updated>2024-07-09T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-16-changedProcess</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-16-changedProcess/">&lt;p&gt;처음 가상대기열 로직에 대해 어떻게 생각했냐면… 친구들이 좋아하는 가수나 축구, 야구 티켓팅을 매번 도와달라고 해서 (별로 잘하지도 않는데도) 인터파크나 여타 다른 사이트의 티켓팅을 경험해 본 적이 좀 있다. 그래서 내가 티켓팅을 했을 때의 그 프로세스를 그대로 구현하면 어떨까, 라는 생각으로 기획했던 구조가 가상 대기열이라는 구조였다. 놀이공원처럼 큐로 대기열을 제한하고, 재고가 풀리면 다시 그 대기열에 요청을 받아서 선착순 (재고수량) 명만 결제할 수 있게끔…? 취소가 생기면 취소 재고만큼 다시 대기열을 비우고 그 대기열을 다시 채우는 방향으로 생각했다.&lt;/p&gt;
+
+&lt;p&gt;다만, 혼자서 너무 오래 생각한 나머지 다른 시선으로 봤을 때 문제가 있진 않을까 - 내가 내 기획에 매몰되어있진 않을까 하는 염려에 멘토님께 해당 로직을 설명드리고 어떻게 생각하시냐 여쭤 봤더니 보통은 분산 락으로 구현한다고는 하나 내가 생각한 로직이 될지 안 될지는 테스트를 직접 해봐야 알 것 같다고 하셨다. 그래서 테스트 툴을 구축해 두 로직을 전부 테스트했다. 이전 테스트 결과에서처럼 분산락은 10개가 성공하였고, 가상대기열 테스트는 실제 재고는 차감되지만 동시성이 보장되지 않아 큐에는 들어갔다. 그러나 결제 프로세스까지 넘어가질 못 했다. 해당 로직은 동시성 보장이 어려웠고, 테스트 결과는 모두 실패했다. 그래서 분산락으로 선택하였으나… &lt;strong&gt;분산락 테스트 과정에서 이상한 점을 발견&lt;/strong&gt;했다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fd449b6d8-6955-4b60-83da-b7ed5ad239cb%2FScreenshot_2024-07-10_at_12.53.25_AM.png?table=block&amp;amp;id=8e0b5ff2-2fe2-4ca7-9362-5f44c08fad28&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1740&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;위 결과를 보면 무려 42번째로 누른 사람이 가져가버리는 불상사 발생한다. 또한 E열이 요청 시각인데, 보면 밀리세컨드엔 확실히 시간차가 있다.&lt;/p&gt;
+
+&lt;p&gt;지금까지 분산 락으로 구현했던 로직의 테스트 결과를 봤는데, 위와 같이 &lt;strong&gt;선착순 구매가 되지 않는 것&lt;/strong&gt; 이었다. 락을 캐치하는 건 결국 랜덤이었던 것… ㅠㅠ 그래서 먼저 접속한(물론 동시라고는 하지만 밀리세컨드에서 차이가 나 요청에는 전부 순서가 있다) 사람이 락을 가져가지 못 해 구매하지 못 하고 있었다. 결국 &lt;strong&gt;결과적으론 10명에게 판매가 되었으나 구매 과정에선 엄밀히 말해 선착순은 아니었다!&lt;/strong&gt; 이는 E-commerce 도메인에서는 꽤나 리스크가 크다고 생각했다. 그리고 가장 처음 테스트했던 건 23초나 걸렸다. 그래서 로직을 다시 변경하였다.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;to-be&quot;&gt;To-be&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;분산 락 제거&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Lua 스크립트의 원자성을 이용하여 &lt;strong&gt;분산 락 없이 동시성을 제어&lt;/strong&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Lua 스크립트 적용&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;재고 확인, 감소, 주문 생성을 하나의 원자적 연산으로 수행&lt;/li&gt;
+      &lt;li&gt;Redis에서 모든 작업을 수행해 성능이 향상시킴&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;비동기 처리&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;주문 처리와 재고 동기화를 비동기적으로 수행하여 &lt;strong&gt;응답 시간 개선&lt;/strong&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;롤백 처리&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;결제 실패 시 Lua 스크립트를 사용해 재고 복구&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Feee648d6-9ec5-4097-a6ce-bf3629b8e49f%2FScreenshot_2024-07-10_at_1.15.48_AM.png?table=block&amp;amp;id=1a1b3c16-93a8-456e-a130-50faea865649&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1770&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;결국 레디스의 리스트를 다시 사용하고, Lua스크립트를 통해 동시 작업을 진행하여 리스트 사용 + Lua스크립트의 원자성을 통해 동시성을 보장했다. 기획했던 처음의 로직과 비슷하다. 다만 처음 로직과 다른 점은 lua 스크립트를 이용해 재고 확인, 감소, 주문 생성을 동시에 관리하는 부분이다.&lt;/p&gt;
+
+&lt;p&gt;추후 주문이 완료되었을 때 Kafka를 통해 SQL 내 재고 차감 이벤트를 발행하는 Write-back 로직은 그대로 가져갔다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;test-result-summary&quot;&gt;Test Result Summary&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;TPS
+    &lt;ul&gt;
+      &lt;li&gt;As-is: 175.76&lt;/li&gt;
+      &lt;li&gt;To-be: 235.38&lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;p&gt;→ 기존 로직 &lt;strong&gt;대비 ▲33.92% 향상&lt;/strong&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Test Takt time(Average, sec)
+    &lt;ul&gt;
+      &lt;li&gt;As-is: 23.63681054&lt;/li&gt;
+      &lt;li&gt;To-be: 11.17878842&lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;p&gt;&lt;strong&gt;→ 10000건의 요청 완료 시간 ▼52.71% 감소&lt;/strong&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;request duration(Average, sec)
+    &lt;ul&gt;
+      &lt;li&gt;As-is: 0.2293712116&lt;/li&gt;
+      &lt;li&gt;To-be: 0.1102334264&lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;p&gt;&lt;strong&gt;→ 10000건 개별 요청 응답 시간 ▼51.94% 감소&lt;/strong&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;테스트 결과도 잘 확인되었다. 추가적으로 로컬에서 실행하였기 때문에 메모리 점유율, CPU 점유율 등도 확인해 봐야 한다.&lt;/p&gt;</content>
 
       
       
@@ -54,63 +127,15 @@
       
 
       
-
+        <category term="Test-tool" />
       
-        <summary type="html">test</summary>
+        <category term="LuaScript" />
       
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">The History of Visual Communication</title>
-      <link href="https://yuju-lee.github.io/logs/history-of-visual-communication/" rel="alternate" type="text/html" title="The History of Visual Communication" />
-      <published>2022-04-12T00:00:00+09:00</published>
-      <updated>2022-04-12T00:00:00+09:00</updated>
-      <id>https://yuju-lee.github.io/logs/history-of-visual-communication</id>
-      <content type="html" xml:base="https://yuju-lee.github.io/logs/history-of-visual-communication/">&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# 주어진 밀리초 단위의 타임스탬프
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1720841280075&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# 밀리초를 초로 변환
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1000.0&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# Unix 타임스탬프를 datetime 객체로 변환
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;datetime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fromtimestamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# 밀리초 부분 계산
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timestamp_ms&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# 원하는 형식으로 변환 (밀리초 포함)
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;%Y-%m-%d %H:%M:%S&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;milliseconds&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;03&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;sh&quot;&gt;&apos;&lt;/span&gt;
-
-&lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;formatted_date_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>judy</name>
-        
-        
-      </author>
-
+        <category term="JAVA-Springboot" />
       
 
       
-        <category term="tips" />
-      
-        <category term="Development" />
-      
-
-      
-        <summary type="html">```python import datetime</summary>
+        <summary type="html">처음 가상대기열 로직에 대해 어떻게 생각했냐면… 친구들이 좋아하는 가수나 축구, 야구 티켓팅을 매번 도와달라고 해서 (별로 잘하지도 않는데도) 인터파크나 여타 다른 사이트의 티켓팅을 경험해 본 적이 좀 있다. 그래서 내가 티켓팅을 했을 때의 그 프로세스를 그대로 구현하면 어떨까, 라는 생각으로 기획했던 구조가 가상 대기열이라는 구조였다. 놀이공원처럼 큐로 대기열을 제한하고, 재고가 풀리면 다시 그 대기열에 요청을 받아서 선착순 (재고수량) 명만 결제할 수 있게끔…? 취소가 생기면 취소 재고만큼 다시 대기열을 비우고 그 대기열을 다시 채우는 방향으로 생각했다.</summary>
       
 
       
@@ -118,103 +143,35 @@
     </entry>
   
     <entry>
-      <title type="html">How To Start Learning Blockchain Development</title>
-      <link href="https://yuju-lee.github.io/how-to-start-learning-blockchain-development/" rel="alternate" type="text/html" title="How To Start Learning Blockchain Development" />
-      <published>2022-03-10T00:00:00+09:00</published>
-      <updated>2022-03-10T00:00:00+09:00</updated>
-      <id>https://yuju-lee.github.io/how-to-start-learning-blockchain-development</id>
-      <content type="html" xml:base="https://yuju-lee.github.io/how-to-start-learning-blockchain-development/">&lt;p&gt;A blockchain, originally block chain, is a continuously growing list of records, called blocks, which are linked and secured using cryptography. Each block typically contains a hash pointer as a link to a previous block, a timestamp and transaction data. By design, a blockchain is inherently resistant to modification of the data. It is &lt;em&gt;“an open, distributed ledger that can record transactions between two parties efficiently and in a verifiable and permanent way”&lt;/em&gt;.&lt;/p&gt;
+      <title type="html">MSA-17. 구매 오픈 시각 기능 구현</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-17-schduler/" rel="alternate" type="text/html" title="MSA-17. 구매 오픈 시각 기능 구현" />
+      <published>2024-07-09T00:00:00+09:00</published>
+      <updated>2024-07-09T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-17-schduler</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-17-schduler/">&lt;p&gt;결제 진입 메서드에 단순히 요청 시각과 구매 오픈 시각을 비교하는 로직을 추가했다. 그리고 엔드포인트를 통해 관리자가 특정 제품에 대한 StartTime을 지정할 수 있게 한다. 구매 오픈 시각이 설정된 제품은 비교 로직을 통해 구매 시간 전 결제를 할 수 없게 구현하였다.&lt;/p&gt;
 
-&lt;!--more--&gt;
-
-&lt;p&gt;For use as a distributed ledger, a blockchain is typically managed by a peer-to-peer network collectively adhering to a protocol for validating new blocks. Once recorded, the data in any given block cannot be altered retroactively without the alteration of all subsequent blocks, which requires collusion of the network majority.&lt;/p&gt;
-
-&lt;p&gt;Blockchains are secure by design and are an example of a distributed computing system with high Byzantine fault tolerance. Decentralized consensus has therefore been achieved with a blockchain. This makes blockchains potentially suitable for the recording of events, medical records, and other records management activities, such as identity management, transaction processing, documenting provenance, food traceability or voting.&lt;/p&gt;
-
-&lt;h2 id=&quot;code-blocks-highlighted-with-prismjs&quot;&gt;Code blocks, highlighted with &lt;a href=&quot;http://prismjs.com/index.html&quot;&gt;Prism.js&lt;/a&gt;&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-markup&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;
-&amp;lt;html lang=&quot;en&quot;&amp;gt;
-&amp;lt;head&amp;gt;
-	&amp;lt;meta charset=&quot;utf-8&quot; /&amp;gt;
-	&amp;lt;title&amp;gt;Prism&amp;lt;/title&amp;gt;
-	&amp;lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&amp;gt;
-&amp;lt;/head&amp;gt;
-&amp;lt;body&amp;gt;
-	&amp;lt;header&amp;gt;
-		&amp;lt;div class=&quot;intro&quot; data-src=&quot;templates/header-main.html&quot; data-type=&quot;text/html&quot;&amp;gt;&amp;lt;/div&amp;gt;
-		&amp;lt;ul id=&quot;features&quot;&amp;gt;
-			&amp;lt;li&amp;gt;Dead simple&amp;lt;/li&amp;gt;
-			&amp;lt;li&amp;gt;Light as a feather&amp;lt;/li&amp;gt;
-			&amp;lt;li&amp;gt;Extensible&amp;lt;/li&amp;gt;
-		&amp;lt;/ul&amp;gt;
-	&amp;lt;/header&amp;gt;
-	&amp;lt;section id=&quot;features-full&quot; class=&quot;language-markup&quot;&amp;gt;
-		&amp;lt;h1&amp;gt;Full list of features&amp;lt;/h1&amp;gt;
-		&amp;lt;ul&amp;gt;
-			&amp;lt;li&amp;gt;&amp;lt;strong&amp;gt;Only 2KB&amp;lt;/strong&amp;gt; minified &amp;amp; gzipped (core). Each language definition adds roughly 300-500 bytes.&amp;lt;/li&amp;gt;
-			&amp;lt;li&amp;gt;Very easy to extend without modifying the code, due to Prism’s &amp;lt;a href=&quot;#plugins&quot;&amp;gt;plugin architecture&amp;lt;/a&amp;gt;. Multiple hooks are scattered throughout the source.&amp;lt;/li&amp;gt;
-			&amp;lt;li&amp;gt;Very easy to &amp;lt;a href=&quot;extending.html#language-definitions&quot;&amp;gt;define new languages&amp;lt;/a&amp;gt;. Only thing you need is a good understanding of regular expressions&amp;lt;/li&amp;gt;
-		&amp;lt;/ul&amp;gt;
-	&amp;lt;/section&amp;gt;
-	&amp;lt;footer data-src=&quot;templates/footer.html&quot; data-type=&quot;text/html&quot;&amp;gt;&amp;lt;/footer&amp;gt;
-&amp;lt;/body&amp;gt;
-&amp;lt;/html&amp;gt;
+&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt; // 특정 제품의 판매 시작 시간 확인
+        LocalTime saleStartTime = saleTimeRepository.getProductSaleTime(productId);
+        LocalTime now = LocalTime.now();
+        if (saleStartTime != null &amp;amp;&amp;amp; now.isBefore(saleStartTime)) {
+            return &quot;결제는 &quot; + saleStartTime.toString() + &quot;부터 가능합니다.&quot;;
+        }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;@PostMapping(&quot;/sale-time/{productId}&quot;)
+public String setProductSaleTime(@PathVariable int productId, @RequestParam String saleTime) {
+    LocalTime saleStartTime = LocalTime.parse(saleTime, DateTimeFormatter.ofPattern(&quot;HH:mm&quot;));
+    saleTimeRepository.setProductSaleTime(productId, saleStartTime);
+    return &quot;Sale start time for product &quot; + productId + &quot; set to &quot; + saleStartTime.toString();
+}
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;var Token = _.Token = function(type, content, alias, matchedStr, greedy) {
-	this.type = type;
-	this.content = content;
-	this.alias = alias;
-	// Copy of the full string this token was created from
-	this.length = (matchedStr || &quot;&quot;).length|0;
-	this.greedy = !!greedy;
-};&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F7b3d4949-62a1-466f-b07e-65c16d9ac684%2FScreenshot_2024-07-09_at_6.38.13_PM.png?table=block&amp;amp;id=7964d64f-88fc-42f8-820f-198c6a4aa377&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=2000&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-css&quot;&gt;@import url(http://fonts.googleapis.com/css?family=Arvo);
+&lt;p&gt;오픈할 제품 id와 시각을 이렇게 Param으로 요청할 수 있다.&lt;/p&gt;
 
-/* Styles */
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F56c5750a-c1ee-42c4-a25e-5306f2da4785%2FScreenshot_2024-07-09_at_6.38.35_PM.png?table=block&amp;amp;id=ba858a55-c8e0-434b-a8dd-1267f9a39dc1&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=2000&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-body {
-	font: 100%/1.5 Questrial, sans-serif;
-	tab-size: 4;
-	hyphens: auto;
-}
-
-a {
-	color: inherit;
-}
-
-section h1 {
-	font-size: 250%;
-}
-
-section h1,
-#features li strong,
-header h2,
-footer p {
-	font: 100% Rockwell, Arvo, serif;
-}&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The first blockchain was conceptualized in 2008 by an anonymous person or group known as Satoshi Nakamoto and implemented in 2009 as a core component of bitcoin where it serves as the public ledger for all transactions. The invention of the blockchain for bitcoin made it the first digital currency to solve the double spending problem without the need of a trusted authority or central server. The bitcoin design has been the inspiration for other applications.&lt;/p&gt;
-
-&lt;h2 id=&quot;history&quot;&gt;History&lt;/h2&gt;
-
-&lt;p&gt;The first work on a cryptographically secured chain of blocks was described in 1991 by Stuart Haber and W. Scott Stornetta. In 1992, Bayer, Haber and Stornetta incorporated Merkle trees to the design, which improved its efficiency by allowing several documents to be collected into one block.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-0.3.5&amp;amp;q=80&amp;amp;fm=jpg&amp;amp;crop=entropy&amp;amp;cs=tinysrgb&amp;amp;w=1080&amp;amp;fit=max&amp;amp;ixid=eyJhcHBfaWQiOjExNzczfQ&amp;amp;s=163e3ea37d2c0fda3f586d5552752f59#wide&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;”Bitcoin is the beginning of something great: a currency without a government, something necessary and imperative.” &lt;cite&gt;– Peter Thiel, Co-Founder of PayPal –&lt;/cite&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;The first blockchain was conceptualised by an anonymous person or group known as Satoshi Nakamoto in 2008. It was implemented the following year as a core component of the digital currency bitcoin, where it serves as the public ledger for all transactions on the network. By using a blockchain, bitcoin became the first digital currency to solve the double spending problem without requiring a trusted administrator and has been the inspiration for many additional applications.&lt;/p&gt;
-
-&lt;h2 id=&quot;structure&quot;&gt;Structure&lt;/h2&gt;
-
-&lt;p&gt;A blockchain is a decentralized and distributed digital ledger that is used to record transactions across many computers so that the record cannot be altered retroactively without the alteration of all subsequent blocks and the collusion of the network. This allows the participants to verify and audit transactions inexpensively. A blockchain database is managed autonomously using a peer-to-peer network and a distributed timestamping server. They are authenticated by mass collaboration powered by collective self-interests. The result is a robust workflow where participants’ uncertainty regarding data security is marginal. The use of a blockchain removes the characteristic of infinite reproducibility from a digital asset. It confirms that each unit of value was transferred only once, solving the long-standing problem of double spending.&lt;/p&gt;
-
-&lt;p&gt;Blockchains have been described as a value-exchange protocol. This blockchain-based exchange of value can be completed more quickly, more safely and more cheaply than with traditional systems. A blockchain can assign title rights because it provides a record that compels offer and acceptance. &lt;a href=&quot;https://en.wikipedia.org/wiki/Blockchain&quot;&gt;(Source)&lt;/a&gt;&lt;/p&gt;</content>
+&lt;p&gt;결제 시각 전의 결제 요청을 아예 거부한다.&lt;/p&gt;</content>
 
       
       
@@ -231,13 +188,15 @@ footer p {
       
 
       
-        <category term="Tips" />
+        <category term="Test-tool" />
       
-        <category term="Development" />
+        <category term="LuaScript" />
+      
+        <category term="JAVA-Springboot" />
       
 
       
-        <summary type="html">A blockchain, originally block chain, is a continuously growing list of records, called blocks, which are linked and secured using cryptography. Each block typically contains a hash pointer as a link to a previous block, a timestamp and transaction data. By design, a blockchain is inherently resistant to modification of the data. It is “an open, distributed ledger that can record transactions between two parties efficiently and in a verifiable and permanent way”.</summary>
+        <summary type="html">결제 진입 메서드에 단순히 요청 시각과 구매 오픈 시각을 비교하는 로직을 추가했다. 그리고 엔드포인트를 통해 관리자가 특정 제품에 대한 StartTime을 지정할 수 있게 한다. 구매 오픈 시각이 설정된 제품은 비교 로직을 통해 구매 시간 전 결제를 할 수 없게 구현하였다.</summary>
       
 
       
@@ -245,51 +204,34 @@ footer p {
     </entry>
   
     <entry>
-      <title type="html">The Cutting Edge Architecture</title>
-      <link href="https://yuju-lee.github.io/the-cutting-edge-architecture/" rel="alternate" type="text/html" title="The Cutting Edge Architecture" />
-      <published>2019-11-13T00:00:00+09:00</published>
-      <updated>2019-11-13T00:00:00+09:00</updated>
-      <id>https://yuju-lee.github.io/the-cutting-edge-architecture</id>
-      <content type="html" xml:base="https://yuju-lee.github.io/the-cutting-edge-architecture/">&lt;p&gt;This beautiful rough concrete house located in the small town of &lt;strong&gt;Besalu in the Ayora&lt;/strong&gt;, Valencia region, Spain, has been designed by Fran Silvestre, a talented architectural firm from Spain. Set in a sloping plain, the House allows its concrete exterior to show through without overwhelming the minimal interior. The house is hexagonal, allowing for a room layout that lends itself to eye-catching reveals. Warm wood floors and cabinets pair with white walls and exposed grey concrete to give the interior a cozy yet distinctly modern feel, while abundant windows let in plenty of natural light while providing views to the outdoors.&lt;/p&gt;
+      <title type="html">MSA-14. Feign Client 적용기</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-14-feignClient/" rel="alternate" type="text/html" title="MSA-14. Feign Client 적용기" />
+      <published>2024-07-06T00:00:00+09:00</published>
+      <updated>2024-07-06T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-14-feignClient</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-14-feignClient/">&lt;p&gt;기존에 느슨한 결합을 중요 순위 1순위로 생각해 결제-주문 로직을 제외한 Service간의 통신도 Kafka를 통한 비동기 통신으로 구현했었다. 다만 Kafka의 비동기 통신 특성 상, 이벤트 형식으로 발행되는 응답을 수신 Service가 제대로 받지 못 하는 상황이 발생하여 Latch로 차이를 뒀는데, 이럴 바에는 feign client 방식으로의 동기 통신과 Kafka의 비동기 통신을 적절히 혼용하는 방향이 더욱 간결하다고 판단하였다. 따라서 단순한 요청과 응답을 주고받는 건 feign client로 서비스 간 통신 로직을 변경하였다.&lt;/p&gt;
 
-&lt;!--more--&gt;
+&lt;p&gt;현재 내 프로젝트에서의 서비스간 단순 통신은 아래와 같고, 이 로직을 전부 변경했다.&lt;/p&gt;
 
-&lt;p&gt;In this way the house is conceived as a piece deposited on the ground, engaging the unevenness. A piece constructed in the same white lime, with the same primacy of the massif over the span, that takes advantage of the edge of the lot to arrange its holes and to integrate in the fragmentation of the surroundings.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;myPage&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;The interior space of the dwelling is articulated through the void in which is located the nucleus of communication arranged parallel to the cut of the mountain, without touching it. On the ground floor are the garage and the cellar, on this is arranged a volume of two floors with four rooms.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Product Service → Member Service / 위시리스트 전달 / 완료&lt;/li&gt;
+  &lt;li&gt;Order Service → Member Service / 주문내역 전달 / 완료&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;Not only is this visually striking architectural design, but it’s beautifully considered and practical for those who will experience this school on a daily basis.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;createOrder&lt;/strong&gt;&lt;/p&gt;
 
-&lt;blockquote&gt;“To expect the unexpected shows a thoroughly modern intellect.” &lt;/blockquote&gt;
+&lt;ul&gt;
+  &lt;li&gt;Prodcut Service → Order Service / 상품 정보 / 완료&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;London is a leading global city, with strengths in the arts, commerce, education, entertainment, fashion, finance, healthcare, media, professional services, research and development, tourism, and transport all contributing to its prominence. It is one of the world’s leading financial centres and has the fifth-or sixth-largest metropolitan area GDP in the world depending on measurement. London is a world cultural capital. It is the world’s most-visited city as measured by international arrivals and has the world’s largest city airport system measured by passenger traffic. London is the world’s leading investment destination, hosting more international retailers and ultra high-net-worth individuals than any other city. London’s 43 universities form the largest concentration of higher education institutes in Europe, and a 2014 report placed it first in the world university rankings. According to the report London also ranks first in the world in software, multimedia development and design, and shares first position in technology readiness. In 2012, London became the first city to host the modern &lt;a href=&quot;https://en.wikipedia.org/wiki/Summer_Olympic_Games&quot;&gt;Summer Olympic Games three times&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;변경 과정은 어렵지 않았으나, 에러가 한 번 생겨 트러블 슈팅한 기록이다.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1509440400926-95da53da5dc0?ixlib=rb-0.3.5&amp;amp;q=80&amp;amp;fm=jpg&amp;amp;crop=entropy&amp;amp;cs=tinysrgb&amp;amp;w=1080&amp;amp;fit=max&amp;amp;s=7918f34cc00f122a16cb75b2378eefab#wide&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;java.lang.IllegalStateException: Error processing condition on org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration.propertySourcesPlaceholderConfigurer
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;blockquote class=&quot;alignleft&quot;&gt;“Architecture should speak of its time and place, but yearn for timelessness.” &lt;cite&gt;― Frank Gehry&lt;/cite&gt;&lt;/blockquote&gt;
-
-&lt;p&gt;London has a diverse range of peoples and cultures, and more than 300 languages are spoken within Greater London. The Greater London Authority estimated its population to be 8.63 million in 2015, the largest of any municipality in the European Union, and accounting for 12.5 percent of the UK population. London’s urban area is the second most populous in the EU, after Paris, with 9,787,426 inhabitants according to the 2011 census. The city’s metropolitan area is one of the most populous in Europe with 13,879,757 inhabitants, while the Greater London Authority states the population of the city-region (covering a large part of south east England) as 22.7 million. London was the world’s most populous city from around 1831 to 1925.&lt;/p&gt;
-
-&lt;p&gt;London contains four World Heritage Sites: the Tower of London; Kew Gardens; the site comprising the Palace of Westminster, Westminster Abbey, and St Margaret’s Church; and the historic settlement of Greenwich (in which the Royal Observatory, Greenwich marks the Prime Meridian, 0° longitude, and GMT). Other famous landmarks include Buckingham Palace, the London Eye, Piccadilly Circus, St Paul’s Cathedral, Tower Bridge, Trafalgar Square, and The Shard. London is home to numerous museums, galleries, libraries, sporting events and other cultural institutions, including the British Museum, National Gallery, Tate Modern, British Library and 40 West End theatres. The London Underground is the oldest underground railway network in the world.&lt;/p&gt;
-
-&lt;h2 id=&quot;museum-of-london&quot;&gt;Museum of London&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://images.unsplash.com/photo-1484626753559-5fa3ea273ae8?ixlib=rb-0.3.5&amp;amp;q=80&amp;amp;fm=jpg&amp;amp;crop=entropy&amp;amp;cs=tinysrgb&amp;amp;w=1080&amp;amp;fit=max&amp;amp;s=c21ca0246d75ba185a49d687683dc08c#wide&quot; alt=&quot;&quot; /&gt;
-&lt;small&gt;Photo by &lt;a href=&quot;https://unsplash.com/@dnevozhai?utm_source=ghost&amp;amp;utm_medium=referral&amp;amp;utm_campaign=api-credit&quot;&gt;Denys Nevozhai&lt;/a&gt; / &lt;a href=&quot;https://unsplash.com/?utm_source=ghost&amp;amp;utm_medium=referral&amp;amp;utm_campaign=api-credit&quot;&gt;Unsplash&lt;/a&gt;&lt;/small&gt;&lt;/p&gt;
-
-&lt;p&gt;The Museum of London documents the history of London from prehistoric to modern times. The museum is located on London Wall, close to the Barbican Centre as part of the striking Barbican complex of buildings created in the 1960s and 1970s as an innovative approach to re-development within a bomb-damaged area of the City of London.&lt;/p&gt;
-
-&lt;p&gt;It is a few minutes’ walk north of &lt;a href=&quot;https://en.wikipedia.org/wiki/St_Paul%27s_Cathedral&quot;&gt;St Paul’s Cathedral&lt;/a&gt;, overlooking the remains of the Roman city wall and on the edge of the oldest part of London, now its main financial district. It is primarily concerned with the social history of London and its inhabitants throughout time. The museum is jointly controlled and funded by the City of London Corporation and the Greater London Authority.&lt;/p&gt;
-
-&lt;p&gt;In March 2015, the museum announced plans to move from its Barbican site to nearby Smithfield Market. The move, contingent upon raising an estimated £70 million, is planned to be complete by 2021.&lt;/p&gt;
-
-&lt;h2 id=&quot;description&quot;&gt;Description&lt;/h2&gt;
-
-&lt;p&gt;The amalgamation of the collections previously held by the City Corporation at the Guildhall Museum and of the London Museum, which was located in Kensington Palace was agreed in 1964. The Museum of London Act, allowing for the merger, was passed in the following year.&lt;/p&gt;
-
-&lt;p&gt;The museum was opened in December 1976 as part of the Barbican Estate, The architects were Philip Powell and Hidalgo Moya, who adopted an innovative approach to museum design, whereby the galleries were laid out so that there was only one route through the museum – from the prehistoric period to the modern galleries.&lt;/p&gt;
-
-&lt;p&gt;The museum comprises a series of chronological galleries containing original artefacts, models, pictures and diagrams, with a strong emphasis on archaeological discoveries, the built city, urban development and London’s social and cultural life, with interactive displays and activities for all ages. Fragments of the Roman London Wall can be seen just outside the museum. The prehistoric gallery, “London Before London” and the “Medieval London” gallery have already been updated, and in 2010 a refurbished gallery on &lt;em&gt;“War, Plague and Fire”&lt;/em&gt; opened, covering the period of the English Civil War and the Great Fire of London.&lt;/p&gt;</content>
+&lt;p&gt;뭐 한 것도 없는데 오류가 나서 찾아 보니 Spring Colud랑 Springboot 버전이 맞지 않아서였다. Spring Cloud 버전을 맞춰 주고 다시 실행하니 잘 됐다.&lt;/p&gt;</content>
 
       
       
@@ -306,11 +248,831 @@ footer p {
       
 
       
-        <category term="java" />
+        <category term="Feign-Client" />
+      
+        <category term="JAVA-Springboot" />
       
 
       
-        <summary type="html">This beautiful rough concrete house located in the small town of Besalu in the Ayora, Valencia region, Spain, has been designed by Fran Silvestre, a talented architectural firm from Spain. Set in a sloping plain, the House allows its concrete exterior to show through without overwhelming the minimal interior. The house is hexagonal, allowing for a room layout that lends itself to eye-catching reveals. Warm wood floors and cabinets pair with white walls and exposed grey concrete to give the interior a cozy yet distinctly modern feel, while abundant windows let in plenty of natural light while providing views to the outdoors.</summary>
+        <summary type="html">기존에 느슨한 결합을 중요 순위 1순위로 생각해 결제-주문 로직을 제외한 Service간의 통신도 Kafka를 통한 비동기 통신으로 구현했었다. 다만 Kafka의 비동기 통신 특성 상, 이벤트 형식으로 발행되는 응답을 수신 Service가 제대로 받지 못 하는 상황이 발생하여 Latch로 차이를 뒀는데, 이럴 바에는 feign client 방식으로의 동기 통신과 Kafka의 비동기 통신을 적절히 혼용하는 방향이 더욱 간결하다고 판단하였다. 따라서 단순한 요청과 응답을 주고받는 건 feign client로 서비스 간 통신 로직을 변경하였다.</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">MSA-15. 자동화 테스트 툴 제작</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-15-testTool/" rel="alternate" type="text/html" title="MSA-15. 자동화 테스트 툴 제작" />
+      <published>2024-07-06T00:00:00+09:00</published>
+      <updated>2024-07-06T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-15-testTool</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-15-testTool/">&lt;h3 id=&quot;python-스크립트로-과부하-테스트&quot;&gt;Python 스크립트로 과부하 테스트&lt;/h3&gt;
+
+&lt;p&gt;쿼리문으로 10000명의 회원 정보를 넣었다.
+&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fdbf328e7-f800-4d94-adad-8fac9e1429d8%2FScreenshot_2024-07-07_at_2.34.30_AM.png?table=block&amp;amp;id=23d99b6d-4d55-442c-98d4-38ef652ec8cc&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1120&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;이메일 인증을 우회하기 위해 enabled=true로 직접 지정하여 10000개를 생성.&lt;/p&gt;
+
+&lt;p&gt;이메일, 토큰 정보가 헤더에 들어가야 하니 10000명을 순차적으로 로그인 시키는 파이썬 스크립트를 만들어 돌린 뒤, 이 정보를 헤더에 함께 넣어 결제 진입 API로 동시에 요청한다. 그리고 결과를 txt 파일로 뽑아 summary했다.&lt;/p&gt;
+
+&lt;p&gt;분산 락으로 테스트하였을 때에는 서버가 터지거나 그러진 않았다. order도 잘 생성되었음.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Faff44e53-cf32-4c26-91ee-578402eb38cb%2FScreenshot_2024-07-07_at_2.38.30_AM.png?table=block&amp;amp;id=79486b68-9142-4a08-84ee-77047b956dd5&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1440&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;center&gt;첫 번째 테스트 결과&lt;/center&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F9de5acea-1fb6-467e-a7a5-c8cde6569593%2FScreenshot_2024-07-07_at_2.36.30_AM.png?table=block&amp;amp;id=5a85c351-c15e-4916-886b-bdf8fb5b027b&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1440&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;center&gt;두 번째 테스트 결과&lt;/center&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;모든 결과는 &lt;a href=&quot;https://docs.google.com/spreadsheets/d/1EtPv7QxRM_sXQHPGmroqycDekuZ1-orG6XYZ0TE27EQ/edit?gid=356041803#gid=356041803&quot;&gt;여기&lt;/a&gt;에서 확인할 수 있다.&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>judy</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="Test-tool" />
+      
+        <category term="Distributed-lock" />
+      
+        <category term="JAVA-Springboot" />
+      
+
+      
+        <summary type="html">Python 스크립트로 과부하 테스트</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">MSA-13. 재고 데이터의 무결성 보장</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-13-integrityGuaranteed/" rel="alternate" type="text/html" title="MSA-13. 재고 데이터의 무결성 보장" />
+      <published>2024-07-03T00:00:00+09:00</published>
+      <updated>2024-07-03T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-13-integrityGuaranteed</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-13-integrityGuaranteed/">&lt;p&gt;남은 수량은 실시간으로 줄어들기 때문에 최대한 빠르게 Read &amp;amp; Write 할 수 있어야 한다.&lt;/p&gt;
+
+&lt;p&gt;따라서 실제 재고 데이터는 ProductService의 연결된 MySQL - spring_proj_product DB에 저장되어 있지만 빠른 읽기와 쓰기를 위해 Redis를 추가적으로 이용했다. 재고 관리를 위한 Redis는 단 하나, 모든 서비스가 통합하여 사용하기 때문에 Redis를 연결만 해서 사용하면 된다.&lt;/p&gt;
+
+&lt;p&gt;Redis 재고와 SQL DB 사이의 무결성 보장은 &lt;strong&gt;결제 과정 중 결제가 완료되어 주문이 생성되었을 때에만 이벤트를 발행&lt;/strong&gt;한다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;Map&amp;lt;String, Object&amp;gt; stockUpdateData = new HashMap&amp;lt;&amp;gt;();
+stockUpdateData.put(&quot;productId&quot;, productId);
+stockUpdateData.put(&quot;stock&quot;, redisTemplate.opsForValue().get(redisKey));
+kafkaTemplate.send(stockUpdateTopic, objectMapper.writeValueAsString(stockUpdateData));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;결제가 완료되면 이런 식으로 카프카 이벤트를 발행한다. 그럼 Payment에서 발행하는 이벤트를 구독하던 Product Service가 결제 완료 이벤트 시 발생했을 때 이벤트를 냉큼 받아 sql 내 저장된 재고를 차감하는 로직을 수행한다.&lt;/p&gt;
+
+&lt;p&gt;이렇게 하면 반대로 Payment가 터져서 레디스가 기록하지 못 해도 MySQL 데이터가 남아있어서 괜춘하다.&lt;/p&gt;
+
+&lt;p&gt;결제는 이렇게 했고, 주문 과정에서 주문 후 취소 / 배송 후 취소(Return)도 MySQL 데이터와 레디스를 동시에 재고를 복구하도록 했다.&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>judy</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="Redis" />
+      
+        <category term="JAVA-Springboot" />
+      
+
+      
+        <summary type="html">남은 수량은 실시간으로 줄어들기 때문에 최대한 빠르게 Read &amp;amp; Write 할 수 있어야 한다.</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">MSA-12. 분산락 전환기</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-12-distributedLock/" rel="alternate" type="text/html" title="MSA-12. 분산락 전환기" />
+      <published>2024-07-03T00:00:00+09:00</published>
+      <updated>2024-07-03T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-12-distributedLock</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-12-distributedLock/">&lt;p&gt;기획했던 대로 우선 구현해 보았다.&lt;/p&gt;
+
+&lt;h3 id=&quot;결제-진입-로직&quot;&gt;결제 진입 로직&lt;/h3&gt;
+
+&lt;p&gt;클라이언트는 결제 요청을 하면 대기열에 진입한다. (Client → PaymentController → PaymentQueueService → PaymentService)&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;PaymentController&lt;/strong&gt;: 결제 요청을 수신&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;PaymentQueueService:&lt;/strong&gt; 결제 요청을 대기열에 추가하고 대기열에서 요청을 가져옴&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;PaymentService:&lt;/strong&gt; 주기적으로 대기열을 확인하여 결제 요청 처리 (1초로 일단 잡음)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;클라이언트는 결제 요청을 할 때 {제품명, 구매수량} 형식으로 PaymentService에 요청한다.&lt;/p&gt;
+
+&lt;p&gt;클라이언트의 결제 요청을 PaymentQueueService가 받으면, &lt;strong&gt;실시간 재고확인을 우선적으로 진행&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;재고가 남아있는 경우 가상 대기열에 추가&lt;/li&gt;
+  &lt;li&gt;재고가 없는 경우 대기열 추가 거부 → 품절 메시지 응답&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;PaymentService는 대기열의 요청을 결제 요청 로직을 결제 서비스로 보낸다. (결제 시도 실패 20% / 결제 중 실패 20%)
+결제는 실제 결제가 이루어지지 않기 때문에 결제가 성공하면 결제 메시지와 함께 해당 정보를 order 서비스로 보내고, 결제가 실패하면 레디스에서 재고를 바로 복구한다.&lt;/p&gt;
+
+&lt;p&gt;여기까지는 구현하였으나, 분산락으로도 구현이 가능하다고 한다. 따라서 분산락 완성 → 테스트툴 구축 → 분산락 테스트하고 이전 가상 대기열로 롤백해서 같은 테스트툴로 테스트를 해 볼 예정이다.&lt;/p&gt;
+
+&lt;h3 id=&quot;분산락이란-&quot;&gt;분산락이란? 🔐&lt;/h3&gt;
+
+&lt;p&gt;분산 락은 여러 클라이언트가 동시에 특정 자원에 접근하지 못하도록 하는 락 메커니즘이다. 이는 주로 Redis와 같은 인메모리 데이터 저장소를 통해 구현되며, 고속의 락/언락 연산이 가능하여 분산 환경에서 효율적인 자원 관리를 할 수 있는 것이 장점이다.&lt;/p&gt;
+
+&lt;h3 id=&quot;redis를-사용한-분산-락의-작동-방식&quot;&gt;Redis를 사용한 분산 락의 작동 방식&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;락 획득 (Lock Acquisition)&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;클라이언트는 특정 키에 대해 SETNX (Set if Not Exists) 명령을 사용하여 락을 시도&lt;/li&gt;
+      &lt;li&gt;락 키에 대한 값을 “locked”로 설정하고, 유효 시간(TTL)을 설정하여 자동으로 락 해제&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;락 해제 (Lock Release)&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;클라이언트는 작업이 완료된 후 락 해제 → DEL 명령을 사용하여 락 키 삭제
+        &lt;ul&gt;
+          &lt;li&gt;락 해제 시 키가 다른 클라이언트에 의해 변경되지 않았음을 보장하기 위해 원자적 체크와 삭제 사용&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;락 유효 시간 (Lock Expiry)&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;락을 설정할 때 유효 시간을 설정하여 특정 시간이 지나면 자동으로 락이 해제
+        &lt;ul&gt;
+          &lt;li&gt;이는 클라이언트가 비정상적으로 종료되어 락을 해제하지 못할 경우에도 다른 클라이언트가 락을 획득할 수 있도록 보장할 수 있음&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;public String processPayment(String email, int productId, int amount) throws JsonProcessingException {
+    // 제품 재고를 위한 Redis 키
+    String redisKey = redisStockKeyPrefix + productId;
+
+    // 분산 락을 10초 동안 획득 시도
+    Boolean acquired = redisTemplate.opsForValue().setIfAbsent(redisKey + &quot;:lock&quot;, &quot;locked&quot;, 10, TimeUnit.SECONDS);
+    if (acquired != null &amp;amp;&amp;amp; acquired) {
+        try {
+            // Redis에서 현재 재고 값을 가져옴
+            String stockValueStr = redisTemplate.opsForValue().get(redisKey);
+
+            if (stockValueStr != null) {
+                Integer stock = Integer.valueOf(stockValueStr);
+
+                // 재고 확인
+                if (stock &amp;gt;= amount) {
+                    // 결제 실패 확률 20%
+                    boolean paymentSuccess = random.nextDouble() &amp;gt;= 0.2;
+
+                    if (paymentSuccess) {
+                        // 결제 성공 시 재고 차감
+                        redisTemplate.opsForValue().decrement(redisKey, amount);
+
+                        // Kafka 이벤트 발행
+                        Map&amp;lt;String, Object&amp;gt; orderData = new HashMap&amp;lt;&amp;gt;();
+                        orderData.put(&quot;email&quot;, email);
+                        orderData.put(&quot;productId&quot;, productId);
+                        orderData.put(&quot;amount&quot;, amount);
+                        orderData.put(&quot;status&quot;, &quot;COMPLETED&quot;);
+                        kafkaTemplate.send(&quot;order-topic&quot;, objectMapper.writeValueAsString(orderData));
+                        System.out.println(&quot;order sent&quot;);
+
+                        // Kafka 재고 차감 이벤트 발행
+                        Map&amp;lt;String, Object&amp;gt; stockUpdateData = new HashMap&amp;lt;&amp;gt;();
+                        stockUpdateData.put(&quot;productId&quot;, productId);
+                        stockUpdateData.put(&quot;stock&quot;, redisTemplate.opsForValue().get(redisKey));
+                        kafkaTemplate.send(stockUpdateTopic, objectMapper.writeValueAsString(stockUpdateData));
+
+                        System.out.println(&quot;Payment succeeded for &quot; + email + &quot; for product &quot; + productId);
+                            return &quot;Payment succeeded for &quot; + email + &quot; for product &quot; + productId;
+                        } else {
+                            System.out.println(&quot;Payment failed for &quot; + email + &quot; for product &quot; + productId);
+                            return &quot;Payment failed for &quot; + email + &quot; for product &quot; + productId;
+                        }
+                    } else {
+                    System.out.println(&quot;재고가 부족합니다. 현재 재고: &quot; + stock);
+                    return &quot;재고가 부족합니다. 현재 재고: &quot; + stock;
+                }
+            } else {
+                System.out.println(&quot;재고 정보가 존재하지 않습니다. Redis 키: &quot; + redisKey);
+                return &quot;재고 정보가 존재하지 않습니다. Redis 키: &quot; + redisKey;
+            }
+        } finally {
+            // 락 해제
+            redisTemplate.delete(redisKey + &quot;:lock&quot;);
+        }
+    } else {
+        System.out.println(&quot;잠시 후 다시 시도해 주세요.&quot;);
+        return &quot;잠시 후 다시 시도해 주세요.&quot;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;위와 같은 방식으로 구현하였고, 테스트 시 결제가 완료되었다.&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>judy</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="Kafka" />
+      
+        <category term="Redis" />
+      
+        <category term="Transaction" />
+      
+        <category term="Distributed-Lock" />
+      
+        <category term="JAVA-Springboot" />
+      
+
+      
+        <summary type="html">기획했던 대로 우선 구현해 보았다.</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-11-payment/" rel="alternate" type="text/html" title="MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획" />
+      <published>2024-07-03T00:00:00+09:00</published>
+      <updated>2024-07-03T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-11-payment</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-11-payment/">&lt;p&gt;대용량 트래픽 처리에 대한 경험이 없어 기획부터 어려웠다. 그래도 어떻게 처리할 것인지 예상되는 로직을 기획하고 구현해 보려고 한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;idea&quot;&gt;&lt;em&gt;IDEA&lt;/em&gt;&lt;/h3&gt;
+
+&lt;p&gt;가상 대기열을 사용하여 구매 오픈하자마자 접속한 초기 접속자를 관리하고, 결제 시에는 Redis를 사용하여 재고를 빠르게 확인하며, 예약 상태를 통해 결제 프로세스 관리&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;구매 버튼을 누르면&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;가상 대기열에 추가&lt;/strong&gt;: 사용자가 결제 요청을 보낼 때 가상 대기열에 추가되어 재고 서비스에 재고 확인 요청 보낸 뒤 재고 서비스에서 재고를 확인하고, 재고가 충분하면 &lt;strong&gt;재고 예약&lt;/strong&gt;
+    &lt;ol&gt;
+      &lt;li&gt;재고가 없을 시 대기열 추가 X → 구매 예약으로 이동&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;대기열에서 처리&lt;/strong&gt;: 대기열에서 차례가 되면 결제 요청 서비스로 보내 결제 처리 시작&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;결제 처리&lt;/strong&gt;: 결제 서비스에서 결제를 처리하고, 결제가 성공하면 최종적으로 주문 확정
+    &lt;ol&gt;
+      &lt;li&gt;결제가 실패하면 재고 예약을 취소하고, 주문 취소&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;상태 업데이트&lt;/strong&gt;: 각 서비스는 상태를 성공으로 업데이트하고, 이벤트를 발행해 OrderService로 발송&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;모든 재고가 소진(품절)되면 구매 예약을 걸어 놓을 수 있으며, 취소 재고 발생 시 예약자에게 이메일로 알림 &amp;gt; 이후 위의 로직을 다시 적용&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;가상-대기열&quot;&gt;가상 대기열&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F3cec5d45-1253-40d4-b2d8-46a077552762%2FUntitled.png?table=block&amp;amp;id=68f4fb32-ded7-4723-9c61-4fa0b912ef84&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=770&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;Untitled&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;개념&quot;&gt;개념&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;사용자 요청 수집&lt;/strong&gt;: 모든 사용자가 한 번에 서버에 접속하지 않도록 요청을 대기열에 수집함
+    &lt;ul&gt;
+      &lt;li&gt;특정 n 개 이상의 요청이 들어올 경우, 가상 대기열을 생성하는 로직으로 이동해야 할 듯&lt;/li&gt;
+      &lt;li&gt;그럼 “어떤 기준” 시간에 “n개의 요청”이 들어오는지 감시하는 로직도 필요할 것 같음&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;순차 처리&lt;/strong&gt;: 대기열에서 순차적으로 요청을 꺼내어 처리&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;상태 관리&lt;/strong&gt;: 대기열의 상태를 사용자에게 실시간 업데이트&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;설계&quot;&gt;설계&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;DB 구조
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;Queue Table&lt;/strong&gt;
+        &lt;ul&gt;
+          &lt;li&gt;id: 고유 식별자 (PK)&lt;/li&gt;
+          &lt;li&gt;memberEmail: 사용자 식별자&lt;/li&gt;
+          &lt;li&gt;requestTime: 요청 시간&lt;/li&gt;
+          &lt;li&gt;status: 요청 상태&lt;/li&gt;
+          &lt;li&gt;position: 대기열에서의 위치&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;로직
+    &lt;ol&gt;
+      &lt;li&gt;&lt;strong&gt;요청 수집&lt;/strong&gt;
+        &lt;ul&gt;
+          &lt;li&gt;사용자가 서버에 요청을 보내면 요청을 대기열 테이블에 저장&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;대기열 상태 확인&lt;/strong&gt;
+        &lt;ul&gt;
+          &lt;li&gt;사용자가 요청할 때마다 새로운 대기열 위치 및 예상 대기 시간 반환&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;요청 처리&lt;/strong&gt;
+        &lt;ul&gt;
+          &lt;li&gt;백그라운드 작업을 통해 대기열에서 순차적으로 요청을 가져와 처리&lt;/li&gt;
+          &lt;li&gt;처리 후 상태 업데이트 → 사용자에게 결과 통지&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;분산-트랜잭션&quot;&gt;분산 트랜잭션&lt;/h2&gt;
+
+&lt;h3 id=&quot;saga-패턴&quot;&gt;Saga 패턴&lt;/h3&gt;
+
+&lt;p&gt;Saga 패턴은 긴 실행 시간 트랜잭션을 여러 개의 작은 트랜잭션으로 나누어 처리하는 방법이다. 각 단계는 독립적인 로컬 트랜잭션으로 처리되며, 실패 시 보상 트랜잭션을 실행하여 시스템의 일관성을 유지할 수 있다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;레디스-활용&quot;&gt;레디스 활용&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;결제 생성 요청 처리&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;Order Service&lt;/strong&gt;는 클라이언트로부터 주문 요청을 받으면 요청된 각 상품에 대해 Redis에서 재고 확인&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;원자적 재고 감소&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;결제 처리&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;Payment Service&lt;/strong&gt;는 결제 요청을 처리&lt;/li&gt;
+      &lt;li&gt;결제 성공 시 재고 업데이트를 확정&lt;/li&gt;
+      &lt;li&gt;결제 실패 시 Redis에서 원자적으로 재고 복원&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;→ Lua 스크립트 사용하기&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fae6bf094-d7d2-464e-be75-6f85042f8f64%2FIMG_0265.png?table=block&amp;amp;id=b62775cf-72e8-4c23-acca-4b1670dda2d9&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1440&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;
+(너무 대충 그렸다…)&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;ProductService&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;Redis와 MySQL을 동기화하여 재고를 관리하고, Kafka를 통해 재고 증감 구독&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;PaymentQueueService&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;결제 요청을 받아 Redis에서 재고를 확인하고, 재고가 충분할 경우 요청을 대기열에 추가&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;PaymentService&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;대기열을 주기적으로 확인하여 결제 요청을 처리하고, 20% 확률로 결제를 실패&lt;/li&gt;
+      &lt;li&gt;결제가 성공하면 order-request-topic으로 정보를 전송, 실패 시 재고 복구 후 실패 응답 반환&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;OrderService&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;order-request-topic에서 결제 성공 정보를 받아 주문을 생성&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>judy</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="Kafka" />
+      
+        <category term="Redis" />
+      
+        <category term="Transaction" />
+      
+        <category term="JAVA-Springboot" />
+      
+
+      
+        <summary type="html">대용량 트래픽 처리에 대한 경험이 없어 기획부터 어려웠다. 그래도 어떻게 처리할 것인지 예상되는 로직을 기획하고 구현해 보려고 한다.</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">MSA-10. 동시 로그아웃</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-10-logoutAll/" rel="alternate" type="text/html" title="MSA-10. 동시 로그아웃" />
+      <published>2024-07-02T00:00:00+09:00</published>
+      <updated>2024-07-02T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-10-logoutAll</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-10-logoutAll/">&lt;p&gt;발급한 모든 리퀘스트 토큰과 엑세스 토큰을 무효화하면 된다. 레디스에서 요청한 해당 이메일로 등록된 모든 토큰 데이터를 삭제하는 방식.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;as-is&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;로그인
+    &lt;ol&gt;
+      &lt;li&gt;로그인 시 이메일 / 비번 확인&lt;/li&gt;
+      &lt;li&gt;맞을 경우 리프레시 토큰 여부 확인
+        &lt;ol&gt;
+          &lt;li&gt;리프레시 토큰 없을 경우 리프레시 / 엑세스 토큰 발급해 리프레시 토큰만 저장&lt;/li&gt;
+          &lt;li&gt;리프레시 토큰 있을 경우 엑세스 토큰 발급&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;로그아웃
+    &lt;ol&gt;
+      &lt;li&gt;로그아웃 시 헤더에 엑세스 토큰을 포함해 요청&lt;/li&gt;
+      &lt;li&gt;엑세스 토큰을 레디스의 블랙리스트에 등록 (1시간 뒤 사라지게 설정)&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;to-be&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;로그인
+    &lt;ol&gt;
+      &lt;li&gt;로그인 시 이메일 / 비번 확인&lt;/li&gt;
+      &lt;li&gt;이메일, 비번 맞을 경우 리프레시 토큰 여부 확인
+        &lt;ol&gt;
+          &lt;li&gt;리프레시 토큰 없을 경우 리프레시 / 엑세스 토큰 발급하고 &lt;strong&gt;리프레시, 엑세스 토큰 둘 다 저장&lt;/strong&gt;&lt;/li&gt;
+          &lt;li&gt;리프레시 토큰 있을 경우 &lt;strong&gt;엑세스 토큰 발급 후 저장&lt;/strong&gt;&lt;/li&gt;
+        &lt;/ol&gt;
+      &lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;일반 로그아웃
+    &lt;ol&gt;
+      &lt;li&gt;로그아웃 시 헤더에 엑세스 토큰을 포함해 요청&lt;/li&gt;
+      &lt;li&gt;엑세스 토큰을 레디스의 블랙리스트에 등록&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;모든 기기 로그아웃
+    &lt;ol&gt;
+      &lt;li&gt;헤더에 이메일 정보를 포함해 로그아웃 요청&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;해당 이메일로 등록된 모든 리퀘스트, 엑세스 토큰 삭제 및 엑세스 토큰은 블랙리스트 등록&lt;/strong&gt;&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>judy</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="JWT" />
+      
+        <category term="JAVA-Springboot" />
+      
+
+      
+        <summary type="html">발급한 모든 리퀘스트 토큰과 엑세스 토큰을 무효화하면 된다. 레디스에서 요청한 해당 이메일로 등록된 모든 토큰 데이터를 삭제하는 방식.</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">MSA-9. MSA 적용과 API Gateway</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-9-MSAandAPIgateway/" rel="alternate" type="text/html" title="MSA-9. MSA 적용과 API Gateway" />
+      <published>2024-06-26T00:00:00+09:00</published>
+      <updated>2024-06-26T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-9-MSAandAPIgateway</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-9-MSAandAPIgateway/">&lt;p&gt;드디어 MSA를 구현하기 위해 모놀리식으로 작성하던 프로젝트를 나누는 작업을 시작했다. 우선 도메인별로 기능을 묶을라 했는데 코드가 하도 꼬여 있어서 그냥 프로젝트를 새로 파기로 결심했다. 기존 모놀리식 프로젝트 안녕… 새로 [member / product / order / API gateway] eureka client / eureka server 이렇게 나누고, db를 세 개의 마이크로 서비스에 따라 각자 파기로 했다. 레디스는 &lt;strong&gt;별다른 분리 없이 하나의 레디스&lt;/strong&gt;를 사용한다.&lt;/p&gt;
+
+&lt;h2 id=&quot;msa-적용하기&quot;&gt;MSA 적용하기&lt;/h2&gt;
+
+&lt;h3 id=&quot;1-도메인-분리하여-마이크로-서비스-생성&quot;&gt;1. 도메인 분리하여 마이크로 서비스 생성&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Eureka Server&lt;/li&gt;
+  &lt;li&gt;Eureka Client
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;API-gateway&lt;/strong&gt; - 8080&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;member&lt;/strong&gt; - 8081
+        &lt;ul&gt;
+          &lt;li&gt;redis: 6379:6379&lt;/li&gt;
+          &lt;li&gt;mysql: 3306:3306
+            &lt;ul&gt;
+              &lt;li&gt;db: spring_proj_member&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;product&lt;/strong&gt; - 8082
+        &lt;ul&gt;
+          &lt;li&gt;redis: 6380:6379&lt;/li&gt;
+          &lt;li&gt;mysql: 3308:3306
+            &lt;ul&gt;
+              &lt;li&gt;db: spring_proj_product&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;order&lt;/strong&gt; - 8083
+        &lt;ul&gt;
+          &lt;li&gt;redis: 6381:6379&lt;/li&gt;
+          &lt;li&gt;mysql: 3309:3306
+            &lt;ul&gt;
+              &lt;li&gt;db: spring_proj_order&lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;payment&lt;/strong&gt; - 8084
+        &lt;ul&gt;
+          &lt;li&gt;redis: 6382:6379&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;이런 식으로 연결했다. 호스트 포트는 충돌이 일어나니 다른 포트로 연결하고, 컨테이너를 각각 세웠다.&lt;/p&gt;
+
+&lt;p&gt;세 가지의 도메인 각각 db, 인텔리제이 프로젝트를 생성하고 도커 설정까지 완료했다. 위에서 명시해 둔 것처럼 각 프로젝트는 로컬 포트 8081, 8082, 8083로 설정했고 동시에 구동되는 것까지 확인.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;약간 이렇게 생각하면 쉽겠다. API gateway는 무조건 인증이 완료된 요청만 각각의 마이크로 서비스에 전달한다…!&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;그럼 우선 인증 관련 내용은 전부 제거하고 API gateway 에서 토큰에 대한 검증과 securityConfig를 설정한 다음 처리하는 방향으로.&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;이제 기존 구현한 코드를 도메인 별로 전부 분할한다. 그리고 SecurityConfig, JWTUtil같은 토큰과 인증 관련 코드는 전부 지우고 도메인 별로 기능을 정리한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;2-api-gateway-만들기&quot;&gt;2. API Gateway 만들기&lt;/h3&gt;
+
+&lt;p&gt;API Gateway는 Spring cloud와 Netflix Eureka를 이용했다. webFlux을 적용해 비동기 처리도 지원한다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;클라이언트 → API Gateway&lt;/strong&gt;: 클라이언트가 JWT 토큰을 포함하여 API Gateway에 요청을 보냄&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;API Gateway에서 JWT 검증&lt;/strong&gt;: API Gateway는 JWT 토큰을 검증하고 검증된 사용자 정보를 헤더에 추가&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Eureka 서버로의 서비스 디스커버리&lt;/strong&gt;: API Gateway는 부팅 시 Eureka 서버에서 마이크로서비스의 위치를 조회하여 캐시&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;API Gateway → 마이크로서비스&lt;/strong&gt;: API Gateway는 요청을 적절한 마이크로서비스로 전달&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;마이크로서비스에서 요청 처리&lt;/strong&gt;: 마이크로서비스는 전달된 요청을 처리&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;API Gateway 서비스에 JWT 토큰의 검증 로직을 포함하여 검증 로직을 통과한 요청만 마이크로 서비스로 보낼 때 헤더에 사용자의 이메일 정보를 헤더에 담아 마이크로 서비스에 전달 → 각 마이크로 서비스는 검증된 이메일을 신뢰하고 해당 이메일로 각 요청을 처리한다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;return chain.filter(exchange.mutate()
+                                .request(exchange.getRequest().mutate()
+                                        .header(&quot;Authenticated-User&quot;, email)
+                                        .build())
+                                .build())
+                        .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;헤더의 토큰을 검증하는 방식이 아닌, 헤더에 포함된 이메일로 로직을 처리할 수 있게 각 마이크로 서비스의 로직을 변경했다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;그래서 일단 각 마이크로서비스의 securityConfig에서 permitAll()로 다 뚫어놓긴 했다 (클라이언트가 각 서버 직통 포트로 요청 보낼 일은 없다는 조건을 상정하였으나, 이 부분은 더 공부해야 할 것 같다.)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;3-서비스-간-통신-비동기&quot;&gt;3. 서비스 간 통신 (비동기)&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;Kafka 사용하기&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;왜 Kafka를 선택했는가?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;비동기 통신&lt;/strong&gt;은 서비스 간의 결합도를 낮추고, 서비스가 독립적으로 작동할 수 있게 한다. 이는 MSA가 추구하는 방향과 같다.&lt;/li&gt;
+  &lt;li&gt;Kafka는 마이크로서비스 간의 &lt;strong&gt;비동기 통신을 지원&lt;/strong&gt;하여 시스템의 유연성과 확장성을 향상시킬 수 있다.&lt;/li&gt;
+  &lt;li&gt;Kafka는 높은 처리량과 확장성을 제공하는 분산 스트리밍 플랫폼이며, &lt;strong&gt;파티션을 통해 데이터 처리를 병렬로 수행&lt;/strong&gt;할 &lt;em&gt;**&lt;/em&gt;수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Event란 비즈니스에서 일어나는 모든 일 (데이터)을 의미한다. &lt;strong&gt;3가지 특징&lt;/strong&gt;을 갖고 있다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;이벤트 스트림을 안전하게 전송한다. (Pub &amp;amp; Sub 기능)&lt;/li&gt;
+  &lt;li&gt;이벤트 스트림을 디스트에 저장한다. (다른 이벤트 스트림과의 차별점)&lt;/li&gt;
+  &lt;li&gt;대용량의 실시간 이벤트 스트림을 분석 및 처리 기반으로 사용한다. (대용량 처리가 가능함으로 이 데이터를 추출해서 분석 및 처리가 가능)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;카프카 기본 개념&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;토픽&lt;/strong&gt;: 카프카 안에 메시지가 저장되는 장소&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;프로듀서&lt;/strong&gt; : 메세지를 생성해서 토픽으로 보내는 애플리케이션&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;컨슈머&lt;/strong&gt; : 토픽의 메세지를 가져와서 활용하는 애플리케이션&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;카프카 구성 요소&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;카프카는 크게 프로듀서, 카프카 클러스터(+브로커), 주키퍼, 컨슈머로 구성되어있다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;카프카 브로커:&lt;/strong&gt; 파티션에 대한 Read, Write를 관리하는 소프트웨어. 하나의 클러스터는 최소 4대이상의 브로커로 구성되길 권장함.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;주키퍼:&lt;/strong&gt; 브로커를 관리(브로커들의 목록/설정)하는 소프트웨어. 하지만 현재 카프카 3부터는 주피커 대신 KRaft로 카프카 클러스터 내부에 브로커 관련 메타 데이터를 관리하도록 설정할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;카프카는 병렬 처리 시스템으로 파티션이 1개가 아니라면 &lt;strong&gt;모든 메세지에 대한 전체 순서를 보장하기 어렵다&lt;/strong&gt;. 파티셔널을 통해 key에 의하여 &lt;strong&gt;분산&lt;/strong&gt;되어 들어가기 때문이다. 하지만 실제 시스템에서 모든 데이터에 대한 순서를 보장할 필요가 없다. &lt;strong&gt;특정 고객 또는 특정 키의 데이터의 순서만 보장받으면 되기 때문이다&lt;/strong&gt;. 즉, 키에 대한 순서가 보장됨으로 이 부분에 대한 문제는 멀티 파티션을 이용하는데 이슈가 되지 않는다. &lt;strong&gt;단, 운영 중에 파티션 개수를 변경하게 되면 순서를 보장받기 어렵다. 이 점을 반드시 기억해야 함.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;→ 내 프로젝트에서 Payment에서 발행하는 모든 이벤트는 파티션 1개로 구독하게 할 것이다. 특정 키 없이 &lt;strong&gt;요청 순서가 보장되어야 하기 때문이다.&lt;/strong&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>judy</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="Kafka" />
+      
+        <category term="MSA" />
+      
+        <category term="API-Gateway" />
+      
+        <category term="JAVA-Springboot" />
+      
+
+      
+        <summary type="html">드디어 MSA를 구현하기 위해 모놀리식으로 작성하던 프로젝트를 나누는 작업을 시작했다. 우선 도메인별로 기능을 묶을라 했는데 코드가 하도 꼬여 있어서 그냥 프로젝트를 새로 파기로 결심했다. 기존 모놀리식 프로젝트 안녕… 새로 [member / product / order / API gateway] eureka client / eureka server 이렇게 나누고, db를 세 개의 마이크로 서비스에 따라 각자 파기로 했다. 레디스는 별다른 분리 없이 하나의 레디스를 사용한다.</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">MSA-8. Google SMTP를 활용한 이메일 인증 단계 구현</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-8-emailAuthService/" rel="alternate" type="text/html" title="MSA-8. Google SMTP를 활용한 이메일 인증 단계 구현" />
+      <published>2024-06-26T00:00:00+09:00</published>
+      <updated>2024-06-26T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-8-%08emailAuthService</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-8-emailAuthService/">&lt;p&gt;Google STMP를 이용하여 구현하였다.&lt;/p&gt;
+
+&lt;p&gt;member/signup 엔드포인트로 회원가입 요청을 보내면 인증 상태 false, 일반 회원 ROLE_USER 로 가입이 된다. 이후 가입 당시 작성한 이메일로 가입 링크를 보내고, 해당 링크를 접속하면 인증 상태를 true로 값을 변경한다. 발급된 토큰은 레디스에 저장하고 24시간 뒤 or 사용자의 상태가 true로 변경되었을 때 삭제한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#google mail&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spring.mail.host=smtp.gmail.com&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spring.mail.port=587&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spring.mail.username=&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spring.mail.password=&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spring.mail.properties.mail.smtp.auth=true&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spring.mail.properties.mail.smtp.timeout=5000&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;spring.mail.properties.mail.smtp.starttls.enable=true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;여기서 username에는 발신 이메일을, password에는 앱 인증 비밀번호를 Google 설정에서 생성해 작성한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;implementation group&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;org.springframework.boot&apos;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;spring-boot-starter-mail&apos;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3.0.5&apos;&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;implementation &apos;org.springframework.boot:spring-boot-starter-mail&apos;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;종속성을 주입하고…&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;@Service
+public class EmailService {
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    public void sendEmail(String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+        mailSender.send(message);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;이메일 서비스 클래스를 작성한다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;private void sendVerificationEmail(MemberEntity member) {
+        String token = UUID.randomUUID().toString();
+        redisTemplate.opsForValue().set(token, member.getEmail(), 24, TimeUnit.HOURS);
+
+        String url = &quot;http://localhost:8080/member/verify?token=&quot; + token;
+        emailService.sendEmail(member.getEmail(), &quot;Email Verification&quot;, &quot;Click the link to verify your email: &quot; + url);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;그리고 회원 가입 완료 후 이메일을 발송하는 메서드를 작성한다. param에는 토큰을 생성해 URL에 추가하여 보낸다. 
+추가로, SecurityConfig에 verify** 링크의 permit을 all로 설정해 준다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;    public void completeSignup(String token) {
+        String email = (String) redisTemplate.opsForValue().get(token);
+        if (email == null) {
+            throw new IllegalArgumentException(&quot;Invalid or expired verification token&quot;);
+        }
+
+        MemberEntity member = jpaMemberRepository.findByEmail(email)
+                .orElseThrow(() -&amp;gt; new IllegalArgumentException(&quot;User not found&quot;));
+
+        member.setEnabled(true);
+        jpaMemberRepository.save(member);
+
+        redisTemplate.delete(token);
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;해당 링크를 클릭하면 GET mapping이 되어있는 /verify 엔드포인트에 위의 메소드가 실행되어 회원 가입이 최종적으로 완료된다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F8c243caf-561c-4b78-b886-bb975d441261%2FScreenshot_2024-07-02_at_9.12.40_PM.png?table=block&amp;amp;id=f2b743a1-3360-4f21-8f53-9d5e4d8b31e0&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1860&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fbbb4425d-28c5-44a1-ad04-87da5166c15c%2FScreenshot_2024-07-03_at_2.22.02_AM.png?table=block&amp;amp;id=dca2c242-0ff7-4207-9006-76b4b13774e4&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1540&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;이메일이 발송되고, 해당 링크를 클릭하면 인증된 것을 확인할 수 있다.&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>judy</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="Auth" />
+      
+        <category term="googleSMTP" />
+      
+        <category term="mail-service" />
+      
+        <category term="JAVA-Springboot" />
+      
+
+      
+        <summary type="html">Google STMP를 이용하여 구현하였다.</summary>
       
 
       

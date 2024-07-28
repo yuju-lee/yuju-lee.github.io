@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>MSA-13. 재고 데이터의 무결성 보장</title>
+    <meta name="description"
+        content="남은 수량은 실시간으로 줄어들기 때문에 최대한 빠르게 Read &amp;amp; Write 할 수 있어야 한다.">
+    <link rel="canonical" href="https://yuju-lee.github.io/logs/MSA-13-integrityGuaranteed/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+            <header class="entry-header">
+                <h1 class="entry-title">MSA-13. 재고 데이터의 무결성 보장</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/logs">logs</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-07-03">July 3, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <p>남은 수량은 실시간으로 줄어들기 때문에 최대한 빠르게 Read &amp; Write 할 수 있어야 한다.</p>
+
+<p>따라서 실제 재고 데이터는 ProductService의 연결된 MySQL - spring_proj_product DB에 저장되어 있지만 빠른 읽기와 쓰기를 위해 Redis를 추가적으로 이용했다. 재고 관리를 위한 Redis는 단 하나, 모든 서비스가 통합하여 사용하기 때문에 Redis를 연결만 해서 사용하면 된다.</p>
+
+<p>Redis 재고와 SQL DB 사이의 무결성 보장은 <strong>결제 과정 중 결제가 완료되어 주문이 생성되었을 때에만 이벤트를 발행</strong>한다.</p>
+
+<pre><code class="language-Java">Map&lt;String, Object&gt; stockUpdateData = new HashMap&lt;&gt;();
+stockUpdateData.put("productId", productId);
+stockUpdateData.put("stock", redisTemplate.opsForValue().get(redisKey));
+kafkaTemplate.send(stockUpdateTopic, objectMapper.writeValueAsString(stockUpdateData));
+</code></pre>
+
+<p>결제가 완료되면 이런 식으로 카프카 이벤트를 발행한다. 그럼 Payment에서 발행하는 이벤트를 구독하던 Product Service가 결제 완료 이벤트 시 발생했을 때 이벤트를 냉큼 받아 sql 내 저장된 재고를 차감하는 로직을 수행한다.</p>
+
+<p>이렇게 하면 반대로 Payment가 터져서 레디스가 기록하지 못 해도 MySQL 데이터가 남아있어서 괜춘하다.</p>
+
+<p>결제는 이렇게 했고, 주문 과정에서 주문 후 취소 / 배송 후 취소(Return)도 MySQL 데이터와 레디스를 동시에 재고를 복구하도록 했다.</p>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/redis">Redis</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/java-springboot">JAVA-Springboot</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/logs/MSA-12-distributedLock/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">MSA-12. 분산락 전환기</span>
+                    <span class="nav-meta">July 3, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/logs/MSA-14-feignClient/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">MSA-14. Feign Client 적용기</span>
+                    <span class="nav-meta">July 6, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/springboot/">Springboot</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/java/'>java</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

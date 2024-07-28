@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>MSA-4. JWT를 이용한 로그인, 로그아웃 구현</title>
+    <meta name="description"
+        content="로그인 기능 구현 - JWT 토큰">
+    <link rel="canonical" href="https://yuju-lee.github.io/logs/MSA-4-useJWT/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+                <div class="post-thumbnail"><img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F5da62e2c-8771-4b03-afeb-343f61763a84%2FUntitled.png?table=block&id=954fcd71-ee1b-413b-bb72-5d4bc99e07ab&spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&width=860&userId=&cache=v2" alt="MSA-4. JWT를 이용한 로그인, 로그아웃 구현"></div>
+            
+            <header class="entry-header">
+                <h1 class="entry-title">MSA-4. JWT를 이용한 로그인, 로그아웃 구현</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/logs">logs</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-06-23">June 23, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <h2 id="로그인-기능-구현---jwt-토큰">로그인 기능 구현 - JWT 토큰</h2>
+
+<ol>
+  <li>CustomAuthenticationFilter에서 설정한 URL 로 사용자가 요청을 하면 해당 필터가 요청을 가로챈다.</li>
+  <li>1의 단계에서 인증되지 않은 CustomAuthenticationToken을 생성하고, AuthenticationManager에게 인증처리를 요청한다. 여기서 Token에 사용자가 건낸 아이디와 패스워드를 보관.</li>
+  <li>AuthenticationManger는 AuthenticationProvider에게 인증처리를 건네고, CustomAuthenticationProvider가 동작한다.</li>
+  <li>CustomAuthenticationProvider에서 CustomUserDetailsService로 DB 에 있는 member 정보를 가져와 AuthenticationToken에 저장한 사용자 정보가 일치하는지 확인한다.
+    <ul>
+      <li>일치 시 SuccessHandler</li>
+      <li>실패 시 FailedHandler</li>
+      <li>에러가 발생 시 FailedHandler가 실행된다.</li>
+    </ul>
+  </li>
+  <li>인증 성공 후 기본 로직에 의해 인가 확인을 진행한다.</li>
+  <li>인가 실패시 경우에 따라 해당 Handler 를 실행한다.
+    <ul>
+      <li>권한이 없을 시 CustomLoginAuthenticationEntrypoint 실행</li>
+      <li>권한 거부 시 CustomAccessDeniedHander 실행</li>
+    </ul>
+  </li>
+  <li>인증 성공시 거치지 않음.</li>
+</ol>
+
+<p>정상적으로 로그인 한 경우
+<img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fb2324159-f796-49f2-adff-7adeb3358e6d%2FScreenshot_2024-06-20_at_8.14.52_PM.png?table=block&amp;id=2cccd8ac-4f86-4e6c-9f54-c374ceceb02e&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=2000&amp;userId=&amp;cache=v2" alt="img" /></p>
+
+<p>회원이 아닌 경우
+<img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fad099385-c5e1-4714-a83b-a59249c5d780%2FScreenshot_2024-06-21_at_2.08.25_AM.png?table=block&amp;id=ee1ec21f-feac-4a2c-86f5-20b0f9860fc0&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=1890&amp;userId=&amp;cache=v2" alt="img" />
+비밀번호나 이메일이 틀린 경우
+<img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F5aaa14e2-af84-4afa-8b93-f08b07cb5c46%2FScreenshot_2024-06-21_at_2.09.09_AM.png?table=block&amp;id=d17bec71-bee9-437c-9f6a-37014f0ff44a&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=2000&amp;userId=&amp;cache=v2" alt="img" /></p>
+
+<h2 id="trouble-shooting">Trouble Shooting</h2>
+
+<p><em>Being the Detective in a crime movie where you are also the murderer</em></p>
+
+<h3 id="case-1---안-돼요--아-됐다가--아뇨-그냥-안-돼요">Case 1 - 안 돼요 / 아 됐다가? / 아뇨 그냥 안 돼요</h3>
+
+<p>로그인 정도야 뭐… ㅋㅋ 그냥 만들면 되는 거 아닌가? ㅎ 라는 아주 안일한 생각으로 가볍게 구글링 후 시도했다가 JWT: 응 아니야~ 하고 바로 털렸다. 하 쒸… 이게 아닌데… 구글링을 더 해서 이 악물고 고쳐 봤지만 여전히 실패. 계속 403이 떴다.
+<img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Ff3fc40a4-baf2-438f-be0a-7c9dd87910e7%2FScreenshot_2024-06-20_at_10.38.56_AM.png?table=block&amp;id=1df8e2b0-32ae-40e2-83c0-2b94ab795c47&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=2000&amp;userId=&amp;cache=v2" alt="img" /></p>
+
+<p>이쯤이면 그냥 옛다~ 하고 200 던져 줄 순 없는 건가?</p>
+
+<p>롤백을 대체 몇 번이나 했는지… 계속 삽질하다가 그냥 다시 하자는 마음가짐으로 롤백하고 코드를 다시 수정했다.</p>
+
+<h3 id="case-2---61-버전부터-사용이-종료된-메소드">case 2 - 6.1 버전부터 사용이 종료된 메소드</h3>
+
+<p>이전 글들을 참고하여 코드를 작성하다 보니, 사용이 종료된 메서드를 대체하고 문법을 다시 정리하는데 시간이 오래 걸렸다.</p>
+
+<ul>
+  <li>Spring Security 6.1 이후부터는 .csrf().disable()와 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) 메서드 호출 방식이 변경됨. 기존의 메서드 체이닝 방식 대신에 Fluent API로 변경되었으며, http 메서드에 대한 설정이 좀 더 명시적으로 되어야 함.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">.</span><span class="na">csrf</span><span class="o">().</span><span class="na">disable</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">sessionManagement</span><span class="o">().</span><span class="na">sessionCreationPolicy</span><span class="o">(</span><span class="nc">SessionCreationPolicy</span><span class="o">.</span><span class="na">STATELESS</span><span class="o">)</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="o">.</span><span class="na">csrf</span><span class="o">(</span><span class="n">csrf</span> <span class="o">-&gt;</span> <span class="n">csrf</span><span class="o">.</span><span class="na">disable</span><span class="o">())</span>
+            <span class="o">.</span><span class="na">sessionManagement</span><span class="o">(</span><span class="n">session</span> <span class="o">-&gt;</span> <span class="n">session</span><span class="o">.</span><span class="na">sessionCreationPolicy</span><span class="o">(</span><span class="nc">SessionCreationPolicy</span><span class="o">.</span><span class="na">STATELESS</span><span class="o">))</span>
+            <span class="o">.</span><span class="na">addFilterBefore</span><span class="o">(</span><span class="n">jwtTokenFilter</span><span class="o">(),</span> <span class="nc">UsernamePasswordAuthenticationFilter</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</code></pre></div></div>
+<p>이외에도 많았는데… 어차피 IDE에서 다 알려 주니 다른 것들은 그냥 IDE 내에서 수정했다.</p>
+
+<h3 id="case-3---jwt-파싱-오류">Case 3 - JWT 파싱 오류</h3>
+
+<p>JWT를 파싱할 때는 다음과 같은 방식으로 수정한다.</p>
+<ol>
+  <li>JWT 파싱: JWT를 파싱하기 위해서는 JWT 토큰을 먼저 추출해야 하며, 보통 HTTP 요청에서 JWT 토큰은 헤더나 요청 바디에 포함되어 있다.</li>
+  <li>토큰 추출: HTTP 요청에서 JWT 토큰을 추출한다. 보통 HTTP 요청의 헤더에서 JWT를 추출하는 방식이 많이 사용한다.</li>
+  <li>토큰 검증: 추출한 JWT 토큰을 검증하고, 유효성을 확인한다. 이 과정에서 서명 키와 함께 JWT 토큰을 파싱하여 필요한 클레임을 추출한다.</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// as-is</span>
+<span class="kd">public</span> <span class="nc">String</span> <span class="nf">getTokenFromRequest</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="nc">Jwts</span><span class="o">.</span><span class="na">parserBuilder</span><span class="o">().</span><span class="na">setSigningKey</span><span class="o">(</span><span class="n">key</span><span class="o">).</span><span class="na">build</span><span class="o">().</span><span class="na">parseClaimsJws</span><span class="o">(</span><span class="n">req</span><span class="o">).</span><span class="na">getBody</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// to-be</span>
+<span class="kd">public</span> <span class="nc">String</span> <span class="nf">getTokenFromRequest</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">req</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">bearerToken</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="na">getHeader</span><span class="o">(</span><span class="s">"Authorization"</span><span class="o">);</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">bearerToken</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">bearerToken</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"Bearer "</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">bearerToken</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">7</span><span class="o">);</span> <span class="c1">// "Bearer " 이후의 토큰 값만 추출</span>
+    <span class="o">}</span>
+
+    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<ul>
+  <li>getTokenFromRequest() 메서드: HTTP 요청에서 JWT 토큰을 추출하는 메서드이며 보통 Authorization 헤더에서 “Bearer “ 토큰을 추출하여 반환한다.</li>
+  <li>getClaimsFromToken() 메서드: JWT 토큰에서 클레임을 추출한다.</li>
+  <li>Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody()를 사용하여 토큰을 파싱하고, 클레임을 추출한다.</li>
+</ul>
+
+<h3 id="case4---의존성-주입-실수">Case4 - 의존성 주입 실수</h3>
+
+<p>아직 Springboot가 익숙하지 않아 Bean이 제대로 주입되지 않거나 어노테이션 실수를 자주 했다. 진짜 트러블 슈팅이라고 적기에도 쪽팔린데… 단순 문법 실수라 공부를 계속 하는 수밖에 없다. 오늘의 트러블슈팅 과정을 되짚어 보자면</p>
+
+<ol>
+  <li>흐름을 명확히 파악하고 코드를 작성하자. 무턱대고 작성하는 게 더 오래 걸림.</li>
+  <li>자바 문법이 아직도 어색하다. ;; (그렇다고 C++을 능수능란하게 적는 것도 아님.) 스프링부트 공부를 좀 더 해야할 필요를 느꼈다.</li>
+</ol>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/jwt">JWT</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/java-springboot">JAVA-Springboot</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/logs/MSA-5-useRefreshTokenInJWT-copy/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">MSA-5. RefreshToken 적용기</span>
+                    <span class="nav-meta">June 20, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/logs/MSA-6-order/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">MSA-6. 주문 기능 기획</span>
+                    <span class="nav-meta">June 24, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/springboot/">Springboot</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/java/'>java</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

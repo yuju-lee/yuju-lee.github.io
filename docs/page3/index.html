@@ -9,7 +9,7 @@
     
     <title>Judy&#39;s Devlog</title>
     <meta name="description"
-        content="Cool developers never dies">
+        content="Cool developers never die">
     <link rel="canonical" href="https://yuju-lee.github.io/page3/">
     
 
@@ -30,7 +30,7 @@
         <div class="site-branding">
             
                 <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
-                <p class="site-description">Cool developers never dies</p>
+                <p class="site-description">Cool developers never die</p>
             
         </div><!-- .site-branding -->
         <button id="show-sidebar" class="toggle-sidebar">
@@ -53,7 +53,7 @@
         
         <header class="entry-header">
             <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-6-order/" rel="bookmark">MSA-6. 주문 기능 기획</a>
+                <a href="https://yuju-lee.github.io/logs/MSA-12-distributedLock/" rel="bookmark">MSA-12. 분산락 전환기</a>
             </h2>
             <div class="entry-meta">
                 
@@ -62,14 +62,152 @@
                 
                 
                 <span class="post-date">
-                    <time class="published" datetime="2024-06-24">June 24, 2024</time>
+                    <time class="published" datetime="2024-07-03">July 3, 2024</time>
                 </span>
             </div><!-- .entry-meta -->
         </header><!-- .entry-header -->
         <div class="entry-content">
-            <p>해당 프로젝트는 MSA를 접목한 예약구매 서비스이고, 이 프로젝트의 도메인은 e-commerce이다. 따라서 사용자는 특정 상품을 구매하기로 결정한다면, 결제 시작 → 결제 중 → 결제 완료 → 주문서 작성 → 주문 완료 → 배송 시작 → 배송 중 → 배송 완료(구매 확정) 이라는 단계를 거치게 된다. 이 중 주문서 작성 ~ 배송 완료 단계를 기획하였다.
+            <p>기획했던 대로 우선 구현해 보았다.
  </p>
                 <p class="post-tags">
+                    
+                    
+                    
+                    <a href='/tag/kafka/'>Kafka</a>
+                    
+                    
+                    
+                    <a href='/tag/redis/'>Redis</a>
+                    
+                    
+                    
+                    <a href='/tag/transaction/'>Transaction</a>
+                    
+                    
+                    
+                    <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+                    
+                    
+                    
+                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+                    
+                    
+                    
+                </p>
+        </div><!-- .entry-content -->
+    </div>
+</article><!-- .post -->
+            
+                <article class="post">
+    <div class="post-inside">
+        
+        <header class="entry-header">
+            <h2 class="entry-title">
+                <a href="https://yuju-lee.github.io/logs/MSA-11-payment/" rel="bookmark">MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획</a>
+            </h2>
+            <div class="entry-meta">
+                
+                
+                <span class="post-author"><a href="/author/judy/">judy</a></span>
+                
+                
+                <span class="post-date">
+                    <time class="published" datetime="2024-07-03">July 3, 2024</time>
+                </span>
+            </div><!-- .entry-meta -->
+        </header><!-- .entry-header -->
+        <div class="entry-content">
+            <p>대용량 트래픽 처리에 대한 경험이 없어 기획부터 어려웠다. 그래도 어떻게 처리할 것인지 예상되는 로직을 기획하고 구현해 보려고 한다.
+ </p>
+                <p class="post-tags">
+                    
+                    
+                    
+                    <a href='/tag/kafka/'>Kafka</a>
+                    
+                    
+                    
+                    <a href='/tag/redis/'>Redis</a>
+                    
+                    
+                    
+                    <a href='/tag/transaction/'>Transaction</a>
+                    
+                    
+                    
+                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+                    
+                    
+                    
+                </p>
+        </div><!-- .entry-content -->
+    </div>
+</article><!-- .post -->
+            
+                <article class="post">
+    <div class="post-inside">
+        
+        <header class="entry-header">
+            <h2 class="entry-title">
+                <a href="https://yuju-lee.github.io/logs/MSA-10-logoutAll/" rel="bookmark">MSA-10. 동시 로그아웃</a>
+            </h2>
+            <div class="entry-meta">
+                
+                
+                <span class="post-author"><a href="/author/judy/">judy</a></span>
+                
+                
+                <span class="post-date">
+                    <time class="published" datetime="2024-07-02">July 2, 2024</time>
+                </span>
+            </div><!-- .entry-meta -->
+        </header><!-- .entry-header -->
+        <div class="entry-content">
+            <p>발급한 모든 리퀘스트 토큰과 엑세스 토큰을 무효화하면 된다. 레디스에서 요청한 해당 이메일로 등록된 모든 토큰 데이터를 삭제하는 방식.
+ </p>
+                <p class="post-tags">
+                    
+                    
+                    
+                    <a href='/tag/jwt/'>JWT</a>
+                    
+                    
+                    
+                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+                    
+                    
+                    
+                </p>
+        </div><!-- .entry-content -->
+    </div>
+</article><!-- .post -->
+            
+                <article class="post">
+    <div class="post-inside">
+        
+        <header class="entry-header">
+            <h2 class="entry-title">
+                <a href="https://yuju-lee.github.io/logs/MSA-9-MSAandAPIgateway/" rel="bookmark">MSA-9. MSA 적용과 API Gateway</a>
+            </h2>
+            <div class="entry-meta">
+                
+                
+                <span class="post-author"><a href="/author/judy/">judy</a></span>
+                
+                
+                <span class="post-date">
+                    <time class="published" datetime="2024-06-26">June 26, 2024</time>
+                </span>
+            </div><!-- .entry-meta -->
+        </header><!-- .entry-header -->
+        <div class="entry-content">
+            <p>드디어 MSA를 구현하기 위해 모놀리식으로 작성하던 프로젝트를 나누는 작업을 시작했다. 우선 도메인별로 기능을 묶을라 했는데 코드가 하도 꼬여 있어서 그냥 프로젝트를 새로 파기로 결심했다. 기존 모놀리식 프로젝트 안녕… 새로 [member / product / order / API gateway] eureka client / eureka server 이렇게 나누고, db를 세 개의 마이크로 서비스에 따라 각자 파기로 했다. 레디스는 별다른 분리 없이 하나의 레디스를 사용한다.
+ </p>
+                <p class="post-tags">
+                    
+                    
+                    
+                    <a href='/tag/kafka/'>Kafka</a>
                     
                     
                     
@@ -77,42 +215,7 @@
                     
                     
                     
-                </p>
-        </div><!-- .entry-content -->
-    </div>
-</article><!-- .post -->
-            
-                <article class="post">
-    <div class="post-inside">
-        
-            <a class="post-thumbnail" href="https://yuju-lee.github.io/logs/MSA-4-useJWT/">
-                <img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F5da62e2c-8771-4b03-afeb-343f61763a84%2FUntitled.png?table=block&id=954fcd71-ee1b-413b-bb72-5d4bc99e07ab&spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&width=860&userId=&cache=v2"
-                    alt="MSA-4. JWT를 이용한 로그인, 로그아웃 구현">
-            </a>
-        
-        <header class="entry-header">
-            <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-4-useJWT/" rel="bookmark">MSA-4. JWT를 이용한 로그인, 로그아웃 구현</a>
-            </h2>
-            <div class="entry-meta">
-                
-                
-                <span class="post-author"><a href="/author/judy/">judy</a></span>
-                
-                
-                <span class="post-date">
-                    <time class="published" datetime="2024-06-23">June 23, 2024</time>
-                </span>
-            </div><!-- .entry-meta -->
-        </header><!-- .entry-header -->
-        <div class="entry-content">
-            <p>로그인 기능 구현 - JWT 토큰
- </p>
-                <p class="post-tags">
-                    
-                    
-                    
-                    <a href='/tag/jwt/'>JWT</a>
+                    <a href='/tag/api-gateway/'>API-Gateway</a>
                     
                     
                     
@@ -130,7 +233,7 @@
         
         <header class="entry-header">
             <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-5-useRefreshTokenInJWT/" rel="bookmark">MSA-5. RefreshToken 적용기</a>
+                <a href="https://yuju-lee.github.io/logs/MSA-8-emailAuthService/" rel="bookmark">MSA-8. Google SMTP를 활용한 이메일 인증 단계 구현</a>
             </h2>
             <div class="entry-meta">
                 
@@ -139,135 +242,72 @@
                 
                 
                 <span class="post-date">
-                    <time class="published" datetime="2024-06-20">June 20, 2024</time>
+                    <time class="published" datetime="2024-06-26">June 26, 2024</time>
                 </span>
             </div><!-- .entry-meta -->
         </header><!-- .entry-header -->
         <div class="entry-content">
-            <p>다른 기능을 구현하기 위해 API 요구와 POST를 보니… 음… 리프레시 토큰을 써야 할 것 같았다. 아니! 써야만 했다. 그래서 기존 엑세스 토큰을 발급해 주고 로그인 문구를 띄워 주는 구조를 다 뜯어 고쳐야 했다.
+            <p>Google STMP를 이용하여 구현하였다.
+ </p>
+                <p class="post-tags">
+                    
+                    
+                    
+                    <a href='/tag/auth/'>Auth</a>
+                    
+                    
+                    
+                    <a href='/tag/googlesmtp/'>googleSMTP</a>
+                    
+                    
+                    
+                    <a href='/tag/mail-service/'>mail-service</a>
+                    
+                    
+                    
+                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+                    
+                    
+                    
+                </p>
+        </div><!-- .entry-content -->
+    </div>
+</article><!-- .post -->
+            
+                <article class="post">
+    <div class="post-inside">
+        
+        <header class="entry-header">
+            <h2 class="entry-title">
+                <a href="https://yuju-lee.github.io/logs/MSA-7-orderSchduler/" rel="bookmark">MSA-7. 주문 상태 스케줄링</a>
+            </h2>
+            <div class="entry-meta">
+                
+                
+                <span class="post-author"><a href="/author/judy/">judy</a></span>
+                
+                
+                <span class="post-date">
+                    <time class="published" datetime="2024-06-25">June 25, 2024</time>
+                </span>
+            </div><!-- .entry-meta -->
+        </header><!-- .entry-header -->
+        <div class="entry-content">
+            <p>프로젝트의 명세에 따라 주문서의 상태에 따라 스케줄링이 필요했다. MySQL에서 스케줄링은
+
+  특정 간격을 주기로 감시하는 방법
+  특정 시각 + 특정 주기에 변경되도록 스케줄링하는 방법
 
  </p>
                 <p class="post-tags">
                     
                     
                     
-                    <a href='/tag/jwt/'>JWT</a>
+                    <a href='/tag/taskscheduler/'>TaskScheduler</a>
                     
                     
                     
                     <a href='/tag/java-springboot/'>JAVA-Springboot</a>
-                    
-                    
-                    
-                </p>
-        </div><!-- .entry-content -->
-    </div>
-</article><!-- .post -->
-            
-                <article class="post">
-    <div class="post-inside">
-        
-        <header class="entry-header">
-            <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-3-featured-user-service/" rel="bookmark">MSA-3. 사용자 정보 암호화</a>
-            </h2>
-            <div class="entry-meta">
-                
-                
-                <span class="post-author"><a href="/author/judy/">judy</a></span>
-                
-                
-                <span class="post-date">
-                    <time class="published" datetime="2024-06-19">June 19, 2024</time>
-                </span>
-            </div><!-- .entry-meta -->
-        </header><!-- .entry-header -->
-        <div class="entry-content">
-            <p>암호화 기법에 대해
- </p>
-                <p class="post-tags">
-                    
-                    
-                    
-                    <a href='/tag/encryption/'>Encryption</a>
-                    
-                    
-                    
-                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
-                    
-                    
-                    
-                </p>
-        </div><!-- .entry-content -->
-    </div>
-</article><!-- .post -->
-            
-                <article class="post">
-    <div class="post-inside">
-        
-            <a class="post-thumbnail" href="https://yuju-lee.github.io/logs/MSA-2-docker/">
-                <img src="https://free-asphalt-782.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fc142fb00-f1da-4b07-8004-49368f5a1dab%2Fe55ef7e5-5a6d-4b71-a9d3-42471372d0e2%2FUntitled.png?table=block&id=03e0669a-2559-419f-86db-22dcc80dce09&spaceId=c142fb00-f1da-4b07-8004-49368f5a1dab&width=1420&userId=&cache=v2"
-                    alt="MSA-2. Docker와 Docker 적용기">
-            </a>
-        
-        <header class="entry-header">
-            <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-2-docker/" rel="bookmark">MSA-2. Docker와 Docker 적용기</a>
-            </h2>
-            <div class="entry-meta">
-                
-                
-                <span class="post-author"><a href="/author/judy/">judy</a></span>
-                
-                
-                <span class="post-date">
-                    <time class="published" datetime="2024-06-19">June 19, 2024</time>
-                </span>
-            </div><!-- .entry-meta -->
-        </header><!-- .entry-header -->
-        <div class="entry-content">
-            <p>도커(Docker)란 뭘까
-Docker는 소프트웨어 개발과 배포를 도와주는 컨테이너(Container) 기술이다. 우리는 도커를 사용하여 애플리케이션을 빌드, 배포, 실행하는 과정을 쉽게 관리할 수 있다.
- </p>
-                <p class="post-tags">
-                    
-                    
-                    
-                    <a href='/tag/docker/'>Docker</a>
-                    
-                    
-                    
-                </p>
-        </div><!-- .entry-content -->
-    </div>
-</article><!-- .post -->
-            
-                <article class="post">
-    <div class="post-inside">
-        
-        <header class="entry-header">
-            <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-1-ERD/" rel="bookmark">MSA-1. ERD 설계 및 작성</a>
-            </h2>
-            <div class="entry-meta">
-                
-                
-                <span class="post-author"><a href="/author/judy/">judy</a></span>
-                
-                
-                <span class="post-date">
-                    <time class="published" datetime="2024-06-19">June 19, 2024</time>
-                </span>
-            </div><!-- .entry-meta -->
-        </header><!-- .entry-header -->
-        <div class="entry-content">
-            <p>
- </p>
-                <p class="post-tags">
-                    
-                    
-                    
-                    <a href='/tag/erd/'>ERD</a>
                     
                     
                     
@@ -284,7 +324,7 @@ Docker는 소프트웨어 개발과 배포를 도와주는 컨테이너(Containe
     
     <a class="prev" href="/page2/"><i class="fa-arrow-left-custom" aria-hidden="true"></i> Newer</a>
     
-    <span class="page-number"> Page 3 of 5</span>
+    <span class="page-number"> Page 3 of 6</span>
     
     <a class="next" href="/page4/">Older <i class="fa-arrow-right-custom" aria-hidden="true"></i></a>
     
@@ -364,6 +404,8 @@ Docker는 소프트웨어 개발과 배포를 도와주는 컨테이너(Containe
         
         <a href='/tag/hash-table/'>Hash-table</a>
         
+        <a href='/tag/java/'>JAVA</a>
+        
         <a href='/tag/java-springboot/'>JAVA-Springboot</a>
         
         <a href='/tag/jwt/'>JWT</a>
@@ -371,6 +413,8 @@ Docker는 소프트웨어 개발과 배포를 도와주는 컨테이너(Containe
         <a href='/tag/kmp/'>KMP</a>
         
         <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/kubernetes/'>Kubernetes</a>
         
         <a href='/tag/luascript/'>LuaScript</a>
         
@@ -394,9 +438,25 @@ Docker는 소프트웨어 개발과 배포를 도와주는 컨테이너(Containe
         
         <a href='/tag/union-find/'>Union-find</a>
         
+        <a href='/tag/cookie/'>cookie</a>
+        
+        <a href='/tag/funtional-programming/'>funtional-programming</a>
+        
         <a href='/tag/googlesmtp/'>googleSMTP</a>
         
+        <a href='/tag/http/'>http</a>
+        
+        <a href='/tag/kubernetes/'>kubernetes</a>
+        
         <a href='/tag/mail-service/'>mail-service</a>
+        
+        <a href='/tag/process/'>process</a>
+        
+        <a href='/tag/protocol/'>protocol</a>
+        
+        <a href='/tag/session/'>session</a>
+        
+        <a href='/tag/thread/'>thread</a>
         
     </div>
 </section>

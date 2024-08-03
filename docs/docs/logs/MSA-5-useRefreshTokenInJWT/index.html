@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>MSA-5. RefreshToken 적용기</title>
+    <meta name="description"
+        content="다른 기능을 구현하기 위해 API 요구와 POST를 보니… 음… 리프레시 토큰을 써야 할 것 같았다. 아니! 써야만 했다. 그래서 기존 엑세스 토큰을 발급해 주고 로그인 문구를 띄워 주는 구조를 다 뜯어 고쳐야 했다.">
+    <link rel="canonical" href="https://yuju-lee.github.io/logs/MSA-5-useRefreshTokenInJWT/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="https://yuju-lee.github.io/assets/images/favicon.ico" type="image/png" />
+
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+            <header class="entry-header">
+                <h1 class="entry-title">MSA-5. RefreshToken 적용기</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/logs">logs</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-06-20">June 20, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <p>다른 기능을 구현하기 위해 API 요구와 POST를 보니… 음… 리프레시 토큰을 써야 할 것 같았다. 아니! 써야만 했다. 그래서 기존 엑세스 토큰을 발급해 주고 로그인 문구를 띄워 주는 구조를 다 뜯어 고쳐야 했다.
+<img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fd4d9e428-cc95-4b36-8ae9-c057026d67ff%2FUntitled.png?table=block&amp;id=ba157320-073a-495c-96f2-3f52418d4434&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=1440&amp;userId=&amp;cache=v2" alt="" /></p>
+
+<p>뭐… 이런 식으로 흐름을 러프하게 잡았다. 충분히 할 수 있겠다는 생각이 들었다. 이 그림에서 로그인 기능은 1~2이고, 이 부분을 먼저 구현해야겠다고 생각하고 알음알음 코드를 작성했다.</p>
+
+<p>처음 로그인 기능을 구현하였더니 404 에러가 떴다. 401도 아니고, 404…? 꿈이길… response body가 공백으로 떠서 어디서부터 어디를 고쳐야 할지 감도 안 오고… 도커로 띄워서 디버깅할 엄두가 안나 멘토님께 말씀 드렸더니 도커로 Springboot까지 띄워서 코드를 작성하고 있었고, (가이드에 적혀 있는 문장을 잘못 이해했음) 캐시 때문에 코드를 변경해도 반영이 안 되는 것이었다. 도커로 SQL, redis 같은 DB만 띄워 놓고, springboot는 IDE에서 했어야 했던 거였다. 그래서 찾기도 어려웠다.</p>
+
+<p><img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F9413fc87-4e5d-41d8-be09-15b802db4198%2FScreenshot_2024-06-20_at_10.38.56_AM.png?table=block&amp;id=9ce5604e-2caf-4145-98e4-73adf7f2302c&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=1920&amp;userId=&amp;cache=v2" alt="" /></p>
+
+<p>도커로 Springboot를 내리고, SQL &amp; Redis만 올려서 다시 빌드하니 403이 떴다.</p>
+
+<p>403 외에도 자잘한 오류들이 있었다:</p>
+
+<pre><code class="language-Java">Parameter 2 of constructor in com.sun.sunboard.service.BoardService required a bean of type 'org.springframework.data.redis.core.RedisTemplate' that could not be found.
+</code></pre>
+
+<p>service에서는 RedisTemplate&lt;String, String&gt;을 사용했지만 config에서는 RedisTemplate&lt;String, Object&gt;를 사용해서 발생.</p>
+
+<p>형식을 맞춰 주면 해결된다.</p>
+
+<pre><code class="language-Java">The dependencies of some of the beans in the application context form a cycle:
+┌─────┐
+|  securityConfig defined in file [\SecurityConfig.class]
+↑     ↓
+|  userService defined in file [\MemberService.class]
+└─────┘
+Action:
+
+Relying upon circular references is discouraged and they are prohibited by default. 
+Update your application to remove the dependency cycle between beans. 
+As a last resort, it may be possible to break the cycle automatically 
+by setting spring.main.allow-circular-references to true.
+
+
+Process finished with exit code 1
+</code></pre>
+
+<p><img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fd1fc45af-643b-46b2-9c5b-153f3dbf478c%2FUntitled.png?table=block&amp;id=484f4d0f-5699-465e-b49d-15c320dd5cd0&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=770&amp;userId=&amp;cache=v2" alt="" /></p>
+
+<p>이런 오류도 있었다. 두 개의 클래스가 서로를 참조하고 있어서 참조 서클 에러가 발생했다. 이건 그냥 나눠 주면 된다. 필터 클래스를 작성할 때 WebSecurityConfigurationAdapter를 상속받았는데, Deprecated되었다는 에러가 났다.</p>
+<pre><code class="language-Java">@Override
+@Bean
+public AuthenticationManager authenticationManagerBean() throws Exception{
+	return super.authenticationManagerBean();
+}
+</code></pre>
+<pre><code class="language-Java">@Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+</code></pre>
+<p>아래 레퍼런스에서 제시한 새로운 방식으로 작성하여 해결했다.</p>
+
+<p><a href="https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter">spring-security-without-the-websecurityconfigureradapter</a></p>
+
+<p>403 에러는 SecurityConfig 클래스의 SecurityFilterChain 내에 PermitAll을 준 링크에 /login이 빠져있어서 그랬었다. 해당 부분을 수정하고, 404 에러를 해결하려고 했다가 더 꼬인 코드를 차근차근 풀어서 다시 작성하였다.</p>
+
+<p><img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F7ad82664-eac9-4b41-aa41-0eadde79e889%2FScreenshot_2024-06-23_at_2.31.34_PM.png?table=block&amp;id=abc83f2c-e91e-4733-91a3-710568ded9cb&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=2000&amp;userId=&amp;cache=v2" alt="" /></p>
+
+<p><img src="https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F95a51d47-f2ea-4025-b3a7-fd2c17d362b2%2FScreenshot_2024-06-23_at_2.31.37_PM.png?table=block&amp;id=b59bc42f-5e44-4592-9876-94ab7be9e6cf&amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;width=1230&amp;userId=&amp;cache=v2" alt="" /></p>
+
+<p>요약하자면 흐름은 아래와 같다:</p>
+<ol>
+  <li>최초 로그인 시 Refresh Token, Access Token을 클라이언트에게 발행하고 Access Token을 헤더에 저장하여 클라이언트에게 반환, Refresh Token은 Redis에 저장. &gt; 로그인 이후 모든 요청은 헤더에 JWT 토큰을 담아서 요청한다.</li>
+  <li>로그아웃 시 발급한 Access Token을 Redis 블랙리스트에 등록.</li>
+  <li>Refresh Token은 Access Token보다 기간을 길게 잡는다.  클라이언트가 만료된 Access Token으로 요청을 보낼 때 저장되어 있는 Refresh Token을 통해 Access Token을 새로 발급한다.</li>
+  <li>Refresh Token도 만료되면 재로그인을 해야 한다.</li>
+</ol>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/jwt">JWT</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/java-springboot">JAVA-Springboot</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/logs/MSA-3-featured-user-service/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">MSA-3. 사용자 정보 암호화</span>
+                    <span class="nav-meta">June 19, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/logs/MSA-4-useJWT/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">MSA-4. JWT를 이용한 로그인, 로그아웃 구현</span>
+                    <span class="nav-meta">June 23, 2024</span>
+                    
+                        <span class="nav-thumb" style="background-image: url(https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F5da62e2c-8771-4b03-afeb-343f61763a84%2FUntitled.png?table=block&id=954fcd71-ee1b-413b-bb72-5d4bc99e07ab&spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&width=860&userId=&cache=v2)"></span>
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About me</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/knowledge/">Knowledge</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/algorithm/'>Algorithm</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/bfs/'>BFS</a>
+        
+        <a href='/tag/binary-search/'>Binary-search</a>
+        
+        <a href='/tag/binary-tree/'>Binary-tree</a>
+        
+        <a href='/tag/brute-force/'>Brute-force</a>
+        
+        <a href='/tag/dfs/'>DFS</a>
+        
+        <a href='/tag/dp/'>DP</a>
+        
+        <a href='/tag/dijkstra/'>Dijkstra</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/greedy/'>Greedy</a>
+        
+        <a href='/tag/hash-table/'>Hash-table</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kmp/'>KMP</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/queue/'>Queue</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/sort/'>Sort</a>
+        
+        <a href='/tag/stack/'>Stack</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/time-complexity/'>Time-Complexity</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/union-find/'>Union-find</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

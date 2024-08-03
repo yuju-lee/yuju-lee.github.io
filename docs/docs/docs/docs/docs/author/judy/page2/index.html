@@ -14,7 +14,8 @@
     
 
     <!-- Site Favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="https://yuju-lee.github.io/assets/images/favicon.ico" type="image/png" />
+
 
     <!-- CSS Styles -->
     <link href="/assets/css/style.css" rel="stylesheet">
@@ -39,7 +40,6 @@
     </div><!-- .inner -->
     <!-- Highlight.js CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
-    <link rel="shortcut icon" href="assets/images/favicon.ico" type="image/x-icon">
 </header><!-- .site-header -->
         <div id="content" class="site-content">
     <main id="main" class="site-main inner">
@@ -47,7 +47,7 @@
         
         <header class="page-header">
             <h1 class="page-title">
-                18 posts by
+                27 posts by
                 <span class="vcard highlight">judy</span>
             </h1>
             <div class="author-box">
@@ -86,7 +86,7 @@
         
         <header class="entry-header">
             <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-11-payment/" rel="bookmark">MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획</a>
+                <a href="https://yuju-lee.github.io/logs/MSA-13-integrityGuaranteed/" rel="bookmark">MSA-13. 재고 데이터의 무결성 보장</a>
             </h2>
             <div class="entry-meta">
                 
@@ -100,7 +100,45 @@
             </div><!-- .entry-meta -->
         </header><!-- .entry-header -->
         <div class="entry-content">
-            <p>대용량 트래픽 처리에 대한 경험이 없어 기획부터 어려웠다. 그래도 어떻게 처리할 것인지 예상되는 로직을 기획하고 구현해 보려고 한다.
+            <p>남은 수량은 실시간으로 줄어들기 때문에 최대한 빠르게 Read &amp; Write 할 수 있어야 한다.
+ </p>
+                <p class="post-tags">
+                    
+                    
+                    
+                    <a href='/tag/redis/'>Redis</a>
+                    
+                    
+                    
+                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+                    
+                    
+                    
+                </p>
+        </div><!-- .entry-content -->
+    </div>
+</article><!-- .post -->
+        
+            <article class="post">
+    <div class="post-inside">
+        
+        <header class="entry-header">
+            <h2 class="entry-title">
+                <a href="https://yuju-lee.github.io/logs/MSA-12-distributedLock/" rel="bookmark">MSA-12. 분산락 전환기</a>
+            </h2>
+            <div class="entry-meta">
+                
+                
+                <span class="post-author"><a href="/author/judy/">judy</a></span>
+                
+                
+                <span class="post-date">
+                    <time class="published" datetime="2024-07-03">July 3, 2024</time>
+                </span>
+            </div><!-- .entry-meta -->
+        </header><!-- .entry-header -->
+        <div class="entry-content">
+            <p>기획했던 대로 우선 구현해 보았다.
  </p>
                 <p class="post-tags">
                     
@@ -115,6 +153,10 @@
                     
                     
                     <a href='/tag/transaction/'>Transaction</a>
+                    
+                    
+                    
+                    <a href='/tag/distributed-lock/'>Distributed-Lock</a>
                     
                     
                     
@@ -299,40 +341,6 @@
     </div>
 </article><!-- .post -->
         
-            <article class="post">
-    <div class="post-inside">
-        
-        <header class="entry-header">
-            <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-6-order/" rel="bookmark">MSA-6. 주문 기능 기획</a>
-            </h2>
-            <div class="entry-meta">
-                
-                
-                <span class="post-author"><a href="/author/judy/">judy</a></span>
-                
-                
-                <span class="post-date">
-                    <time class="published" datetime="2024-06-24">June 24, 2024</time>
-                </span>
-            </div><!-- .entry-meta -->
-        </header><!-- .entry-header -->
-        <div class="entry-content">
-            <p>해당 프로젝트는 MSA를 접목한 예약구매 서비스이고, 이 프로젝트의 도메인은 e-commerce이다. 따라서 사용자는 특정 상품을 구매하기로 결정한다면, 결제 시작 → 결제 중 → 결제 완료 → 주문서 작성 → 주문 완료 → 배송 시작 → 배송 중 → 배송 완료(구매 확정) 이라는 단계를 거치게 된다. 이 중 주문서 작성 ~ 배송 완료 단계를 기획하였다.
- </p>
-                <p class="post-tags">
-                    
-                    
-                    
-                    <a href='/tag/msa/'>MSA</a>
-                    
-                    
-                    
-                </p>
-        </div><!-- .entry-content -->
-    </div>
-</article><!-- .post -->
-        
         </div><!-- .post-wrapper -->
     </main><!-- .site-main -->
 </div><!-- .site-content -->
@@ -347,7 +355,7 @@
                 class="fa-arrow-left-custom" aria-hidden="true"></i> Newer</a>
         
         
-        <span class="page-number"> Page 2 of 3 </span>
+        <span class="page-number"> Page 2 of 5 </span>
         
         <a class="next" href="/author/judy/page3/"
             title="Next Page">Older <i class="fa-arrow-right-custom" aria-hidden="true"></i></a>
@@ -365,11 +373,11 @@
 				<h2 class="widget-title">Category</h2>
 				<ul class="menu">
 					
-						<li class="menu-item"><a href="/about/">About</a></li>
+						<li class="menu-item"><a href="/about/">About me</a></li>
 					
 						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
 					
-						<li class="menu-item"><a href="/categories/springboot/">Springboot</a></li>
+						<li class="menu-item"><a href="/categories/knowledge/">Knowledge</a></li>
 					
 						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
 					
@@ -383,7 +391,23 @@
         
         <a href='/tag/api-gateway/'>API-Gateway</a>
         
+        <a href='/tag/algorithm/'>Algorithm</a>
+        
         <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/bfs/'>BFS</a>
+        
+        <a href='/tag/binary-search/'>Binary-search</a>
+        
+        <a href='/tag/binary-tree/'>Binary-tree</a>
+        
+        <a href='/tag/brute-force/'>Brute-force</a>
+        
+        <a href='/tag/dfs/'>DFS</a>
+        
+        <a href='/tag/dp/'>DP</a>
+        
+        <a href='/tag/dijkstra/'>Dijkstra</a>
         
         <a href='/tag/distributed-lock/'>Distributed-Lock</a>
         
@@ -397,9 +421,15 @@
         
         <a href='/tag/feign-client/'>Feign-Client</a>
         
+        <a href='/tag/greedy/'>Greedy</a>
+        
+        <a href='/tag/hash-table/'>Hash-table</a>
+        
         <a href='/tag/java-springboot/'>JAVA-Springboot</a>
         
         <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kmp/'>KMP</a>
         
         <a href='/tag/kafka/'>Kafka</a>
         
@@ -407,17 +437,25 @@
         
         <a href='/tag/msa/'>MSA</a>
         
+        <a href='/tag/queue/'>Queue</a>
+        
         <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/sort/'>Sort</a>
+        
+        <a href='/tag/stack/'>Stack</a>
         
         <a href='/tag/taskscheduler/'>TaskScheduler</a>
         
         <a href='/tag/test-tool/'>Test-tool</a>
         
+        <a href='/tag/time-complexity/'>Time-Complexity</a>
+        
         <a href='/tag/transaction/'>Transaction</a>
         
-        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        <a href='/tag/union-find/'>Union-find</a>
         
-        <a href='/tag/java/'>java</a>
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
         
         <a href='/tag/mail-service/'>mail-service</a>
         

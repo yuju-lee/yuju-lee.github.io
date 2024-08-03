@@ -5,17 +5,77 @@
     <description>Cool developers never dies</description>
     <link>https://yuju-lee.github.io/</link>
     <atom:link href="https://yuju-lee.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 14 Jul 2024 20:42:16 +0900</pubDate>
-    <lastBuildDate>Sun, 14 Jul 2024 20:42:16 +0900</lastBuildDate>
+    <pubDate>Mon, 15 Jul 2024 01:04:51 +0900</pubDate>
+    <lastBuildDate>Mon, 15 Jul 2024 01:04:51 +0900</lastBuildDate>
     <generator>Jekyll v4.3.3</generator>
     
       <item>
-        <title>Example Post</title>
-        <description>&lt;p&gt;이것은 알고리즘 카테고리에 속하는 예시 게시물입니다.&lt;/p&gt;
+        <title>[Algorithm] Union find</title>
+        <description>&lt;h2 id=&quot;유니온-파인드union-find-서로소-집합&quot;&gt;유니온 파인드(Union-find, 서로소 집합)&lt;/h2&gt;
+
+&lt;p&gt;유니온 파인드(Union-Find) 알고리즘, 또는 서로소 집합(Disjoint Set) 자료구조는 동적 연결성 문제를 해결하기 위해 사용된다. 이 자료구조는 주로 그래프에서 연결된 컴포넌트를 찾는 데 사용되는데, 유니온 파인드 자료구조는 두 가지 주요 연산을 효율적으로 수행한다.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Union: 두 개의 집합을 하나의 집합으로 합친다.&lt;/li&gt;
+  &lt;li&gt;Find: 특정 원소가 속한 집합을 찾는다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;유니온 파인드의 주요 개념&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;집합 표현:
+    &lt;ul&gt;
+      &lt;li&gt;각 원소는 자신을 부모로 가지는 트리 형태로 표현된다.&lt;/li&gt;
+      &lt;li&gt;집합의 루트 노드는 집합의 대표(또는 루트)로 간주된다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Find 연산:
+    &lt;ul&gt;
+      &lt;li&gt;주어진 원소가 속한 집합의 대표를 찾는다.&lt;/li&gt;
+      &lt;li&gt;경로 압축(Path Compression)을 통해 트리의 높이를 줄여, 이후의 Find 연산이 더 빠르게 수행되도록 최적화할 수 있다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Union 연산:
+    &lt;ul&gt;
+      &lt;li&gt;두 개의 집합을 하나로 합친다.&lt;/li&gt;
+      &lt;li&gt;Union by Rank 또는 Union by Size 기법을 사용하여 트리의 높이를 최소화할 수 있다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;유니온 파인드의 최적화 기법&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;경로 압축(Path Compression):
+    &lt;ul&gt;
+      &lt;li&gt;Find 연산을 수행하는 동안, 방문한 모든 노드를 직접 루트 노드에 연결하여 &lt;strong&gt;트리의 높이를 줄인다&lt;/strong&gt;.&lt;/li&gt;
+      &lt;li&gt;이 최적화는 Find 연산의 시간 복잡도를 거의 상수 시간으로 만든다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;랭크에 의한 합치기(Union by Rank):
+    &lt;ul&gt;
+      &lt;li&gt;각 트리의 높이를 추적하고, 항상 높이가 낮은 트리를 높이가 높은 트리 아래에 연결하여 트리의 높이를 최소화한다.&lt;/li&gt;
+      &lt;li&gt;이는 트리의 균형을 유지하는 데 도움이 된다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;크기에 의한 합치기(Union by Size):
+    &lt;ul&gt;
+      &lt;li&gt;각 집합의 크기를 추적하고, 항상 작은 트리를 큰 트리 아래에 연결하여 트리의 높이를 최소화한다.&lt;/li&gt;
+      &lt;li&gt;이는 Union by Rank와 유사하게 트리의 균형을 유지하는 데 도움이 된다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;시간 복잡도&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;경로 압축과 랭크에 의한 합치기 최적화를 적용하면 유니온 파인드 자료구조의 연산은 거의 상수 시간으로 수행되는데, 정확히는 매우 느리게 증가하는 역 아커만 함수(inverse Ackermann function) 시간 복잡도인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;O(α(n))&lt;/code&gt;으로 수행한다. 이 함수는 &lt;strong&gt;실제로는 거의 상수로 간주&lt;/strong&gt;될 수 있다.&lt;/p&gt;
 </description>
-        <pubDate>Thu, 11 Jul 2024 00:00:00 +0900</pubDate>
-        <link>https://yuju-lee.github.io/algorithm/algorithm/</link>
-        <guid isPermaLink="true">https://yuju-lee.github.io/algorithm/algorithm/</guid>
+        <pubDate>Mon, 15 Jul 2024 00:00:00 +0900</pubDate>
+        <link>https://yuju-lee.github.io/algorithm/algorithm-unionFind/</link>
+        <guid isPermaLink="true">https://yuju-lee.github.io/algorithm/algorithm-unionFind/</guid>
+        
+        <category>Algorithm</category>
+        
+        <category>Union-find</category>
         
         
         <category>algorithm</category>

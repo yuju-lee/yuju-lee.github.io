@@ -9,7 +9,7 @@
     
     <title>Author Page</title>
     <meta name="description"
-        content="Cool developers never dies">
+        content="Cool developers never die">
     <link rel="canonical" href="https://yuju-lee.github.io/author/judy/page2/">
     
 
@@ -30,7 +30,7 @@
         <div class="site-branding">
             
                 <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
-                <p class="site-description">Cool developers never dies</p>
+                <p class="site-description">Cool developers never die</p>
             
         </div><!-- .site-branding -->
         <button id="show-sidebar" class="toggle-sidebar">
@@ -47,7 +47,7 @@
         
         <header class="page-header">
             <h1 class="page-title">
-                27 posts by
+                34 posts by
                 <span class="vcard highlight">judy</span>
             </h1>
             <div class="author-box">
@@ -84,9 +84,14 @@
             <article class="post">
     <div class="post-inside">
         
+            <a class="post-thumbnail" href="https://yuju-lee.github.io/algorithm/algorithm-unionFind/">
+                <img src="https://velog.velcdn.com/images/jiwon_choi/post/f7542334-2b5a-4e62-b235-a530db59e754/image.png"
+                    alt="[Algorithm] Union find">
+            </a>
+        
         <header class="entry-header">
             <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-13-integrityGuaranteed/" rel="bookmark">MSA-13. 재고 데이터의 무결성 보장</a>
+                <a href="https://yuju-lee.github.io/algorithm/algorithm-unionFind/" rel="bookmark">[Algorithm] Union find</a>
             </h2>
             <div class="entry-meta">
                 
@@ -95,18 +100,60 @@
                 
                 
                 <span class="post-date">
-                    <time class="published" datetime="2024-07-03">July 3, 2024</time>
+                    <time class="published" datetime="2024-07-15">July 15, 2024</time>
                 </span>
             </div><!-- .entry-meta -->
         </header><!-- .entry-header -->
         <div class="entry-content">
-            <p>남은 수량은 실시간으로 줄어들기 때문에 최대한 빠르게 Read &amp; Write 할 수 있어야 한다.
+            <p>유니온 파인드(Union-find, 서로소 집합)
  </p>
                 <p class="post-tags">
                     
                     
                     
-                    <a href='/tag/redis/'>Redis</a>
+                    <a href='/tag/algorithm/'>Algorithm</a>
+                    
+                    
+                    
+                    <a href='/tag/union-find/'>Union-find</a>
+                    
+                    
+                    
+                </p>
+        </div><!-- .entry-content -->
+    </div>
+</article><!-- .post -->
+        
+            <article class="post">
+    <div class="post-inside">
+        
+        <header class="entry-header">
+            <h2 class="entry-title">
+                <a href="https://yuju-lee.github.io/logs/MSA-17-schduler/" rel="bookmark">MSA-17. 구매 오픈 시각 기능 구현</a>
+            </h2>
+            <div class="entry-meta">
+                
+                
+                <span class="post-author"><a href="/author/judy/">judy</a></span>
+                
+                
+                <span class="post-date">
+                    <time class="published" datetime="2024-07-09">July 9, 2024</time>
+                </span>
+            </div><!-- .entry-meta -->
+        </header><!-- .entry-header -->
+        <div class="entry-content">
+            <p>결제 진입 메서드에 단순히 요청 시각과 구매 오픈 시각을 비교하는 로직을 추가했다. 그리고 엔드포인트를 통해 관리자가 특정 제품에 대한 StartTime을 지정할 수 있게 한다. 구매 오픈 시각이 설정된 제품은 비교 로직을 통해 구매 시간 전 결제를 할 수 없게 구현하였다.
+ </p>
+                <p class="post-tags">
+                    
+                    
+                    
+                    <a href='/tag/test-tool/'>Test-tool</a>
+                    
+                    
+                    
+                    <a href='/tag/luascript/'>LuaScript</a>
                     
                     
                     
@@ -124,7 +171,128 @@
         
         <header class="entry-header">
             <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-12-distributedLock/" rel="bookmark">MSA-12. 분산락 전환기</a>
+                <a href="https://yuju-lee.github.io/logs/MSA-16-changedProcess/" rel="bookmark">MSA-16. 루아스크립트 로직 전환</a>
+            </h2>
+            <div class="entry-meta">
+                
+                
+                <span class="post-author"><a href="/author/judy/">judy</a></span>
+                
+                
+                <span class="post-date">
+                    <time class="published" datetime="2024-07-09">July 9, 2024</time>
+                </span>
+            </div><!-- .entry-meta -->
+        </header><!-- .entry-header -->
+        <div class="entry-content">
+            <p>처음 가상대기열 로직에 대해 어떻게 생각했냐면… 친구들이 좋아하는 가수나 축구, 야구 티켓팅을 매번 도와달라고 해서 (별로 잘하지도 않는데도) 인터파크나 여타 다른 사이트의 티켓팅을 경험해 본 적이 좀 있다. 그래서 내가 티켓팅을 했을 때의 그 프로세스를 그대로 구현하면 어떨까, 라는 생각으로 기획했던 구조가 가상 대기열이라는 구조였다. 놀이공원처럼 큐로 대기열을 제한하고, 재고가 풀리면 다시 그 대기열에 요청을 받아서 선착순 (재고수량) 명만 결제할 수 있게끔…? 취소가 생기면 취소 재고만큼 다시 대기열을 비우고 그... </p>
+                <p class="post-tags">
+                    
+                    
+                    
+                    <a href='/tag/test-tool/'>Test-tool</a>
+                    
+                    
+                    
+                    <a href='/tag/luascript/'>LuaScript</a>
+                    
+                    
+                    
+                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+                    
+                    
+                    
+                </p>
+        </div><!-- .entry-content -->
+    </div>
+</article><!-- .post -->
+        
+            <article class="post">
+    <div class="post-inside">
+        
+        <header class="entry-header">
+            <h2 class="entry-title">
+                <a href="https://yuju-lee.github.io/logs/MSA-15-testTool/" rel="bookmark">MSA-15. 자동화 테스트 툴 제작</a>
+            </h2>
+            <div class="entry-meta">
+                
+                
+                <span class="post-author"><a href="/author/judy/">judy</a></span>
+                
+                
+                <span class="post-date">
+                    <time class="published" datetime="2024-07-06">July 6, 2024</time>
+                </span>
+            </div><!-- .entry-meta -->
+        </header><!-- .entry-header -->
+        <div class="entry-content">
+            <p>Python 스크립트로 과부하 테스트
+ </p>
+                <p class="post-tags">
+                    
+                    
+                    
+                    <a href='/tag/test-tool/'>Test-tool</a>
+                    
+                    
+                    
+                    <a href='/tag/distributed-lock/'>Distributed-lock</a>
+                    
+                    
+                    
+                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+                    
+                    
+                    
+                </p>
+        </div><!-- .entry-content -->
+    </div>
+</article><!-- .post -->
+        
+            <article class="post">
+    <div class="post-inside">
+        
+        <header class="entry-header">
+            <h2 class="entry-title">
+                <a href="https://yuju-lee.github.io/logs/MSA-14-feignClient/" rel="bookmark">MSA-14. Feign Client 적용기</a>
+            </h2>
+            <div class="entry-meta">
+                
+                
+                <span class="post-author"><a href="/author/judy/">judy</a></span>
+                
+                
+                <span class="post-date">
+                    <time class="published" datetime="2024-07-06">July 6, 2024</time>
+                </span>
+            </div><!-- .entry-meta -->
+        </header><!-- .entry-header -->
+        <div class="entry-content">
+            <p>기존에 느슨한 결합을 중요 순위 1순위로 생각해 결제-주문 로직을 제외한 Service간의 통신도 Kafka를 통한 비동기 통신으로 구현했었다. 다만 Kafka의 비동기 통신 특성 상, 이벤트 형식으로 발행되는 응답을 수신 Service가 제대로 받지 못 하는 상황이 발생하여 Latch로 차이를 뒀는데, 이럴 바에는 feign client 방식으로의 동기 통신과 Kafka의 비동기 통신을 적절히 혼용하는 방향이 더욱 간결하다고 판단하였다. 따라서 단순한 요청과 응답을 주고받는 건 feign client로 서비스 간 통신 로직을 변경하였다.
+ </p>
+                <p class="post-tags">
+                    
+                    
+                    
+                    <a href='/tag/feign-client/'>Feign-Client</a>
+                    
+                    
+                    
+                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+                    
+                    
+                    
+                </p>
+        </div><!-- .entry-content -->
+    </div>
+</article><!-- .post -->
+        
+            <article class="post">
+    <div class="post-inside">
+        
+        <header class="entry-header">
+            <h2 class="entry-title">
+                <a href="https://yuju-lee.github.io/logs/MSA-11-payment/" rel="bookmark">MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획</a>
             </h2>
             <div class="entry-meta">
                 
@@ -138,7 +306,7 @@
             </div><!-- .entry-meta -->
         </header><!-- .entry-header -->
         <div class="entry-content">
-            <p>기획했던 대로 우선 구현해 보았다.
+            <p>대용량 트래픽 처리에 대한 경험이 없어 기획부터 어려웠다. 그래도 어떻게 처리할 것인지 예상되는 로직을 기획하고 구현해 보려고 한다.
  </p>
                 <p class="post-tags">
                     
@@ -153,182 +321,6 @@
                     
                     
                     <a href='/tag/transaction/'>Transaction</a>
-                    
-                    
-                    
-                    <a href='/tag/distributed-lock/'>Distributed-Lock</a>
-                    
-                    
-                    
-                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
-                    
-                    
-                    
-                </p>
-        </div><!-- .entry-content -->
-    </div>
-</article><!-- .post -->
-        
-            <article class="post">
-    <div class="post-inside">
-        
-        <header class="entry-header">
-            <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-10-logoutAll/" rel="bookmark">MSA-10. 동시 로그아웃</a>
-            </h2>
-            <div class="entry-meta">
-                
-                
-                <span class="post-author"><a href="/author/judy/">judy</a></span>
-                
-                
-                <span class="post-date">
-                    <time class="published" datetime="2024-07-02">July 2, 2024</time>
-                </span>
-            </div><!-- .entry-meta -->
-        </header><!-- .entry-header -->
-        <div class="entry-content">
-            <p>발급한 모든 리퀘스트 토큰과 엑세스 토큰을 무효화하면 된다. 레디스에서 요청한 해당 이메일로 등록된 모든 토큰 데이터를 삭제하는 방식.
- </p>
-                <p class="post-tags">
-                    
-                    
-                    
-                    <a href='/tag/jwt/'>JWT</a>
-                    
-                    
-                    
-                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
-                    
-                    
-                    
-                </p>
-        </div><!-- .entry-content -->
-    </div>
-</article><!-- .post -->
-        
-            <article class="post">
-    <div class="post-inside">
-        
-        <header class="entry-header">
-            <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-9-MSAandAPIgateway/" rel="bookmark">MSA-9. MSA 적용과 API Gateway</a>
-            </h2>
-            <div class="entry-meta">
-                
-                
-                <span class="post-author"><a href="/author/judy/">judy</a></span>
-                
-                
-                <span class="post-date">
-                    <time class="published" datetime="2024-06-26">June 26, 2024</time>
-                </span>
-            </div><!-- .entry-meta -->
-        </header><!-- .entry-header -->
-        <div class="entry-content">
-            <p>드디어 MSA를 구현하기 위해 모놀리식으로 작성하던 프로젝트를 나누는 작업을 시작했다. 우선 도메인별로 기능을 묶을라 했는데 코드가 하도 꼬여 있어서 그냥 프로젝트를 새로 파기로 결심했다. 기존 모놀리식 프로젝트 안녕… 새로 [member / product / order / API gateway] eureka client / eureka server 이렇게 나누고, db를 세 개의 마이크로 서비스에 따라 각자 파기로 했다. 레디스는 별다른 분리 없이 하나의 레디스를 사용한다.
- </p>
-                <p class="post-tags">
-                    
-                    
-                    
-                    <a href='/tag/kafka/'>Kafka</a>
-                    
-                    
-                    
-                    <a href='/tag/msa/'>MSA</a>
-                    
-                    
-                    
-                    <a href='/tag/api-gateway/'>API-Gateway</a>
-                    
-                    
-                    
-                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
-                    
-                    
-                    
-                </p>
-        </div><!-- .entry-content -->
-    </div>
-</article><!-- .post -->
-        
-            <article class="post">
-    <div class="post-inside">
-        
-        <header class="entry-header">
-            <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-8-emailAuthService/" rel="bookmark">MSA-8. Google SMTP를 활용한 이메일 인증 단계 구현</a>
-            </h2>
-            <div class="entry-meta">
-                
-                
-                <span class="post-author"><a href="/author/judy/">judy</a></span>
-                
-                
-                <span class="post-date">
-                    <time class="published" datetime="2024-06-26">June 26, 2024</time>
-                </span>
-            </div><!-- .entry-meta -->
-        </header><!-- .entry-header -->
-        <div class="entry-content">
-            <p>Google STMP를 이용하여 구현하였다.
- </p>
-                <p class="post-tags">
-                    
-                    
-                    
-                    <a href='/tag/auth/'>Auth</a>
-                    
-                    
-                    
-                    <a href='/tag/googlesmtp/'>googleSMTP</a>
-                    
-                    
-                    
-                    <a href='/tag/mail-service/'>mail-service</a>
-                    
-                    
-                    
-                    <a href='/tag/java-springboot/'>JAVA-Springboot</a>
-                    
-                    
-                    
-                </p>
-        </div><!-- .entry-content -->
-    </div>
-</article><!-- .post -->
-        
-            <article class="post">
-    <div class="post-inside">
-        
-        <header class="entry-header">
-            <h2 class="entry-title">
-                <a href="https://yuju-lee.github.io/logs/MSA-7-orderSchduler/" rel="bookmark">MSA-7. 주문 상태 스케줄링</a>
-            </h2>
-            <div class="entry-meta">
-                
-                
-                <span class="post-author"><a href="/author/judy/">judy</a></span>
-                
-                
-                <span class="post-date">
-                    <time class="published" datetime="2024-06-25">June 25, 2024</time>
-                </span>
-            </div><!-- .entry-meta -->
-        </header><!-- .entry-header -->
-        <div class="entry-content">
-            <p>프로젝트의 명세에 따라 주문서의 상태에 따라 스케줄링이 필요했다. MySQL에서 스케줄링은
-
-  특정 간격을 주기로 감시하는 방법
-  특정 시각 + 특정 주기에 변경되도록 스케줄링하는 방법
-
- </p>
-                <p class="post-tags">
-                    
-                    
-                    
-                    <a href='/tag/taskscheduler/'>TaskScheduler</a>
                     
                     
                     
@@ -355,7 +347,7 @@
                 class="fa-arrow-left-custom" aria-hidden="true"></i> Newer</a>
         
         
-        <span class="page-number"> Page 2 of 5 </span>
+        <span class="page-number"> Page 2 of 6 </span>
         
         <a class="next" href="/author/judy/page3/"
             title="Next Page">Older <i class="fa-arrow-right-custom" aria-hidden="true"></i></a>
@@ -425,6 +417,8 @@
         
         <a href='/tag/hash-table/'>Hash-table</a>
         
+        <a href='/tag/java/'>JAVA</a>
+        
         <a href='/tag/java-springboot/'>JAVA-Springboot</a>
         
         <a href='/tag/jwt/'>JWT</a>
@@ -432,6 +426,8 @@
         <a href='/tag/kmp/'>KMP</a>
         
         <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/kubernetes/'>Kubernetes</a>
         
         <a href='/tag/luascript/'>LuaScript</a>
         
@@ -455,9 +451,25 @@
         
         <a href='/tag/union-find/'>Union-find</a>
         
+        <a href='/tag/cookie/'>cookie</a>
+        
+        <a href='/tag/funtional-programming/'>funtional-programming</a>
+        
         <a href='/tag/googlesmtp/'>googleSMTP</a>
         
+        <a href='/tag/http/'>http</a>
+        
+        <a href='/tag/kubernetes/'>kubernetes</a>
+        
         <a href='/tag/mail-service/'>mail-service</a>
+        
+        <a href='/tag/process/'>process</a>
+        
+        <a href='/tag/protocol/'>protocol</a>
+        
+        <a href='/tag/session/'>session</a>
+        
+        <a href='/tag/thread/'>thread</a>
         
     </div>
 </section>

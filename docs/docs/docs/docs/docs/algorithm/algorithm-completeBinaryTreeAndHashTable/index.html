@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>[Algorithm] Complete Binary Tree &amp; HashTable</title>
+    <meta name="description"
+        content="완전이진트리 완전 이진 트리(Complete Binary Tree)는 이진 트리(Binary Tree)의 특수한 형태로, 모든 레벨이 완전히 채워져 있거나 마지막 레벨을 제외하고는 모든 노드가 왼쪽부터 오른쪽으로 순서대로 채워져 있는 트리이다. 완전 이진 트리는 배열을 사용한 구현...">
+    <link rel="canonical" href="https://yuju-lee.github.io/algorithm/algorithm-completeBinaryTreeAndHashTable/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="https://yuju-lee.github.io/assets/images/favicon.ico" type="image/png" />
+
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+                <div class="post-thumbnail"><img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/binary-tree-to-DLL.png" alt="[Algorithm] Complete Binary Tree & HashTable"></div>
+            
+            <header class="entry-header">
+                <h1 class="entry-title">[Algorithm] Complete Binary Tree & HashTable</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/algorithm">algorithm</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-06-06">June 6, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <h2 id="완전이진트리">완전이진트리</h2>
+<p>완전 이진 트리(Complete Binary Tree)는 이진 트리(Binary Tree)의 특수한 형태로, 모든 레벨이 완전히 채워져 있거나 마지막 레벨을 제외하고는 모든 노드가 왼쪽부터 오른쪽으로 순서대로 채워져 있는 트리이다. 완전 이진 트리는 배열을 사용한 구현에 적합하며, 힙(Heap)과 같은 데이터 구조의 기초가 된다.</p>
+
+<p><strong>완전 이진 트리의 특성</strong></p>
+<ol>
+  <li>노드 배치:
+    <ul>
+      <li>모든 레벨이 꽉 차 있거나, 마지막 레벨을 제외한 모든 레벨이 꽉 차있다.</li>
+      <li>마지막 레벨의 노드는 왼쪽에서 오른쪽으로 순서대로 채워진다.</li>
+    </ul>
+  </li>
+  <li>높이:
+    <ul>
+      <li>완전 이진 트리의 높이(또는 깊이)는 최소 높이이다. 따라서 노드의 개수가 N일 때, 높이는 O(log N)이다.</li>
+    </ul>
+  </li>
+</ol>
+
+<hr />
+
+<h2 id="해시테이블-hashtable">해시테이블 (Hashtable)</h2>
+
+<p>해시 테이블(Hash Table)은 키(key)와 값(value)을 저장하는 데이터 구조이며 빠른 검색, 삽입 및 삭제 작업이 가능하다. 해시 테이블은 해시 함수(Hash Function)를 사용하여 키를 해시값(hash value)으로 변환하고, 이 해시값을 인덱스로 사용하여 배열에서 데이터를 저장하거나 검색한다.</p>
+
+<p><strong>주요 개념</strong></p>
+<ol>
+  <li>해시 함수(Hash Function):
+    <ul>
+      <li>해시 함수는 임의의 길이를 가진 입력 데이터를 고정된 길이의 해시값으로 변환한다. 좋은 해시 함수는 입력이 고르게 분포되도록 하여 충돌(collisions)을 최소화한다.</li>
+      <li>ex) <code class="language-plaintext highlighter-rouge">h(key) = key % array_size</code></li>
+    </ul>
+  </li>
+  <li>해시값(Hash Value):
+    <ul>
+      <li>해시 함수에 의해 생성된 고정 길이의 숫자이다. 이 값을 인덱스로 사용하여 배열에서 데이터의 위치를 결정한다.</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>해시테이블의 장점</strong></p>
+<ol>
+  <li>빠른 검색, 삽입, 삭제 - <strong>O(1)의 시간 복잡도</strong>로 데이터를 검색 및 삽입, 삭제할 수 있다.</li>
+  <li>키-값 쌍의 효율적인 관리가 가능하다.</li>
+</ol>
+
+<hr />
+<h3 id="boj-11286-절댓값-힙">BOJ-11286: 절댓값 힙</h3>
+
+<ul>
+  <li>난이도: 실버</li>
+  <li>분류: 힙</li>
+  <li>링크: <a href="https://www.acmicpc.net/problem/11286">11286번: 절댓값 힙</a></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">heapq</span>
+<span class="kn">from</span> <span class="n">sys</span> <span class="kn">import</span> <span class="n">stdin</span>
+
+<span class="nb">input</span> <span class="o">=</span> <span class="n">stdin</span><span class="p">.</span><span class="n">readline</span>
+<span class="n">heap</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">count</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="nf">input</span><span class="p">())</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="nf">input</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># (절대값, 실제값) 형태로 저장
+</span>            <span class="n">heapq</span><span class="p">.</span><span class="nf">heappush</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">num</span><span class="p">),</span> <span class="n">num</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># 0일 경우 배열에서 절대값이 가장 작은 값을 출력하고 제거
+</span>            <span class="k">if</span> <span class="nf">len</span><span class="p">(</span><span class="n">heap</span><span class="p">):</span>
+                <span class="nf">print</span><span class="p">(</span><span class="n">heapq</span><span class="p">.</span><span class="nf">heappop</span><span class="p">(</span><span class="n">heap</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nf">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nf">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></div></div>
+
+<hr />
+
+<h3 id="boj-9375-패션왕-신해빈">BOJ-9375: 패션왕 신해빈</h3>
+
+<ul>
+  <li>난이도: 실버</li>
+  <li>분류: 해시 테이블 (딕셔너리)</li>
+  <li>링크: <a href="https://www.acmicpc.net/problem/9375">9375번: 패션왕 신해빈</a></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">sys</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="nf">input</span><span class="p">())</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">cloth</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="nf">input</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">name</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">sys</span><span class="p">.</span><span class="n">stdin</span><span class="p">.</span><span class="nf">readline</span><span class="p">().</span><span class="nf">rstrip</span><span class="p">().</span><span class="nf">split</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span> <span class="ow">in</span> <span class="n">cloth</span><span class="p">:</span>
+            <span class="n">cloth</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cloth</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cloth</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">*=</span> <span class="p">(</span><span class="n">cloth</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="nf">print</span><span class="p">(</span><span class="n">result</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/algorithm">Algorithm</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/binary-tree">Binary-tree</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/hash-table">Hash-table</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/algorithm/algorithm-stackAndQueue/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">[Algorithm] Stack and Queue</span>
+                    <span class="nav-meta">June 5, 2024</span>
+                    
+                        <span class="nav-thumb" style="background-image: url(https://miro.medium.com/v2/resize:fit:1400/1*zKnDkJpL-4GQ36kzrDiODQ.png)"></span>
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/algorithm/algorithm-binarySearchAndSort/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">[Algorithm] Binary Search & Sort</span>
+                    <span class="nav-meta">June 7, 2024</span>
+                    
+                        <span class="nav-thumb" style="background-image: url(https://media.geeksforgeeks.org/wp-content/cdn-uploads/binary-tree-to-DLL.png)"></span>
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About me</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/knowledge/">Knowledge</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/algorithm/'>Algorithm</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/bfs/'>BFS</a>
+        
+        <a href='/tag/binary-search/'>Binary-search</a>
+        
+        <a href='/tag/binary-tree/'>Binary-tree</a>
+        
+        <a href='/tag/brute-force/'>Brute-force</a>
+        
+        <a href='/tag/dfs/'>DFS</a>
+        
+        <a href='/tag/dp/'>DP</a>
+        
+        <a href='/tag/dijkstra/'>Dijkstra</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/greedy/'>Greedy</a>
+        
+        <a href='/tag/hash-table/'>Hash-table</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kmp/'>KMP</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/queue/'>Queue</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/sort/'>Sort</a>
+        
+        <a href='/tag/stack/'>Stack</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/time-complexity/'>Time-Complexity</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/union-find/'>Union-find</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

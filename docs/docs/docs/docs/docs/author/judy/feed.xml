@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator>
   <link href="https://yuju-lee.github.io/author/judy/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://yuju-lee.github.io/" rel="alternate" type="text/html" />
-  <updated>2024-07-14T20:42:16+09:00</updated>
+  <updated>2024-07-15T01:04:51+09:00</updated>
   <id>https://yuju-lee.github.io/author/judy/feed.xml</id>
 
   
@@ -30,6 +30,159 @@
   
   
 
+  
+    <entry>
+      <title type="html">[Algorithm] Union find</title>
+      <link href="https://yuju-lee.github.io/algorithm/algorithm-unionFind/" rel="alternate" type="text/html" title="[Algorithm] Union find" />
+      <published>2024-07-15T00:00:00+09:00</published>
+      <updated>2024-07-15T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/algorithm/algorithm-unionFind</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/algorithm/algorithm-unionFind/">&lt;h2 id=&quot;유니온-파인드union-find-서로소-집합&quot;&gt;유니온 파인드(Union-find, 서로소 집합)&lt;/h2&gt;
+
+&lt;p&gt;유니온 파인드(Union-Find) 알고리즘, 또는 서로소 집합(Disjoint Set) 자료구조는 동적 연결성 문제를 해결하기 위해 사용된다. 이 자료구조는 주로 그래프에서 연결된 컴포넌트를 찾는 데 사용되는데, 유니온 파인드 자료구조는 두 가지 주요 연산을 효율적으로 수행한다.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Union: 두 개의 집합을 하나의 집합으로 합친다.&lt;/li&gt;
+  &lt;li&gt;Find: 특정 원소가 속한 집합을 찾는다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;유니온 파인드의 주요 개념&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;집합 표현:
+    &lt;ul&gt;
+      &lt;li&gt;각 원소는 자신을 부모로 가지는 트리 형태로 표현된다.&lt;/li&gt;
+      &lt;li&gt;집합의 루트 노드는 집합의 대표(또는 루트)로 간주된다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Find 연산:
+    &lt;ul&gt;
+      &lt;li&gt;주어진 원소가 속한 집합의 대표를 찾는다.&lt;/li&gt;
+      &lt;li&gt;경로 압축(Path Compression)을 통해 트리의 높이를 줄여, 이후의 Find 연산이 더 빠르게 수행되도록 최적화할 수 있다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Union 연산:
+    &lt;ul&gt;
+      &lt;li&gt;두 개의 집합을 하나로 합친다.&lt;/li&gt;
+      &lt;li&gt;Union by Rank 또는 Union by Size 기법을 사용하여 트리의 높이를 최소화할 수 있다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;유니온 파인드의 최적화 기법&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;경로 압축(Path Compression):
+    &lt;ul&gt;
+      &lt;li&gt;Find 연산을 수행하는 동안, 방문한 모든 노드를 직접 루트 노드에 연결하여 &lt;strong&gt;트리의 높이를 줄인다&lt;/strong&gt;.&lt;/li&gt;
+      &lt;li&gt;이 최적화는 Find 연산의 시간 복잡도를 거의 상수 시간으로 만든다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;랭크에 의한 합치기(Union by Rank):
+    &lt;ul&gt;
+      &lt;li&gt;각 트리의 높이를 추적하고, 항상 높이가 낮은 트리를 높이가 높은 트리 아래에 연결하여 트리의 높이를 최소화한다.&lt;/li&gt;
+      &lt;li&gt;이는 트리의 균형을 유지하는 데 도움이 된다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;크기에 의한 합치기(Union by Size):
+    &lt;ul&gt;
+      &lt;li&gt;각 집합의 크기를 추적하고, 항상 작은 트리를 큰 트리 아래에 연결하여 트리의 높이를 최소화한다.&lt;/li&gt;
+      &lt;li&gt;이는 Union by Rank와 유사하게 트리의 균형을 유지하는 데 도움이 된다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;시간 복잡도&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;경로 압축과 랭크에 의한 합치기 최적화를 적용하면 유니온 파인드 자료구조의 연산은 거의 상수 시간으로 수행되는데, 정확히는 매우 느리게 증가하는 역 아커만 함수(inverse Ackermann function) 시간 복잡도인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;O(α(n))&lt;/code&gt;으로 수행한다. 이 함수는 &lt;strong&gt;실제로는 거의 상수로 간주&lt;/strong&gt;될 수 있다.&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>judy</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="Algorithm" />
+      
+        <category term="Union-find" />
+      
+
+      
+        <summary type="html">유니온 파인드(Union-find, 서로소 집합)</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">MSA-17. 구매 오픈 시각 기능 구현</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-17-schduler/" rel="alternate" type="text/html" title="MSA-17. 구매 오픈 시각 기능 구현" />
+      <published>2024-07-09T00:00:00+09:00</published>
+      <updated>2024-07-09T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-17-schduler</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-17-schduler/">&lt;p&gt;결제 진입 메서드에 단순히 요청 시각과 구매 오픈 시각을 비교하는 로직을 추가했다. 그리고 엔드포인트를 통해 관리자가 특정 제품에 대한 StartTime을 지정할 수 있게 한다. 구매 오픈 시각이 설정된 제품은 비교 로직을 통해 구매 시간 전 결제를 할 수 없게 구현하였다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt; // 특정 제품의 판매 시작 시간 확인
+        LocalTime saleStartTime = saleTimeRepository.getProductSaleTime(productId);
+        LocalTime now = LocalTime.now();
+        if (saleStartTime != null &amp;amp;&amp;amp; now.isBefore(saleStartTime)) {
+            return &quot;결제는 &quot; + saleStartTime.toString() + &quot;부터 가능합니다.&quot;;
+        }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;@PostMapping(&quot;/sale-time/{productId}&quot;)
+public String setProductSaleTime(@PathVariable int productId, @RequestParam String saleTime) {
+    LocalTime saleStartTime = LocalTime.parse(saleTime, DateTimeFormatter.ofPattern(&quot;HH:mm&quot;));
+    saleTimeRepository.setProductSaleTime(productId, saleStartTime);
+    return &quot;Sale start time for product &quot; + productId + &quot; set to &quot; + saleStartTime.toString();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F7b3d4949-62a1-466f-b07e-65c16d9ac684%2FScreenshot_2024-07-09_at_6.38.13_PM.png?table=block&amp;amp;id=7964d64f-88fc-42f8-820f-198c6a4aa377&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=2000&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;오픈할 제품 id와 시각을 이렇게 Param으로 요청할 수 있다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F56c5750a-c1ee-42c4-a25e-5306f2da4785%2FScreenshot_2024-07-09_at_6.38.35_PM.png?table=block&amp;amp;id=ba858a55-c8e0-434b-a8dd-1267f9a39dc1&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=2000&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;결제 시각 전의 결제 요청을 아예 거부한다.&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>judy</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="Test-tool" />
+      
+        <category term="LuaScript" />
+      
+        <category term="JAVA-Springboot" />
+      
+
+      
+        <summary type="html">결제 진입 메서드에 단순히 요청 시각과 구매 오픈 시각을 비교하는 로직을 추가했다. 그리고 엔드포인트를 통해 관리자가 특정 제품에 대한 StartTime을 지정할 수 있게 한다. 구매 오픈 시각이 설정된 제품은 비교 로직을 통해 구매 시간 전 결제를 할 수 없게 구현하였다.</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">MSA-16. 루아스크립트 로직 전환</title>
@@ -143,35 +296,32 @@
     </entry>
   
     <entry>
-      <title type="html">MSA-17. 구매 오픈 시각 기능 구현</title>
-      <link href="https://yuju-lee.github.io/logs/MSA-17-schduler/" rel="alternate" type="text/html" title="MSA-17. 구매 오픈 시각 기능 구현" />
-      <published>2024-07-09T00:00:00+09:00</published>
-      <updated>2024-07-09T00:00:00+09:00</updated>
-      <id>https://yuju-lee.github.io/logs/MSA-17-schduler</id>
-      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-17-schduler/">&lt;p&gt;결제 진입 메서드에 단순히 요청 시각과 구매 오픈 시각을 비교하는 로직을 추가했다. 그리고 엔드포인트를 통해 관리자가 특정 제품에 대한 StartTime을 지정할 수 있게 한다. 구매 오픈 시각이 설정된 제품은 비교 로직을 통해 구매 시간 전 결제를 할 수 없게 구현하였다.&lt;/p&gt;
+      <title type="html">MSA-15. 자동화 테스트 툴 제작</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-15-testTool/" rel="alternate" type="text/html" title="MSA-15. 자동화 테스트 툴 제작" />
+      <published>2024-07-06T00:00:00+09:00</published>
+      <updated>2024-07-06T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-15-testTool</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-15-testTool/">&lt;h3 id=&quot;python-스크립트로-과부하-테스트&quot;&gt;Python 스크립트로 과부하 테스트&lt;/h3&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt; // 특정 제품의 판매 시작 시간 확인
-        LocalTime saleStartTime = saleTimeRepository.getProductSaleTime(productId);
-        LocalTime now = LocalTime.now();
-        if (saleStartTime != null &amp;amp;&amp;amp; now.isBefore(saleStartTime)) {
-            return &quot;결제는 &quot; + saleStartTime.toString() + &quot;부터 가능합니다.&quot;;
-        }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;@PostMapping(&quot;/sale-time/{productId}&quot;)
-public String setProductSaleTime(@PathVariable int productId, @RequestParam String saleTime) {
-    LocalTime saleStartTime = LocalTime.parse(saleTime, DateTimeFormatter.ofPattern(&quot;HH:mm&quot;));
-    saleTimeRepository.setProductSaleTime(productId, saleStartTime);
-    return &quot;Sale start time for product &quot; + productId + &quot; set to &quot; + saleStartTime.toString();
-}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;쿼리문으로 10000명의 회원 정보를 넣었다.
+&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fdbf328e7-f800-4d94-adad-8fac9e1429d8%2FScreenshot_2024-07-07_at_2.34.30_AM.png?table=block&amp;amp;id=23d99b6d-4d55-442c-98d4-38ef652ec8cc&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1120&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F7b3d4949-62a1-466f-b07e-65c16d9ac684%2FScreenshot_2024-07-09_at_6.38.13_PM.png?table=block&amp;amp;id=7964d64f-88fc-42f8-820f-198c6a4aa377&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=2000&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;이메일 인증을 우회하기 위해 enabled=true로 직접 지정하여 10000개를 생성.&lt;/p&gt;
 
-&lt;p&gt;오픈할 제품 id와 시각을 이렇게 Param으로 요청할 수 있다.&lt;/p&gt;
+&lt;p&gt;이메일, 토큰 정보가 헤더에 들어가야 하니 10000명을 순차적으로 로그인 시키는 파이썬 스크립트를 만들어 돌린 뒤, 이 정보를 헤더에 함께 넣어 결제 진입 API로 동시에 요청한다. 그리고 결과를 txt 파일로 뽑아 summary했다.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F56c5750a-c1ee-42c4-a25e-5306f2da4785%2FScreenshot_2024-07-09_at_6.38.35_PM.png?table=block&amp;amp;id=ba858a55-c8e0-434b-a8dd-1267f9a39dc1&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=2000&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;분산 락으로 테스트하였을 때에는 서버가 터지거나 그러진 않았다. order도 잘 생성되었음.&lt;/p&gt;
 
-&lt;p&gt;결제 시각 전의 결제 요청을 아예 거부한다.&lt;/p&gt;</content>
+&lt;hr /&gt;
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Faff44e53-cf32-4c26-91ee-578402eb38cb%2FScreenshot_2024-07-07_at_2.38.30_AM.png?table=block&amp;amp;id=79486b68-9142-4a08-84ee-77047b956dd5&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1440&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;center&gt;첫 번째 테스트 결과&lt;/center&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F9de5acea-1fb6-467e-a7a5-c8cde6569593%2FScreenshot_2024-07-07_at_2.36.30_AM.png?table=block&amp;amp;id=5a85c351-c15e-4916-886b-bdf8fb5b027b&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1440&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;center&gt;두 번째 테스트 결과&lt;/center&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;모든 결과는 &lt;a href=&quot;https://docs.google.com/spreadsheets/d/1EtPv7QxRM_sXQHPGmroqycDekuZ1-orG6XYZ0TE27EQ/edit?gid=356041803#gid=356041803&quot;&gt;여기&lt;/a&gt;에서 확인할 수 있다.&lt;/p&gt;</content>
 
       
       
@@ -190,13 +340,13 @@ public String setProductSaleTime(@PathVariable int productId, @RequestParam Stri
       
         <category term="Test-tool" />
       
-        <category term="LuaScript" />
+        <category term="Distributed-lock" />
       
         <category term="JAVA-Springboot" />
       
 
       
-        <summary type="html">결제 진입 메서드에 단순히 요청 시각과 구매 오픈 시각을 비교하는 로직을 추가했다. 그리고 엔드포인트를 통해 관리자가 특정 제품에 대한 StartTime을 지정할 수 있게 한다. 구매 오픈 시각이 설정된 제품은 비교 로직을 통해 구매 시간 전 결제를 할 수 없게 구현하였다.</summary>
+        <summary type="html">Python 스크립트로 과부하 테스트</summary>
       
 
       
@@ -262,32 +412,153 @@ public String setProductSaleTime(@PathVariable int productId, @RequestParam Stri
     </entry>
   
     <entry>
-      <title type="html">MSA-15. 자동화 테스트 툴 제작</title>
-      <link href="https://yuju-lee.github.io/logs/MSA-15-testTool/" rel="alternate" type="text/html" title="MSA-15. 자동화 테스트 툴 제작" />
-      <published>2024-07-06T00:00:00+09:00</published>
-      <updated>2024-07-06T00:00:00+09:00</updated>
-      <id>https://yuju-lee.github.io/logs/MSA-15-testTool</id>
-      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-15-testTool/">&lt;h3 id=&quot;python-스크립트로-과부하-테스트&quot;&gt;Python 스크립트로 과부하 테스트&lt;/h3&gt;
+      <title type="html">MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획</title>
+      <link href="https://yuju-lee.github.io/logs/MSA-11-payment/" rel="alternate" type="text/html" title="MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획" />
+      <published>2024-07-03T00:00:00+09:00</published>
+      <updated>2024-07-03T00:00:00+09:00</updated>
+      <id>https://yuju-lee.github.io/logs/MSA-11-payment</id>
+      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-11-payment/">&lt;p&gt;대용량 트래픽 처리에 대한 경험이 없어 기획부터 어려웠다. 그래도 어떻게 처리할 것인지 예상되는 로직을 기획하고 구현해 보려고 한다.&lt;/p&gt;
 
-&lt;p&gt;쿼리문으로 10000명의 회원 정보를 넣었다.
-&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fdbf328e7-f800-4d94-adad-8fac9e1429d8%2FScreenshot_2024-07-07_at_2.34.30_AM.png?table=block&amp;amp;id=23d99b6d-4d55-442c-98d4-38ef652ec8cc&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1120&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h3 id=&quot;idea&quot;&gt;&lt;em&gt;IDEA&lt;/em&gt;&lt;/h3&gt;
 
-&lt;p&gt;이메일 인증을 우회하기 위해 enabled=true로 직접 지정하여 10000개를 생성.&lt;/p&gt;
+&lt;p&gt;가상 대기열을 사용하여 구매 오픈하자마자 접속한 초기 접속자를 관리하고, 결제 시에는 Redis를 사용하여 재고를 빠르게 확인하며, 예약 상태를 통해 결제 프로세스 관리&lt;/p&gt;
 
-&lt;p&gt;이메일, 토큰 정보가 헤더에 들어가야 하니 10000명을 순차적으로 로그인 시키는 파이썬 스크립트를 만들어 돌린 뒤, 이 정보를 헤더에 함께 넣어 결제 진입 API로 동시에 요청한다. 그리고 결과를 txt 파일로 뽑아 summary했다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;구매 버튼을 누르면&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;분산 락으로 테스트하였을 때에는 서버가 터지거나 그러진 않았다. order도 잘 생성되었음.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;가상 대기열에 추가&lt;/strong&gt;: 사용자가 결제 요청을 보낼 때 가상 대기열에 추가되어 재고 서비스에 재고 확인 요청 보낸 뒤 재고 서비스에서 재고를 확인하고, 재고가 충분하면 &lt;strong&gt;재고 예약&lt;/strong&gt;
+    &lt;ol&gt;
+      &lt;li&gt;재고가 없을 시 대기열 추가 X → 구매 예약으로 이동&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;대기열에서 처리&lt;/strong&gt;: 대기열에서 차례가 되면 결제 요청 서비스로 보내 결제 처리 시작&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;결제 처리&lt;/strong&gt;: 결제 서비스에서 결제를 처리하고, 결제가 성공하면 최종적으로 주문 확정
+    &lt;ol&gt;
+      &lt;li&gt;결제가 실패하면 재고 예약을 취소하고, 주문 취소&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;상태 업데이트&lt;/strong&gt;: 각 서비스는 상태를 성공으로 업데이트하고, 이벤트를 발행해 OrderService로 발송&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;모든 재고가 소진(품절)되면 구매 예약을 걸어 놓을 수 있으며, 취소 재고 발생 시 예약자에게 이메일로 알림 &amp;gt; 이후 위의 로직을 다시 적용&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;hr /&gt;
-&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Faff44e53-cf32-4c26-91ee-578402eb38cb%2FScreenshot_2024-07-07_at_2.38.30_AM.png?table=block&amp;amp;id=79486b68-9142-4a08-84ee-77047b956dd5&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1440&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;center&gt;첫 번째 테스트 결과&lt;/center&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F9de5acea-1fb6-467e-a7a5-c8cde6569593%2FScreenshot_2024-07-07_at_2.36.30_AM.png?table=block&amp;amp;id=5a85c351-c15e-4916-886b-bdf8fb5b027b&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1440&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-&lt;center&gt;두 번째 테스트 결과&lt;/center&gt;
+&lt;h2 id=&quot;가상-대기열&quot;&gt;가상 대기열&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F3cec5d45-1253-40d4-b2d8-46a077552762%2FUntitled.png?table=block&amp;amp;id=68f4fb32-ded7-4723-9c61-4fa0b912ef84&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=770&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;Untitled&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;개념&quot;&gt;개념&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;사용자 요청 수집&lt;/strong&gt;: 모든 사용자가 한 번에 서버에 접속하지 않도록 요청을 대기열에 수집함
+    &lt;ul&gt;
+      &lt;li&gt;특정 n 개 이상의 요청이 들어올 경우, 가상 대기열을 생성하는 로직으로 이동해야 할 듯&lt;/li&gt;
+      &lt;li&gt;그럼 “어떤 기준” 시간에 “n개의 요청”이 들어오는지 감시하는 로직도 필요할 것 같음&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;순차 처리&lt;/strong&gt;: 대기열에서 순차적으로 요청을 꺼내어 처리&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;상태 관리&lt;/strong&gt;: 대기열의 상태를 사용자에게 실시간 업데이트&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;설계&quot;&gt;설계&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;DB 구조
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;Queue Table&lt;/strong&gt;
+        &lt;ul&gt;
+          &lt;li&gt;id: 고유 식별자 (PK)&lt;/li&gt;
+          &lt;li&gt;memberEmail: 사용자 식별자&lt;/li&gt;
+          &lt;li&gt;requestTime: 요청 시간&lt;/li&gt;
+          &lt;li&gt;status: 요청 상태&lt;/li&gt;
+          &lt;li&gt;position: 대기열에서의 위치&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;로직
+    &lt;ol&gt;
+      &lt;li&gt;&lt;strong&gt;요청 수집&lt;/strong&gt;
+        &lt;ul&gt;
+          &lt;li&gt;사용자가 서버에 요청을 보내면 요청을 대기열 테이블에 저장&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;대기열 상태 확인&lt;/strong&gt;
+        &lt;ul&gt;
+          &lt;li&gt;사용자가 요청할 때마다 새로운 대기열 위치 및 예상 대기 시간 반환&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;요청 처리&lt;/strong&gt;
+        &lt;ul&gt;
+          &lt;li&gt;백그라운드 작업을 통해 대기열에서 순차적으로 요청을 가져와 처리&lt;/li&gt;
+          &lt;li&gt;처리 후 상태 업데이트 → 사용자에게 결과 통지&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;hr /&gt;
 
-&lt;p&gt;모든 결과는 &lt;a href=&quot;https://docs.google.com/spreadsheets/d/1EtPv7QxRM_sXQHPGmroqycDekuZ1-orG6XYZ0TE27EQ/edit?gid=356041803#gid=356041803&quot;&gt;여기&lt;/a&gt;에서 확인할 수 있다.&lt;/p&gt;</content>
+&lt;h2 id=&quot;분산-트랜잭션&quot;&gt;분산 트랜잭션&lt;/h2&gt;
+
+&lt;h3 id=&quot;saga-패턴&quot;&gt;Saga 패턴&lt;/h3&gt;
+
+&lt;p&gt;Saga 패턴은 긴 실행 시간 트랜잭션을 여러 개의 작은 트랜잭션으로 나누어 처리하는 방법이다. 각 단계는 독립적인 로컬 트랜잭션으로 처리되며, 실패 시 보상 트랜잭션을 실행하여 시스템의 일관성을 유지할 수 있다.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;레디스-활용&quot;&gt;레디스 활용&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;결제 생성 요청 처리&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;Order Service&lt;/strong&gt;는 클라이언트로부터 주문 요청을 받으면 요청된 각 상품에 대해 Redis에서 재고 확인&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;원자적 재고 감소&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;결제 처리&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;Payment Service&lt;/strong&gt;는 결제 요청을 처리&lt;/li&gt;
+      &lt;li&gt;결제 성공 시 재고 업데이트를 확정&lt;/li&gt;
+      &lt;li&gt;결제 실패 시 Redis에서 원자적으로 재고 복원&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;→ Lua 스크립트 사용하기&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fae6bf094-d7d2-464e-be75-6f85042f8f64%2FIMG_0265.png?table=block&amp;amp;id=b62775cf-72e8-4c23-acca-4b1670dda2d9&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1440&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;
+(너무 대충 그렸다…)&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;ProductService&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;Redis와 MySQL을 동기화하여 재고를 관리하고, Kafka를 통해 재고 증감 구독&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;PaymentQueueService&lt;/strong&gt;
+    &lt;ul&gt;
+      &lt;li&gt;결제 요청을 받아 Redis에서 재고를 확인하고, 재고가 충분할 경우 요청을 대기열에 추가&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;PaymentService&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;대기열을 주기적으로 확인하여 결제 요청을 처리하고, 20% 확률로 결제를 실패&lt;/li&gt;
+      &lt;li&gt;결제가 성공하면 order-request-topic으로 정보를 전송, 실패 시 재고 복구 후 실패 응답 반환&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;OrderService&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;order-request-topic에서 결제 성공 정보를 받아 주문을 생성&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;</content>
 
       
       
@@ -304,15 +575,17 @@ public String setProductSaleTime(@PathVariable int productId, @RequestParam Stri
       
 
       
-        <category term="Test-tool" />
+        <category term="Kafka" />
       
-        <category term="Distributed-lock" />
+        <category term="Redis" />
+      
+        <category term="Transaction" />
       
         <category term="JAVA-Springboot" />
       
 
       
-        <summary type="html">Python 스크립트로 과부하 테스트</summary>
+        <summary type="html">대용량 트래픽 처리에 대한 경험이 없어 기획부터 어려웠다. 그래도 어떻게 처리할 것인지 예상되는 로직을 기획하고 구현해 보려고 한다.</summary>
       
 
       
@@ -529,187 +802,6 @@ kafkaTemplate.send(stockUpdateTopic, objectMapper.writeValueAsString(stockUpdate
 
       
         <summary type="html">기획했던 대로 우선 구현해 보았다.</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획</title>
-      <link href="https://yuju-lee.github.io/logs/MSA-11-payment/" rel="alternate" type="text/html" title="MSA-11. 대용량 트래픽 처리 방법에 대한 프로젝트 기획" />
-      <published>2024-07-03T00:00:00+09:00</published>
-      <updated>2024-07-03T00:00:00+09:00</updated>
-      <id>https://yuju-lee.github.io/logs/MSA-11-payment</id>
-      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-11-payment/">&lt;p&gt;대용량 트래픽 처리에 대한 경험이 없어 기획부터 어려웠다. 그래도 어떻게 처리할 것인지 예상되는 로직을 기획하고 구현해 보려고 한다.&lt;/p&gt;
-
-&lt;h3 id=&quot;idea&quot;&gt;&lt;em&gt;IDEA&lt;/em&gt;&lt;/h3&gt;
-
-&lt;p&gt;가상 대기열을 사용하여 구매 오픈하자마자 접속한 초기 접속자를 관리하고, 결제 시에는 Redis를 사용하여 재고를 빠르게 확인하며, 예약 상태를 통해 결제 프로세스 관리&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;구매 버튼을 누르면&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;가상 대기열에 추가&lt;/strong&gt;: 사용자가 결제 요청을 보낼 때 가상 대기열에 추가되어 재고 서비스에 재고 확인 요청 보낸 뒤 재고 서비스에서 재고를 확인하고, 재고가 충분하면 &lt;strong&gt;재고 예약&lt;/strong&gt;
-    &lt;ol&gt;
-      &lt;li&gt;재고가 없을 시 대기열 추가 X → 구매 예약으로 이동&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;대기열에서 처리&lt;/strong&gt;: 대기열에서 차례가 되면 결제 요청 서비스로 보내 결제 처리 시작&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;결제 처리&lt;/strong&gt;: 결제 서비스에서 결제를 처리하고, 결제가 성공하면 최종적으로 주문 확정
-    &lt;ol&gt;
-      &lt;li&gt;결제가 실패하면 재고 예약을 취소하고, 주문 취소&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;상태 업데이트&lt;/strong&gt;: 각 서비스는 상태를 성공으로 업데이트하고, 이벤트를 발행해 OrderService로 발송&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;모든 재고가 소진(품절)되면 구매 예약을 걸어 놓을 수 있으며, 취소 재고 발생 시 예약자에게 이메일로 알림 &amp;gt; 이후 위의 로직을 다시 적용&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;hr /&gt;
-
-&lt;h2 id=&quot;가상-대기열&quot;&gt;가상 대기열&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F3cec5d45-1253-40d4-b2d8-46a077552762%2FUntitled.png?table=block&amp;amp;id=68f4fb32-ded7-4723-9c61-4fa0b912ef84&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=770&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;Untitled&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;개념&quot;&gt;개념&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;사용자 요청 수집&lt;/strong&gt;: 모든 사용자가 한 번에 서버에 접속하지 않도록 요청을 대기열에 수집함
-    &lt;ul&gt;
-      &lt;li&gt;특정 n 개 이상의 요청이 들어올 경우, 가상 대기열을 생성하는 로직으로 이동해야 할 듯&lt;/li&gt;
-      &lt;li&gt;그럼 “어떤 기준” 시간에 “n개의 요청”이 들어오는지 감시하는 로직도 필요할 것 같음&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;순차 처리&lt;/strong&gt;: 대기열에서 순차적으로 요청을 꺼내어 처리&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;상태 관리&lt;/strong&gt;: 대기열의 상태를 사용자에게 실시간 업데이트&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;설계&quot;&gt;설계&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;DB 구조
-    &lt;ul&gt;
-      &lt;li&gt;&lt;strong&gt;Queue Table&lt;/strong&gt;
-        &lt;ul&gt;
-          &lt;li&gt;id: 고유 식별자 (PK)&lt;/li&gt;
-          &lt;li&gt;memberEmail: 사용자 식별자&lt;/li&gt;
-          &lt;li&gt;requestTime: 요청 시간&lt;/li&gt;
-          &lt;li&gt;status: 요청 상태&lt;/li&gt;
-          &lt;li&gt;position: 대기열에서의 위치&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;로직
-    &lt;ol&gt;
-      &lt;li&gt;&lt;strong&gt;요청 수집&lt;/strong&gt;
-        &lt;ul&gt;
-          &lt;li&gt;사용자가 서버에 요청을 보내면 요청을 대기열 테이블에 저장&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;대기열 상태 확인&lt;/strong&gt;
-        &lt;ul&gt;
-          &lt;li&gt;사용자가 요청할 때마다 새로운 대기열 위치 및 예상 대기 시간 반환&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;요청 처리&lt;/strong&gt;
-        &lt;ul&gt;
-          &lt;li&gt;백그라운드 작업을 통해 대기열에서 순차적으로 요청을 가져와 처리&lt;/li&gt;
-          &lt;li&gt;처리 후 상태 업데이트 → 사용자에게 결과 통지&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;hr /&gt;
-
-&lt;h2 id=&quot;분산-트랜잭션&quot;&gt;분산 트랜잭션&lt;/h2&gt;
-
-&lt;h3 id=&quot;saga-패턴&quot;&gt;Saga 패턴&lt;/h3&gt;
-
-&lt;p&gt;Saga 패턴은 긴 실행 시간 트랜잭션을 여러 개의 작은 트랜잭션으로 나누어 처리하는 방법이다. 각 단계는 독립적인 로컬 트랜잭션으로 처리되며, 실패 시 보상 트랜잭션을 실행하여 시스템의 일관성을 유지할 수 있다.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;h2 id=&quot;레디스-활용&quot;&gt;레디스 활용&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;결제 생성 요청 처리&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;strong&gt;Order Service&lt;/strong&gt;는 클라이언트로부터 주문 요청을 받으면 요청된 각 상품에 대해 Redis에서 재고 확인&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;원자적 재고 감소&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;결제 처리&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;strong&gt;Payment Service&lt;/strong&gt;는 결제 요청을 처리&lt;/li&gt;
-      &lt;li&gt;결제 성공 시 재고 업데이트를 확정&lt;/li&gt;
-      &lt;li&gt;결제 실패 시 Redis에서 원자적으로 재고 복원&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;→ Lua 스크립트 사용하기&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fae6bf094-d7d2-464e-be75-6f85042f8f64%2FIMG_0265.png?table=block&amp;amp;id=b62775cf-72e8-4c23-acca-4b1670dda2d9&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1440&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;
-(너무 대충 그렸다…)&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;ProductService&lt;/strong&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;Redis와 MySQL을 동기화하여 재고를 관리하고, Kafka를 통해 재고 증감 구독&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;PaymentQueueService&lt;/strong&gt;
-    &lt;ul&gt;
-      &lt;li&gt;결제 요청을 받아 Redis에서 재고를 확인하고, 재고가 충분할 경우 요청을 대기열에 추가&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;PaymentService&lt;/strong&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;대기열을 주기적으로 확인하여 결제 요청을 처리하고, 20% 확률로 결제를 실패&lt;/li&gt;
-      &lt;li&gt;결제가 성공하면 order-request-topic으로 정보를 전송, 실패 시 재고 복구 후 실패 응답 반환&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;OrderService&lt;/strong&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;order-request-topic에서 결제 성공 정보를 받아 주문을 생성&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>judy</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="Kafka" />
-      
-        <category term="Redis" />
-      
-        <category term="Transaction" />
-      
-        <category term="JAVA-Springboot" />
-      
-
-      
-        <summary type="html">대용량 트래픽 처리에 대한 경험이 없어 기획부터 어려웠다. 그래도 어떻게 처리할 것인지 예상되는 로직을 기획하고 구현해 보려고 한다.</summary>
       
 
       
@@ -962,117 +1054,6 @@ kafkaTemplate.send(stockUpdateTopic, objectMapper.writeValueAsString(stockUpdate
 
       
         <summary type="html">드디어 MSA를 구현하기 위해 모놀리식으로 작성하던 프로젝트를 나누는 작업을 시작했다. 우선 도메인별로 기능을 묶을라 했는데 코드가 하도 꼬여 있어서 그냥 프로젝트를 새로 파기로 결심했다. 기존 모놀리식 프로젝트 안녕… 새로 [member / product / order / API gateway] eureka client / eureka server 이렇게 나누고, db를 세 개의 마이크로 서비스에 따라 각자 파기로 했다. 레디스는 별다른 분리 없이 하나의 레디스를 사용한다.</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">MSA-8. Google SMTP를 활용한 이메일 인증 단계 구현</title>
-      <link href="https://yuju-lee.github.io/logs/MSA-8-emailAuthService/" rel="alternate" type="text/html" title="MSA-8. Google SMTP를 활용한 이메일 인증 단계 구현" />
-      <published>2024-06-26T00:00:00+09:00</published>
-      <updated>2024-06-26T00:00:00+09:00</updated>
-      <id>https://yuju-lee.github.io/logs/MSA-8-%08emailAuthService</id>
-      <content type="html" xml:base="https://yuju-lee.github.io/logs/MSA-8-emailAuthService/">&lt;p&gt;Google STMP를 이용하여 구현하였다.&lt;/p&gt;
-
-&lt;p&gt;member/signup 엔드포인트로 회원가입 요청을 보내면 인증 상태 false, 일반 회원 ROLE_USER 로 가입이 된다. 이후 가입 당시 작성한 이메일로 가입 링크를 보내고, 해당 링크를 접속하면 인증 상태를 true로 값을 변경한다. 발급된 토큰은 레디스에 저장하고 24시간 뒤 or 사용자의 상태가 true로 변경되었을 때 삭제한다.&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#google mail&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;spring.mail.host=smtp.gmail.com&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;spring.mail.port=587&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;spring.mail.username=&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;spring.mail.password=&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;spring.mail.properties.mail.smtp.auth=true&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;spring.mail.properties.mail.smtp.timeout=5000&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;spring.mail.properties.mail.smtp.starttls.enable=true&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;여기서 username에는 발신 이메일을, password에는 앱 인증 비밀번호를 Google 설정에서 생성해 작성한다.&lt;/p&gt;
-
-&lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;implementation group&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;org.springframework.boot&apos;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;spring-boot-starter-mail&apos;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3.0.5&apos;&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;implementation &apos;org.springframework.boot:spring-boot-starter-mail&apos;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;종속성을 주입하고…&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;@Service
-public class EmailService {
-
-    @Autowired
-    private JavaMailSender mailSender;
-
-    public void sendEmail(String to, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-        mailSender.send(message);
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;이메일 서비스 클래스를 작성한다.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;private void sendVerificationEmail(MemberEntity member) {
-        String token = UUID.randomUUID().toString();
-        redisTemplate.opsForValue().set(token, member.getEmail(), 24, TimeUnit.HOURS);
-
-        String url = &quot;http://localhost:8080/member/verify?token=&quot; + token;
-        emailService.sendEmail(member.getEmail(), &quot;Email Verification&quot;, &quot;Click the link to verify your email: &quot; + url);
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;그리고 회원 가입 완료 후 이메일을 발송하는 메서드를 작성한다. param에는 토큰을 생성해 URL에 추가하여 보낸다. 
-추가로, SecurityConfig에 verify** 링크의 permit을 all로 설정해 준다.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&quot;language-Java&quot;&gt;    public void completeSignup(String token) {
-        String email = (String) redisTemplate.opsForValue().get(token);
-        if (email == null) {
-            throw new IllegalArgumentException(&quot;Invalid or expired verification token&quot;);
-        }
-
-        MemberEntity member = jpaMemberRepository.findByEmail(email)
-                .orElseThrow(() -&amp;gt; new IllegalArgumentException(&quot;User not found&quot;));
-
-        member.setEnabled(true);
-        jpaMemberRepository.save(member);
-
-        redisTemplate.delete(token);
-    }
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;해당 링크를 클릭하면 GET mapping이 되어있는 /verify 엔드포인트에 위의 메소드가 실행되어 회원 가입이 최종적으로 완료된다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2F8c243caf-561c-4b78-b886-bb975d441261%2FScreenshot_2024-07-02_at_9.12.40_PM.png?table=block&amp;amp;id=f2b743a1-3360-4f21-8f53-9d5e4d8b31e0&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1860&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://yuju-lee.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F44912d2a-41d8-4efb-a178-49f42e164aad%2Fbbb4425d-28c5-44a1-ad04-87da5166c15c%2FScreenshot_2024-07-03_at_2.22.02_AM.png?table=block&amp;amp;id=dca2c242-0ff7-4207-9006-76b4b13774e4&amp;amp;spaceId=44912d2a-41d8-4efb-a178-49f42e164aad&amp;amp;width=1540&amp;amp;userId=&amp;amp;cache=v2&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;이메일이 발송되고, 해당 링크를 클릭하면 인증된 것을 확인할 수 있다.&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>judy</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="Auth" />
-      
-        <category term="googleSMTP" />
-      
-        <category term="mail-service" />
-      
-        <category term="JAVA-Springboot" />
-      
-
-      
-        <summary type="html">Google STMP를 이용하여 구현하였다.</summary>
       
 
       

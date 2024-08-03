@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>MSA-1. ERD 설계 및 작성</title>
+    <meta name="description"
+        content="">
+    <link rel="canonical" href="https://yuju-lee.github.io/logs/MSA-1-ERD/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/png" />
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+            <header class="entry-header">
+                <h1 class="entry-title">MSA-1. ERD 설계 및 작성</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/logs">logs</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-06-19">June 19, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <p><img src="assets/images/posts/240619/erd.png" alt="ERD" /></p>
+
+<p>새로운 프로젝트에 대한 명세는 아래와 같다.</p>
+<ul>
+  <li>기본적인 E-commerce 서비스를 위한 회원 플랫폼</li>
+  <li>사용자는 플랫폼을 통해 회원가입, 로그인, 로그아웃, 마이페이지 등의 기본적인 유저 관리 기능을 편리하게 이용</li>
+  <li>커머스를 이용하기 위한 핵심 요소인 WishList, 주문내역, 주문상태 조회 등의 기능을 제공하여 사용자가 원하는 물품의 구매 및 진행 상태를 원할하게 인지</li>
+  <li>올바른 주문 및 결제/환불 등을 처리하기 위해선 회원의 개인정보가 저장되어야 함</li>
+</ul>
+
+<p>위와 같은 명세를 충족하기 위해 아래와 같이 ERD를 설계했다.</p>
+
+<h3 id="주요-entity">주요 entity</h3>
+
+<ol>
+  <li><strong>Users (사용자)</strong>
+    <ul>
+      <li><strong>email</strong> (PK, 이메일)</li>
+      <li>user_name (사용자 이름)</li>
+      <li>password (비밀번호)</li>
+      <li>phone (전화번호)</li>
+      <li>address (주소)</li>
+    </ul>
+  </li>
+  <li><strong>Orders (주문)</strong>
+    <ul>
+      <li><strong>orderKey</strong> (PK, 주문 키)</li>
+      <li>email (FK, 이메일)</li>
+      <li>orderStatus (주문 상태)</li>
+      <li>orderAt (주문 날짜)</li>
+    </ul>
+  </li>
+  <li><strong>OrderDetail (주문 상세)</strong>
+    <ul>
+      <li><strong>orderDetailKey</strong> (PK, 주문 상세 키)</li>
+      <li>orderKey (FK, 주문 키)</li>
+      <li>productID (FK, 제품 ID)</li>
+      <li>orderPrice (주문 가격)</li>
+      <li>productCount (제품 수량)</li>
+    </ul>
+  </li>
+  <li><strong>Products (제품)</strong>
+    <ul>
+      <li><strong>productID</strong> (PK, 제품 ID)</li>
+      <li>productName (제품 이름)</li>
+      <li>price (가격)</li>
+      <li>stock (재고)</li>
+    </ul>
+  </li>
+  <li><strong>WishList (위시리스트)</strong>
+    <ul>
+      <li><strong>wishID</strong> (PK, 위시리스트 ID)</li>
+      <li>email (FK, 이메일)</li>
+      <li>productID (FK, 제품 ID)</li>
+      <li>addAt (추가 날짜)</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="관계">관계</h3>
+
+<ul>
+  <li><strong>Users &lt; Orders</strong>
+    <ul>
+      <li>한 명의 사용자가 여러 개의 주문을 할 수 있음</li>
+    </ul>
+  </li>
+  <li><strong>Users &lt; WishList</strong>
+    <ul>
+      <li>한 명의 사용자가 여러 개의 위시리스트 항목을 가질 수 있음</li>
+    </ul>
+  </li>
+  <li><strong>Orders &lt; OrderDetail</strong>
+    <ul>
+      <li>하나의 주문이 여러 개의 주문 상세를 가질 수 있음</li>
+    </ul>
+  </li>
+  <li><strong>Products &lt; OrderDetail</strong>
+    <ul>
+      <li>하나의 제품이 여러 개의 주문 상세에 포함될 수 있음</li>
+    </ul>
+  </li>
+  <li><strong>Products &lt; WishList</strong>
+    <ul>
+      <li>하나의 제품이 여러 사용자의 위시리스트에 포함될 수 있음</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="n1-문제에-대한-해결방안-모색">n+1 문제에 대한 해결방안 모색</h3>
+
+<ul>
+  <li>n+1 문제가 뭔지 정확히 이해하기
+    <ul>
+      <li>연관 관계에서 발생하는 이슈로 연관 관계가 설정된 엔티티를 조회할 경우에 조회된 데이터 갯수(n) 만큼 연관관계의 조회 쿼리가 추가로 발생하여 데이터를 읽어오게 된다.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>해결 방법</strong></p>
+<ol>
+  <li><strong>Eager Loading (즉시 로딩)</strong>
+    <ul>
+      <li>N+1 문제를 해결하는 일반적인 방법은 즉시 로딩을 사용하는 것이다. 즉시 로딩을 사용하면, 관련된 데이터를 한 번의 조인 쿼리로 가져올 수 있다.</li>
+    </ul>
+  </li>
+  <li><strong>Batch Loading (배치 로딩)</strong>
+    <ul>
+      <li>ORM 도구에 따라 배치 로딩이라는 기법도 사용될 수 있다. 배치 로딩은 필요한 데이터를 여러 번의 적은 수의 쿼리로 나누어 가져오는 방법 중 하나다.</li>
+    </ul>
+  </li>
+</ol>
+
+<p>내가 설계한 ERD는 N+1 문제가 발생할 여지가 없어 보여서 우선 이렇게 설계를 했다. ERD를 제대로 설계해야 모든 데이터의 흐름을 내가 컨트롤 할 수 있기 때문에 ERD 설계는 정말 중요한 부분 중 하나이다.</p>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/erd">ERD</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/the-cutting-edge-architecture/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">The Cutting Edge Architecture</span>
+                    <span class="nav-meta">November 13, 2019</span>
+                    
+                        <span class="nav-thumb" style="background-image: url(https://yuju-lee.github.io/assets/images/posts/14.jpg)"></span>
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/logs/MSA-2-docker/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">MSA-2. Docker와 Docker 적용기</span>
+                    <span class="nav-meta">June 19, 2024</span>
+                    
+                        <span class="nav-thumb" style="background-image: url(https://free-asphalt-782.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fc142fb00-f1da-4b07-8004-49368f5a1dab%2Fe55ef7e5-5a6d-4b71-a9d3-42471372d0e2%2FUntitled.png?table=block&id=03e0669a-2559-419f-86db-22dcc80dce09&spaceId=c142fb00-f1da-4b07-8004-49368f5a1dab&width=1420&userId=&cache=v2)"></span>
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/springboot/">Springboot</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/java/'>java</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

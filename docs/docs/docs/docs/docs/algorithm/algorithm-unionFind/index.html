@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>[Algorithm] Union find</title>
+    <meta name="description"
+        content="유니온 파인드(Union-find, 서로소 집합)">
+    <link rel="canonical" href="https://yuju-lee.github.io/algorithm/algorithm-unionFind/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="https://yuju-lee.github.io/assets/images/favicon.ico" type="image/png" />
+
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never dies</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+                <div class="post-thumbnail"><img src="https://velog.velcdn.com/images/jiwon_choi/post/f7542334-2b5a-4e62-b235-a530db59e754/image.png" alt="[Algorithm] Union find"></div>
+            
+            <header class="entry-header">
+                <h1 class="entry-title">[Algorithm] Union find</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/algorithm">algorithm</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-07-15">July 15, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <h2 id="유니온-파인드union-find-서로소-집합">유니온 파인드(Union-find, 서로소 집합)</h2>
+
+<p>유니온 파인드(Union-Find) 알고리즘, 또는 서로소 집합(Disjoint Set) 자료구조는 동적 연결성 문제를 해결하기 위해 사용된다. 이 자료구조는 주로 그래프에서 연결된 컴포넌트를 찾는 데 사용되는데, 유니온 파인드 자료구조는 두 가지 주요 연산을 효율적으로 수행한다.</p>
+<ol>
+  <li>Union: 두 개의 집합을 하나의 집합으로 합친다.</li>
+  <li>Find: 특정 원소가 속한 집합을 찾는다.</li>
+</ol>
+
+<p><strong>유니온 파인드의 주요 개념</strong></p>
+
+<ol>
+  <li>집합 표현:
+    <ul>
+      <li>각 원소는 자신을 부모로 가지는 트리 형태로 표현된다.</li>
+      <li>집합의 루트 노드는 집합의 대표(또는 루트)로 간주된다.</li>
+    </ul>
+  </li>
+  <li>Find 연산:
+    <ul>
+      <li>주어진 원소가 속한 집합의 대표를 찾는다.</li>
+      <li>경로 압축(Path Compression)을 통해 트리의 높이를 줄여, 이후의 Find 연산이 더 빠르게 수행되도록 최적화할 수 있다.</li>
+    </ul>
+  </li>
+  <li>Union 연산:
+    <ul>
+      <li>두 개의 집합을 하나로 합친다.</li>
+      <li>Union by Rank 또는 Union by Size 기법을 사용하여 트리의 높이를 최소화할 수 있다.</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>유니온 파인드의 최적화 기법</strong></p>
+
+<ol>
+  <li>경로 압축(Path Compression):
+    <ul>
+      <li>Find 연산을 수행하는 동안, 방문한 모든 노드를 직접 루트 노드에 연결하여 <strong>트리의 높이를 줄인다</strong>.</li>
+      <li>이 최적화는 Find 연산의 시간 복잡도를 거의 상수 시간으로 만든다.</li>
+    </ul>
+  </li>
+  <li>랭크에 의한 합치기(Union by Rank):
+    <ul>
+      <li>각 트리의 높이를 추적하고, 항상 높이가 낮은 트리를 높이가 높은 트리 아래에 연결하여 트리의 높이를 최소화한다.</li>
+      <li>이는 트리의 균형을 유지하는 데 도움이 된다.</li>
+    </ul>
+  </li>
+  <li>크기에 의한 합치기(Union by Size):
+    <ul>
+      <li>각 집합의 크기를 추적하고, 항상 작은 트리를 큰 트리 아래에 연결하여 트리의 높이를 최소화한다.</li>
+      <li>이는 Union by Rank와 유사하게 트리의 균형을 유지하는 데 도움이 된다.</li>
+    </ul>
+  </li>
+</ol>
+
+<p><strong>시간 복잡도</strong></p>
+
+<p>경로 압축과 랭크에 의한 합치기 최적화를 적용하면 유니온 파인드 자료구조의 연산은 거의 상수 시간으로 수행되는데, 정확히는 매우 느리게 증가하는 역 아커만 함수(inverse Ackermann function) 시간 복잡도인 <code class="language-plaintext highlighter-rouge">O(α(n))</code>으로 수행한다. 이 함수는 <strong>실제로는 거의 상수로 간주</strong>될 수 있다.</p>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/algorithm">Algorithm</a>, 
+                     
+                    <a href="https://yuju-lee.github.io/tag/union-find">Union-find</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/logs/MSA-17-schduler/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">MSA-17. 구매 오픈 시각 기능 구현</span>
+                    <span class="nav-meta">July 9, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About me</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/knowledge/">Knowledge</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/algorithm/'>Algorithm</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/bfs/'>BFS</a>
+        
+        <a href='/tag/binary-search/'>Binary-search</a>
+        
+        <a href='/tag/binary-tree/'>Binary-tree</a>
+        
+        <a href='/tag/brute-force/'>Brute-force</a>
+        
+        <a href='/tag/dfs/'>DFS</a>
+        
+        <a href='/tag/dp/'>DP</a>
+        
+        <a href='/tag/dijkstra/'>Dijkstra</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/greedy/'>Greedy</a>
+        
+        <a href='/tag/hash-table/'>Hash-table</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kmp/'>KMP</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/queue/'>Queue</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/sort/'>Sort</a>
+        
+        <a href='/tag/stack/'>Stack</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/time-complexity/'>Time-Complexity</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/union-find/'>Union-find</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>

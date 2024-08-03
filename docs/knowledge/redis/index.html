@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <title>Redis 이녀석... 궁금하다</title>
+    <meta name="description"
+        content="Redis란? Redis(REmote DIctionary Server)는 주로 애플리케이션 캐시나 빠른 응답 속도를 가진 데이터베이스로 사용되는 오픈 소스 인메모리 NoSQL 키/값 저장소이다. Redis는 디스크나 솔리드 스테이트 드라이브(SSD)가 아닌 메모리에 데이터를 저장하...">
+    <link rel="canonical" href="https://yuju-lee.github.io/knowledge/redis/">
+    
+
+    <!-- Site Favicon -->
+    <link rel="shortcut icon" href="https://yuju-lee.github.io/assets/images/favicon.ico" type="image/png" />
+
+
+    <!-- CSS Styles -->
+    <link href="/assets/css/style.css" rel="stylesheet">
+</head>
+
+
+
+<body class="layout-post">
+    <div id="page" class="site">
+        <header class="site-header">
+    <div class="inner">
+        <div class="site-branding">
+            
+                <h1 class="site-title"><a href="/" rel="home">Judy's Devlog</a></h1>
+                <p class="site-description">Cool developers never die</p>
+            
+        </div><!-- .site-branding -->
+        <button id="show-sidebar" class="toggle-sidebar">
+            <span class="screen-reader-text">Discover More</span>
+            <span aria-hidden="true" class="icon-plus"></span>
+        </button>
+    </div><!-- .inner -->
+    <!-- Highlight.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark.min.css">
+</header><!-- .site-header -->
+        <div id="content" class="site-content">
+    <main id="main" class="site-main inner">
+        <article class="post">
+            
+                <div class="post-thumbnail"><img src="https://images.ctfassets.net/aoyx73g9h2pg/5xTOYud1foLeK6Gn7QaKlB/e89a4edadc1b15bc6af1b59afe8a1d1c/1J4FJKgLvSAxv0ix3doSl387kPHCCLYcI_1-Featured-1024x572.jpg" alt="Redis 이녀석... 궁금하다"></div>
+            
+            <header class="entry-header">
+                <h1 class="entry-title">Redis 이녀석... 궁금하다</h1>
+                <div class="entry-meta">
+                    
+                    
+                    <span class="post-author"><a href="https://yuju-lee.github.io/author/judy">judy</a></span>
+                    
+                    
+                    <span class="post-categories">
+                        
+                        <a href="https://yuju-lee.github.io/categories/knowledge">Knowledge</a>
+                        
+                    </span>
+                    <span class="post-date">
+                        <time class="published" datetime="2024-07-02">July 2, 2024</time>
+                    </span>
+                </div><!-- .entry-meta -->
+            </header><!-- .entry-header -->
+            <div class="entry-content">
+                <h1 id="redis란">Redis란?</h1>
+<p>Redis(REmote DIctionary Server)는 주로 <strong>애플리케이션 캐시나 빠른 응답 속도를 가진 데이터베이스로 사용</strong>되는 오픈 소스 <strong>인메모리 NoSQL 키/값 저장소</strong>이다. Redis는 디스크나 솔리드 스테이트 드라이브(SSD)가 아닌 메모리에 데이터를 저장하기 때문에 탁월한 속도, 안정성, 성능이 제공된다.</p>
+
+<p>애플리케이션에서 외부 데이터 소스를 사용하는 경우, 이러한 소스의 대기 시간과 처리량은 특히 트래픽이 증가하거나 애플리케이션이 확장될 때 성능 병목 현상을 일으킬 수 있다. 이 경우 성능을 향상시키는 한 가지 방법은 애플리케이션과 물리적으로 더 가까운 메모리에 데이터를 저장하고 조작하는 것인데, Redis는 이 작업을 위해 구축되었다. 즉, Redis는 모든 데이터를 메모리에 저장하여 데이터를 읽거나 쓸 때의 성능을 최대화하고, <strong>데이터를 사용자에게 더 가깝게 배치하여 대기 시간을 최소화할 수 있는 내장형 복제 기능을 제공</strong>한다.</p>
+
+<hr />
+
+<h2 id="차별화">차별화</h2>
+<p>Redis는 애플리케이션 성능을 높이도록 설계된 보조 구성요소인 ‘기존’의 NoSQL 데이터 저장소와 차별화한다.</p>
+
+<h3 id="redis-캐시-세션">Redis 캐시 세션</h3>
+<p>MongoDB, PostreSQL과 같은 NoSQL 데이터베이스와 달리, <strong>Redis는 하드 디스크 및 솔리드 스테이트 드라이브(SSD)가 아닌 서버의 주 메모리에 데이터를 저장</strong>한다. 따라서 <strong>읽기 및 쓰기 작업을 수행할 때 응답 시간이 훨씬 빨라진다</strong>. 또한 서비스 및 애플리케이션 워크로드의 고가용성과 확장성을 보장하는 데 도움이 된다.</p>
+
+<h3 id="redis-큐">Redis 큐</h3>
+<p>Redis는 웹 클라이언트에서의 처리가 평소보다 오래 걸릴 수 있는 태스크를 큐에 추가할 수 있습니다. 다중 프로세스 태스크 큐는 오늘날의 많은 웹 기반 애플리케이션에서 일반적으로 사용되며, Redis를 사용하면 요청/응답 주기의 백그라운드에서 실행되는 자동화된 Python 작성 프로세스를 손쉽게 구현할 수 있다.</p>
+
+<hr />
+<h2 id="redis-데이터-유형">Redis 데이터 유형</h2>
+<p>기술적으로는 키/값 저장소인 Redis는 다음을 포함하여 여러 데이터 유형 및 구조를 지원한다.</p>
+
+<ol>
+  <li>고유하고 정렬되지 않은 문자열 요소</li>
+  <li>바이너리 안전 데이터</li>
+  <li>HyperLogLog</li>
+  <li>비트 배열</li>
+  <li>해시</li>
+  <li>리스트</li>
+</ol>
+
+<hr />
+
+<h2 id="기능-및-특징">기능 및 특징</h2>
+
+<h3 id="1-redis-sentinel">1. Redis Sentinel</h3>
+<p>Redis Sentinel은 개발자가 클라이언트의 가용성을 높이기 위해 인스턴스를 조정하는 데 도움이 되는 독립형 분산 시스템이다. Sentinel은 마스터 및 슬레이브 인스턴스에 문제가 있을 때 일련의 모니터링 프로세스, 알림 및 자동 장애 조치를 사용하여 사용자에게 알리고, 필요한 경우 애플리케이션에 대한 새 연결을 자동으로 재구성할 수 있다.</p>
+
+<h3 id="2-redis-cluster">2. Redis Cluster</h3>
+<p>Redis Cluster는 여러 노드에 데이터 세트를 자동으로 분할하는 Redis의 분산 구현이다. 이는 노드 서브세트가 클러스터의 나머지 부분과 통신할 수 없는 경우에도 지속적인 작업을 보장하면서 데이터베이스 배포의 성능과 확장성을 높인다.</p>
+
+<h3 id="3-redis-pubsub">3. Redis Pub/Sub</h3>
+<p>Redis는 게시 및 구독(Pub/Sub) 명령의 사용을 지원한다.</p>
+
+<h3 id="4-redis-지속성">4. Redis 지속성</h3>
+<p>Redis는 프로세스 중단 및 네트워크 병목 현상이 발생한 후에도 유지되도록 설계된 <strong>영구 디스크 스토리지를 사용</strong>한다. Redis는 데이터의 정기적인 스냅샷을 만들고 사용 가능해지면 변경 사항을 추가하여 데이터세트를 유지할 수 있다. 그런 다음, 데이터베이스 내구성과 무결성을 보장하기 위해 요청 시 또는 일정한 간격마다 자동으로 이러한 데이터베이스 백업을 생성하도록 Redis를 구성할 수 있다.</p>
+
+<h3 id="5-single-threaded">5. Single Threaded</h3>
+<p>한 번에 하나의 명령만 처리할 수 있다. 그렇기 때문에 중간에 처리 시간이 긴 명령어가 들어오면 그 뒤에 명령어들은 모두 앞에 있는 명령어가 처리될 때까지 대기가 필요하다. (하지만 get, set 명령어의 경우 초당 10만 개 이상 처리할 수 있을 만큼 빠르다.)</p>
+
+<hr />
+
+<h3 id="기존-db가-있는데도-redis를-사용하는-이유">기존 DB가 있는데도 Redis를 사용하는 이유</h3>
+
+<p>DB는 데이터를 디스크에 직접 저장(write)하기 때문에 서버에 문제가 발생하여 다운되더라도 데이터가 손실되지 않는데 매번 디스크에 접근해야하기 때문에 사용자가 많아질수록 부하가 많아져 느려질 수 있다. 따라서 캐시 서버를 도입하여 사용하면 속도를 개선할 수 있는데, 이 캐시 서버로 이용할 수 있는 것이 바로 Redis이다. 같은 요청이 여러번 들어올 때 Redis를 사용함으로써 매번 DB를 거치지 않고 캐시 서버에 저장해놨던 값을 바로 가져와 DB의 부하를 줄이고 서비스의 속도도 느려지지 않게 할 수 있다.</p>
+
+<hr />
+
+<h3 id="ref">Ref.</h3>
+<ul>
+  <li><a href="https://www.ibm.com/kr-ko/topics/redis">IBM: Redis란?</a></li>
+</ul>
+
+            </div>
+            <footer class="entry-footer">
+                
+                <p class="post-tags">
+                     
+                    <a href="https://yuju-lee.github.io/tag/redis">Redis</a>
+                    
+                </p>
+                
+            </footer>
+            
+            
+            <div class="author-box">
+                <div class="author-info">
+                    
+                    <div class="avatar-container">
+                        <img class="author-profile-image" src="https://yuju-lee.github.io/assets/images/judy.jpg" alt="judy" class="avatar" />
+                    </div>
+                    
+                    <div class="author-details">
+                        <h2 class="author-title">About <a href="https://yuju-lee.github.io/author/judy">judy</a></h2>
+                        
+                        <p class="author-description">junior BE</p>
+                        
+                        <div class="author-links">
+                            
+                            <a href="https://www.linkedin.com/in/yuju-lee" target="_blank" rel="noopener">
+                                <i class="fa-globe" aria-hidden="true"></i>
+                                <span class="screen-reader-text">Website</span>
+                            </a>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div><!-- .author-info -->
+            </div><!-- .author-box -->
+            
+            
+        </article>
+        
+            <div class="subscribe-box">
+</div><!-- .widget -->
+        
+        <nav class="navigation post-navigation">
+            <h2 class="screen-reader-text">Post navigation</h2>
+            <div class="nav-links">
+            
+            <div class="nav-previous">
+                <a href="https://yuju-lee.github.io/logs/MSA-10-logoutAll/" class="nav-inside">
+                    <span class="nav-before">Previous post</span>
+                    <span class="nav-title">MSA-10. 동시 로그아웃</span>
+                    <span class="nav-meta">July 2, 2024</span>
+                    
+                    
+                </a>
+            </div>
+            
+            
+            <div class="nav-next">
+                <a href="https://yuju-lee.github.io/knowledge/redisLock/" class="nav-inside">
+                    <span class="nav-before">Next post</span>
+                    <span class="nav-title">Redis의 분산 락을 활용한 동시성 제어</span>
+                    <span class="nav-meta">July 2, 2024</span>
+                    
+                        <span class="nav-thumb" style="background-image: url(https://miro.medium.com/v2/resize:fit:1200/1*i1d88Q8NNrRv6kjf7Ssw4g.png)"></span>
+                    
+                </a>
+            </div>
+            
+            </div><!-- .nav-links -->
+        </nav><!-- .post-navigation -->
+        
+<div class="comments-area">
+    <div class="comments-inside">
+        <h2 class="comments-title">Comments</h2>
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+                Disqus</a>.</noscript>
+    </div><!-- .comments-inside -->
+</div><!-- .comments-area -->
+    <script type="text/javascript">
+        var disqus_shortname = 'devlog-qiqv3mtjda';
+        var disqus_developer = 0;
+        (function () {
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+    </main><!-- .site-main -->
+</div><!-- .site-content -->
+
+        
+
+        <aside id="sidebar" class="sidebar">
+	<div class="sidebar-inside">
+		<button id="hide-sidebar" class="toggle-sidebar"><span class="screen-reader-text">Close</span><span aria-hidden="true"
+			 class="icon-plus"></span></button>
+			<nav id="sidebar-navigation" class="widget site-navigation">
+				<h2 class="widget-title">Category</h2>
+				<ul class="menu">
+					
+						<li class="menu-item"><a href="/about/">About me</a></li>
+					
+						<li class="menu-item"><a href="/categories/algorithm/">Algorithm</a></li>
+					
+						<li class="menu-item"><a href="/categories/knowledge/">Knowledge</a></li>
+					
+						<li class="menu-item"><a href="/categories/logs/">Logs</a></li>
+					
+				</ul>
+			</nav>
+			<!-- Create a sorted array of tags -->
+ 
+<section class="widget widget-tagcloud">
+    <h2 class="widget-title">Tags</h2>
+    <div class="tagcloud">
+        
+        <a href='/tag/api-gateway/'>API-Gateway</a>
+        
+        <a href='/tag/algorithm/'>Algorithm</a>
+        
+        <a href='/tag/auth/'>Auth</a>
+        
+        <a href='/tag/bfs/'>BFS</a>
+        
+        <a href='/tag/binary-search/'>Binary-search</a>
+        
+        <a href='/tag/binary-tree/'>Binary-tree</a>
+        
+        <a href='/tag/brute-force/'>Brute-force</a>
+        
+        <a href='/tag/dfs/'>DFS</a>
+        
+        <a href='/tag/dp/'>DP</a>
+        
+        <a href='/tag/dijkstra/'>Dijkstra</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-Lock</a>
+        
+        <a href='/tag/distributed-lock/'>Distributed-lock</a>
+        
+        <a href='/tag/docker/'>Docker</a>
+        
+        <a href='/tag/erd/'>ERD</a>
+        
+        <a href='/tag/encryption/'>Encryption</a>
+        
+        <a href='/tag/entity/'>Entity</a>
+        
+        <a href='/tag/feign-client/'>Feign-Client</a>
+        
+        <a href='/tag/greedy/'>Greedy</a>
+        
+        <a href='/tag/hash-table/'>Hash-table</a>
+        
+        <a href='/tag/java/'>JAVA</a>
+        
+        <a href='/tag/java-springboot/'>JAVA-Springboot</a>
+        
+        <a href='/tag/jpa/'>JPA</a>
+        
+        <a href='/tag/jwt/'>JWT</a>
+        
+        <a href='/tag/kmp/'>KMP</a>
+        
+        <a href='/tag/kafka/'>Kafka</a>
+        
+        <a href='/tag/kubernetes/'>Kubernetes</a>
+        
+        <a href='/tag/luascript/'>LuaScript</a>
+        
+        <a href='/tag/msa/'>MSA</a>
+        
+        <a href='/tag/nosql/'>NoSQL</a>
+        
+        <a href='/tag/persistence-context/'>Persistence-Context</a>
+        
+        <a href='/tag/queue/'>Queue</a>
+        
+        <a href='/tag/rdbms/'>RDBMS</a>
+        
+        <a href='/tag/redis/'>Redis</a>
+        
+        <a href='/tag/sort/'>Sort</a>
+        
+        <a href='/tag/stack/'>Stack</a>
+        
+        <a href='/tag/taskscheduler/'>TaskScheduler</a>
+        
+        <a href='/tag/test-tool/'>Test-tool</a>
+        
+        <a href='/tag/time-complexity/'>Time-Complexity</a>
+        
+        <a href='/tag/transaction/'>Transaction</a>
+        
+        <a href='/tag/union-find/'>Union-find</a>
+        
+        <a href='/tag/cookie/'>cookie</a>
+        
+        <a href='/tag/funtional-programming/'>funtional-programming</a>
+        
+        <a href='/tag/googlesmtp/'>googleSMTP</a>
+        
+        <a href='/tag/http/'>http</a>
+        
+        <a href='/tag/kubernetes/'>kubernetes</a>
+        
+        <a href='/tag/mail-service/'>mail-service</a>
+        
+        <a href='/tag/process/'>process</a>
+        
+        <a href='/tag/protocol/'>protocol</a>
+        
+        <a href='/tag/session/'>session</a>
+        
+        <a href='/tag/thread/'>thread</a>
+        
+    </div>
+</section>
+	</div><!-- .sidebar-inside -->
+</aside><!-- .sidebar -->
+        <footer id="colophon" class="site-footer outer">
+    <div class="inner">
+        <div class="footer-bottom">
+            <p class="social-links">
+    
+    
+    
+    <a href="https://github.com/yuju-lee" target="_blank">
+        <span class="fa-github fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">GitHub</span>
+    </a>
+    
+    
+    
+    
+    
+    
+    
+    <a href="https://www.linkedin.com/in/yuju-lee" target="_blank">
+        <span class="fa-linkedin fa" aria-hidden="true"></span>
+        <span class="screen-reader-text">Linkedin</span>
+    </a>
+    
+</p>
+            <p class="site-info">
+                <a href="#">Judy's Devlog</a> &copy; 2024 
+            </p>
+            <a href="#page" id="top-link" class="top-link"><i class="fa-arrow-left-custom" aria-hidden="true"></i> <span class="top-link-text">Up</span></a>
+        </div><!-- .footer-bottom -->
+    </div><!-- .inner -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .site -->
+    <div id="site-overlay" class="site-overlay"></div>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '', { 'anonymize_ip': true });
+  </script>
+
+    <!-- Javascript Assets -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/plugins.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <!-- Highlight.js JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+
+</html>
